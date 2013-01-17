@@ -1,0 +1,36 @@
+<html>
+  <meta>
+     <meta charset="UTF-8">
+   </meta>
+  <head>
+    <script src="jquery-1.8.3.js"></script>
+    <script src="handlebars-1.0.rc.1.js"></script>
+    <script src="ember-1.0.0-pre.2.js"></script>
+    <script src="dub-main.js"></script>
+  </head>
+  <body>
+    I can has<br/>
+    <script type="text/x-handlebars" data-template-name="application">
+      {{#each content}}
+        <span>
+          <h3>{{text}}</h3>
+          <p>{{start}}</p>
+          <p>{{end}}</p>
+        </span>
+      {{/each}}
+      {{outlet}}
+    </script>
+    <script type="text/javascript">
+      setTimeout(function(){
+          console.log("What is this?", this);
+          this.pushObject(
+            DubMark.SubModel.create({
+              text: 'Dynamic',
+              start: 'start',
+              end: 'end'
+            })
+          );
+      }.bind(DubMark.app), 500);
+    </script>
+  </body>
+</html>
