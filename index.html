@@ -9,20 +9,36 @@
     <script src="dub-main.js"></script>
   </head>
   <body>
-    I can has<br/>
+    <div id="DubAndMarkMain">
+      <video id="DubAndMark" controls=true>
+        <source src="test/sample.ogv" type="video/ogg" />
+      </video>
+    </div>
+    <!-- Templates for doing a subtitle. -->
     <script type="text/x-handlebars" data-template-name="application">
-      {{#each content}}
-        <span>
-          <h3>{{text}}</h3>
-          <p>{{start}}</p>
-          <p>{{end}}</p>
-        </span>
-      {{/each}}
-      {{outlet}}
+      <div id={{id}}>
+        I am the main application.
+        {{#each content}}
+          <span>
+            <h3>{{text}}</h3>
+            <p>{{start}}</p>
+            <p>{{end}}</p>
+          </span>
+        {{/each}}
+        {{outlet}}
+      </div>
+    </script>
+  </body>
+
+    <!-- Initialization code -->
+    <script type="text/javascript">
+      var init = {id: "DubAndMark"};
     </script>
     <script type="text/javascript">
+      var DmP = new DubMark.Project(init);
+          DmP.connect();
+      /*
       setTimeout(function(){
-          console.log("What is this?", this);
           this.pushObject(
             DubMark.SubModel.create({
               text: 'Dynamic',
@@ -31,6 +47,6 @@
             })
           );
       }.bind(DubMark.app), 500);
+      */
     </script>
-  </body>
 </html>
