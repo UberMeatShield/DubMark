@@ -11,12 +11,13 @@
   <body>
     <div id="DubAndMarkMain">
       <video id="DubAndMark" controls=true>
-        <source src="test/sample.ogv" type="video/ogg" />
+        <source src="Sample.webm" type="video/ogg" />
       </video>
     </div>
+    <div id="test"> Test </div>
     <!-- Templates for doing a subtitle. -->
     <script type="text/x-handlebars" data-template-name="application">
-      <div id={{id}}>
+      <div>{{id}}
         I am the main application.
         {{#each content}}
           <span>
@@ -30,23 +31,34 @@
     </script>
   </body>
 
-    <!-- Initialization code -->
-    <script type="text/javascript">
-      var init = {id: "DubAndMark"};
-    </script>
-    <script type="text/javascript">
-      var DmP = new DubMark.Project(init);
-          DmP.connect();
-      /*
-      setTimeout(function(){
-          this.pushObject(
-            DubMark.SubModel.create({
-              text: 'Dynamic',
-              start: 'start',
-              end: 'end'
-            })
-          );
-      }.bind(DubMark.app), 500);
-      */
-    </script>
+  <!-- Initialization code -->
+  <script type="text/javascript">
+    var init = {id: "DubAndMark"};
+  </script>
+  <script type="text/javascript">
+    var DmP = new DubMark.Project(init);
+        DmP.connect();
+
+    var test = $("#test");
+    test.append(
+      $('<button>', {text: 'New M', click: DmP.newMark.bind(DmP)}),
+      $('<button>', {text: 'End M', click: DmP.endMark.bind(DmP)}),
+      $('<button>', {text: 'Pause M', click: DmP.pauseMark.bind(DmP)}),
+      $('<button>', {text: 'Edit M', click: DmP.editMark.bind(DmP)}),
+      $('<button>', {text: 'get Active', click: DmP.getActiveMark.bind(DmP)}),
+      $('<button>', {text: 'set Active', click: DmP.setActiveMark.bind(DmP)}),
+      $('<button>', {text: 'esc Mark', click: DmP.escMark.bind(DmP)})
+    );
+    /*
+    setTimeout(function(){
+        this.pushObject(
+          DubMark.SubModel.create({
+            text: 'Dynamic',
+            start: 'start',
+            end: 'end'
+          })
+        );
+    }.bind(DubMark.app), 500);
+    */
+  </script>
 </html>

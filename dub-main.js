@@ -5,15 +5,26 @@ DubMark = Em.Application.create({
 });
 
 DubMark.SubModel = Em.Object.extend({
+  id: '',
   start: '',
   end: '',
-  text: ''
+  text: '',
+  notes: ''
 });
 DubMark.ApplicationView = Em.View.extend({
   templateName: 'application'
 });
 DubMark.ApplicationController = Em.ArrayController.extend({
-  content: []
+  content: [],
+  id: '1', 
+  markId: {
+    val: 0
+  },
+  newSub: function(start, end, text, notes){
+    var mark = DubMark.SubModel.create({start: start, end: end, text: text, notes: notes});
+    //Going to have to hit the DB for this crap.
+    this.pushObject(mark);
+  }
 });
 DubMark.Router = Em.Router.extend({
   root: Em.Route.extend({
@@ -23,7 +34,6 @@ DubMark.Router = Em.Router.extend({
   })
 });
 DubMark.app = DubMark.ApplicationController.create();
-
 
 /**
  *
@@ -41,20 +51,70 @@ $.extend(DubMark.Project.prototype, {
       console.error("Failed to find a video with this init data.", this._init);
     }
   },
-  createNew: function(init){
-    //Create a fully new page and probably kick off a reload
+  newMark: function(){
+    //Create a new mark
+    console.log("Create a new mark");
   },
-  loadId: function(id){
-    //Ajax call, get project info and load
+  endMark: function(){
+    //Get the active mark, get the time and update the end time
+    console.log("Get the active mark, get the time and update the end time");
+  },
+  pauseMark: function(){
+    //End the mark, ALSO pause the video
+    console.log("End the mark, ALSO pause the video");
+  },
+  editMark: function(){
+    //This may actually suck the hardest.
+    console.log("This may actually suck the hardest.");
+  },
+  getActiveMark: function(){
+    //return the currently active mark if it exists.
+    return this.mark;
+  },
+  setActiveMark: function(mark){
+    this.mark = mark;
+  },
+  escMark: function(){
+    //Done with the mark, set the mark to null
+    console.log("Done with the mark, set the mark to null");
   },
   getSubCtrl: function(){
-
+    if(!this._subCtrl){
+      this._subCtrl = DubMark.app; //HMMMMM
+    }
+    return this._subCtrl;
   },
   getVideoCtrl: function(){
     if(!this._vidCtrl){
       this._vidCtrl = new DubMark.Video();
     }
     return this._vidCtrl;
+  }
+});
+
+
+/**
+ *  Listen for a set of configurable bindings
+ */
+DubMark.ProjectKeys = function(project, bindings){
+  this.setProject(project);
+  this.bindings = bindings || this.BindDefaults;
+};
+$.extend(DubMark.ProjectKeys.prototype, {
+  BindDefaults: {
+
+  },
+  setProject: function(project){
+    this.project = project;
+  },
+  getProject: function(){
+    return this.project;
+  },
+  listen: function(){
+    //listen for keybinds
+  },
+  deaf: function(){
+    //stop listening for keybinds
   }
 });
 
@@ -69,17 +129,24 @@ $.extend(DubMark.Video.prototype,{
   listen: function(vid){
     this._vid = vid;
     //Connect the event based pipes.
+    vid.bind('timeupdate', this.timeupdate.bind(this));
+  },
+  timeupdate: function(t){
+    console.log("What is the current time?", t);
+    //Set the currently active subtitle
   },
   play: function(){
-
+    this._vid.play(); 
+    return this.getTime();
   },
   pause: function(){ //Pause the video
-    
+    this._vid.pause(); 
+    return this.getTime();
   },
   getTime: function(){ //Time the video is currently at
-
+    return this._vid.currentTime;
   },
-  getLength: function(){ //Length of the entire vid
-
+  getDuration: function(){ //Length of the entire vid
+    return this._vid.duration;
   }
 });
