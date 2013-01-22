@@ -88,10 +88,10 @@ $.extend(DubMark.Project.prototype, {
   },
   getActiveMark: function(){
     //return the currently active mark if it exists.
-    return this.mark;
+    return this.getSubCtrl().active
   },
   setActiveMark: function(mark){
-    this.mark = mark;
+    this.getSubCtrl().active = mark;
   },
   escMark: function(){
     //Done with the mark, set the mark to null

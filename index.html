@@ -32,8 +32,8 @@
           <tbody>
         {{#each content}}
           <tr>
-          <td>{{view Em.TextArea valueClass="source" value=source}}</td>
-          <td>{{view Em.TextArea valueClass="text" value=text}}</td>
+          <td>{{view Em.TextArea valueBinding="DubMark.app.active.source"}}</td>
+          <td>{{view Em.TextArea valueBinding="DubMark.app.active.text"}}</td>
           <td>{{start}}</td>
           <td>{{end}}</td>
           </tr>
@@ -50,8 +50,8 @@
     var init = {id: "DubAndMark"};
   </script>
   <script type="text/javascript">
-    var DmP = new DubMark.Project(init);
-        DmP.connect();
+    DmP = new DubMark.Project(init);
+    DmP.connect();
 
     var test = $("#test");
     test.append(
