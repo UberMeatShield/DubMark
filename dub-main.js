@@ -17,6 +17,7 @@ DubMark.ApplicationView = Em.View.extend({
 });
 DubMark.ApplicationController = Em.ArrayController.extend({
   content: [],
+  active: null,
   id: '1', 
   markId: {
     val: 0
@@ -35,21 +36,20 @@ DubMark.Router = Em.Router.extend({
     })
   })
 });
+DubMark.app = DubMark.ApplicationController.create();
 
 /**
  *
  */
-DubMark.Project = function(init){
-  this._init = init;
-};
-$.extend(DubMark.Project.prototype, {
+DubMark.Project = Em.Controller.extend({
   connect: function(init){
-    var vid = $('#' + this._init.id);
+    init = init || this._init;
+    var vid = $('#' + init.id);
     if(vid){
       var vc = this.getVideoCtrl();
           vc.listen(vid);
     }else{
-      console.error("Failed to find a video with this init data.", this._init);
+      console.error("Failed to find a video with this init data.", init);
     }
   },
   newMark: function(){
@@ -88,10 +88,10 @@ $.extend(DubMark.Project.prototype, {
   },
   getActiveMark: function(){
     //return the currently active mark if it exists.
-    return this.getSubCtrl().active
+    return this.getSubCtrl().get('active');
   },
   setActiveMark: function(mark){
-    this.getSubCtrl().active = mark;
+    this.getSubCtrl().set('active', mark);
   },
   escMark: function(){
     //Done with the mark, set the mark to null

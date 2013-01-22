@@ -18,8 +18,12 @@
     <div id="test"> Test </div>
     <!-- Templates for doing a subtitle. -->
     <script type="text/x-handlebars" data-template-name="application">
-      <div>{{id}}
-        I am the main application.
+      <div>
+        <div>
+          {{active}}
+          <p>{{view Em.TextArea valueBinding="DubMark.app.active.source"}}</p>
+          <p>{{view Em.TextArea valueBinding="DubMark.app.active.text"}}</p>
+        </div>
         <table class='mark'>
           <thead>
             <tr>
@@ -32,8 +36,8 @@
           <tbody>
         {{#each content}}
           <tr>
-          <td>{{view Em.TextArea valueBinding="DubMark.app.active.source"}}</td>
-          <td>{{view Em.TextArea valueBinding="DubMark.app.active.text"}}</td>
+          <td>{{source}}</td>
+          <td>{{text}}</td>
           <td>{{start}}</td>
           <td>{{end}}</td>
           </tr>
@@ -50,8 +54,8 @@
     var init = {id: "DubAndMark"};
   </script>
   <script type="text/javascript">
-    DmP = new DubMark.Project(init);
-    DmP.connect();
+    DmP = DubMark.Project.create(init);
+    DmP.connect({id: 'DubAndMark'});
 
     var test = $("#test");
     test.append(
