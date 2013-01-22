@@ -9,6 +9,7 @@ DubMark.SubModel = Em.Object.extend({
   start: '',
   end: '',
   text: '',
+  source: '',
   notes: ''
 });
 DubMark.ApplicationView = Em.View.extend({
@@ -24,6 +25,7 @@ DubMark.ApplicationController = Em.ArrayController.extend({
     var mark = DubMark.SubModel.create({start: start, end: end, text: text, notes: notes});
     //Going to have to hit the DB for this crap.
     this.pushObject(mark);
+    return mark;
   }
 });
 DubMark.Router = Em.Router.extend({
@@ -33,7 +35,6 @@ DubMark.Router = Em.Router.extend({
     })
   })
 });
-DubMark.app = DubMark.ApplicationController.create();
 
 /**
  *
@@ -52,20 +53,38 @@ $.extend(DubMark.Project.prototype, {
     }
   },
   newMark: function(){
+    var current = this.getActiveMark();
+    if(current){
+      this.endMark(current);
+    }
+    var mark = this.getSubCtrl().newSub(
+      this.getVideoCtrl().getTime(),
+      null,
+      'new',
+      ''
+    );
+    this.setActiveMark(mark);
     //Create a new mark
     console.log("Create a new mark");
   },
-  endMark: function(){
-    //Get the active mark, get the time and update the end time
-    console.log("Get the active mark, get the time and update the end time");
+  endMark: function(mark){
+    mark = mark || this.getActiveMark();
+    if(mark && mark.set){
+      console.log("Get the active mark, get the time and update the end time", mark);
+      mark.set('end', this.getVideoCtrl().getTime());
+    }
   },
   pauseMark: function(){
+    this.getVideoCtrl().pause();
+    this.endMark();
     //End the mark, ALSO pause the video
     console.log("End the mark, ALSO pause the video");
   },
-  editMark: function(){
+  editMark: function(mark){
+    mark = mark || this.getActiveMark();
+
     //This may actually suck the hardest.
-    console.log("This may actually suck the hardest.");
+    console.log("This may actually suck the hardest.", mark);
   },
   getActiveMark: function(){
     //return the currently active mark if it exists.
@@ -80,6 +99,9 @@ $.extend(DubMark.Project.prototype, {
   },
   getSubCtrl: function(){
     if(!this._subCtrl){
+      if(!DubMark.app){
+        DubMark.app = DubMark.ApplicationController.create();
+      }
       this._subCtrl = DubMark.app; //HMMMMM
     }
     return this._subCtrl;
@@ -136,15 +158,16 @@ $.extend(DubMark.Video.prototype,{
     //Set the currently active subtitle
   },
   play: function(){
-    this._vid.play(); 
+    this._vid.get(0).play(); 
     return this.getTime();
   },
   pause: function(){ //Pause the video
-    this._vid.pause(); 
+    this._vid.get(0).pause(); 
     return this.getTime();
   },
   getTime: function(){ //Time the video is currently at
-    return this._vid.currentTime;
+    var t = this._vid.get(0).currentTime; 
+    return t;
   },
   getDuration: function(){ //Length of the entire vid
     return this._vid.duration;

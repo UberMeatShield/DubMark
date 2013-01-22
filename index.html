@@ -3,6 +3,7 @@
      <meta charset="UTF-8">
    </meta>
   <head>
+    <link href='dub.css' rel="stylesheet" type='text/css'></style>
     <script src="jquery-1.8.3.js"></script>
     <script src="handlebars-1.0.rc.1.js"></script>
     <script src="ember-1.0.0-pre.2.js"></script>
@@ -19,13 +20,26 @@
     <script type="text/x-handlebars" data-template-name="application">
       <div>{{id}}
         I am the main application.
+        <table class='mark'>
+          <thead>
+            <tr>
+              <th>Source</th>
+              <th>Translation</th>
+              <th>Start</th>
+              <th>End</th>
+            </tr>
+          </thead>
+          <tbody>
         {{#each content}}
-          <span>
-            <h3>{{text}}</h3>
-            <p>{{start}}</p>
-            <p>{{end}}</p>
-          </span>
+          <tr>
+          <td>{{view Em.TextArea valueClass="source" value=source}}</td>
+          <td>{{view Em.TextArea valueClass="text" value=text}}</td>
+          <td>{{start}}</td>
+          <td>{{end}}</td>
+          </tr>
         {{/each}}
+         </tbody>
+       </table>
         {{outlet}}
       </div>
     </script>
@@ -41,13 +55,13 @@
 
     var test = $("#test");
     test.append(
-      $('<button>', {text: 'New M', click: DmP.newMark.bind(DmP)}),
-      $('<button>', {text: 'End M', click: DmP.endMark.bind(DmP)}),
+      $('<button>', {text: 'New M', click: DmP.newMark.bind(DmP, null)}),
+      $('<button>', {text: 'End M', click: DmP.endMark.bind(DmP, null)}),
       $('<button>', {text: 'Pause M', click: DmP.pauseMark.bind(DmP)}),
       $('<button>', {text: 'Edit M', click: DmP.editMark.bind(DmP)}),
       $('<button>', {text: 'get Active', click: DmP.getActiveMark.bind(DmP)}),
       $('<button>', {text: 'set Active', click: DmP.setActiveMark.bind(DmP)}),
-      $('<button>', {text: 'esc Mark', click: DmP.escMark.bind(DmP)})
+      $('<button>', {text: 'esc Mark', click: DmP.escMark.bind(DmP, null)})
     );
     /*
     setTimeout(function(){
