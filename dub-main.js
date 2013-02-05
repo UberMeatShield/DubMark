@@ -12,16 +12,41 @@ DubMark.SubModel = Em.Object.extend({
   source: '',
   notes: ''
 });
+
 DubMark.ApplicationView = Em.View.extend({
   templateName: 'application'
 });
-
-DubMark.ApplicationController = Em.ArrayController.extend({
-  content: [],
-  active: null,
+DubMark.ApplicationController = Em.Controller.extend({
   id: '1', 
   markId: {
     val: 0
+  }
+});
+
+DubMark.MarkView = Em.View.extend({
+  templateName: 'subtitle'
+});
+
+DubMark.SubView = Em.View.extend({
+  click: function(evt){
+    console.log("Feel the hate.", evt);
+  }
+});
+
+//This is fucking special.
+DubMark.ActiveView = Em.View.extend({
+  templateName: 'active'
+});
+DubMark.ActiveMarkController = Em.Controller.extend({
+  templateName: 'active',
+  active: null
+});
+
+DubMark.MarkController  = Em.ArrayController.extend({
+  content: [],
+  templateName: 'subtitle',
+  click: function(evt){
+    console.log("I can has click");
   },
   newSub: function(start, end, text, notes){
     var mark = DubMark.SubModel.create({start: start, end: end, text: text, notes: notes});
@@ -30,15 +55,14 @@ DubMark.ApplicationController = Em.ArrayController.extend({
     return mark;
   }
 });
-DubMark.app = DubMark.ApplicationController.create();
 
 
 DubMark.VideoView = Em.View.extend({
-  templateName: 'vid',
   id: null,
-  video: null,
-  type: null,
-  listen: function(vid){
+  video: null, //Url for the video
+  type: null,  //Type of video for the video tag
+  templateName: 'vid',
+  listen: function(vid){ //Supposedly didCreateElement works.. but no such luck for me?
     if(this.get('isVisible')) {
       if(!vid && this.id){
         vid = $('#' + this.id);
@@ -80,8 +104,6 @@ DubMark.Project = Em.Controller.extend({
   id: null,
   sequence: {id: 0},
   connect: function(init){
-    init = init || this._init;
-
     this.id = ++this.sequence.id;
   },
   newMark: function(){
@@ -96,8 +118,6 @@ DubMark.Project = Em.Controller.extend({
       ''
     );
     this.setActiveMark(mark);
-    //Create a new mark
-    console.log("Create a new mark");
   },
   endMark: function(mark){
     mark = mark || this.getActiveMark();
@@ -120,21 +140,23 @@ DubMark.Project = Em.Controller.extend({
   },
   getActiveMark: function(){
     //return the currently active mark if it exists.
-    return this.getSubCtrl().get('active');
+    return this.getActiveCtrl().get('active');
   },
   setActiveMark: function(mark){
-    this.getSubCtrl().set('active', mark);
+    this.getActiveCtrl().set('active', mark);
   },
-  escMark: function(){
-    //Done with the mark, set the mark to null
+  escMark: function(){ //Done with the mark, set the mark to null
     console.log("Done with the mark, set the mark to null");
+  },
+  getActiveCtrl: function(){
+    if(!this._actCtrl){
+      this._actCtrl = DubMark.activeMark || DubMark.ActiveMarkController.create();
+    }
+    return this._actCtrl;
   },
   getSubCtrl: function(){
     if(!this._subCtrl){
-      if(!DubMark.app){
-        DubMark.app = DubMark.ApplicationController.create();
-      }
-      this._subCtrl = DubMark.app; //HMMMMM
+      this._subCtrl = DubMark.mark || DubMark.MarkController.create();
     }
     return this._subCtrl;
   },

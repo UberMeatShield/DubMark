@@ -10,50 +10,62 @@
     <script src="dub-main.js"></script>
   </head>
   <body>
+    <script type="text/javascript">
+      DubMark.app        = DubMark.ApplicationController.create();
+      DubMark.mark       = DubMark.MarkController.create();
+      DubMark.activeMark = DubMark.ActiveMarkController.create();
+    </script>
     <div id="main" class="main">
       <div id="video" class="video"> 
         <!-- Handle the video insert. -->
+        <script type="text/x-handlebars" data-template-name="vid">
+          <video {{bindAttr id="id"}} controls=true>
+            <source {{bindAttr src="video" type="type"}} />
+            Broken 
+          </video>
+        </script>
       </div>
-      <div id="active"   class="active"> 
-        <script type="text/x-handlebars" data-template-name="application">
-          <p>{{view Em.TextArea valueBinding="DubMark.app.active.source"}}</p>
-          <p>{{view Em.TextArea valueBinding="DubMark.app.active.text"}}</p>
-          {{outlet}}
+      <div id="active" class="active"> 
+        <script type="text/x-handlebars" data-template-name="active">
+          {{#with DubMark.activeMark.active}}
+          <p>{{view Em.TextArea valueBinding="DubMark.activeMark.active.source"}}</p>
+          <p>{{view Em.TextArea valueBinding="DubMark.activeMark.active.text"}}</p>
+          {{/with}}
         </script>
       </div>
       <div id="controls" class="controls"> 
         <!-- Insert the controls here. -->
       </div>
+      <div id="subtitle" class="subtitle">
+        <!-- Insert all the subtitle information. -->
+        Subtitles HERE
+        <script type="text/x-handlebars" data-template-name="subtitle">
+          <table class='mark'>
+             <thead>
+               <tr>
+                 <th>Source</th>
+                 <th>Translation</th>
+                 <th>Start</th>
+                 <th>End</th>
+               </tr>
+             </thead>
+             <tbody>
+             {{#each DubMark.mark.content}}
+               {{#view DubMark.SubView contentBinding="this"}}
+                 <tr>
+                 <td>{{source}}</td>
+                 <td>{{text}}</td>
+                 <td>{{start}}</td>
+                 <td>{{end}}</td>
+                 </tr>
+              {{/view}}
+            {{/each}}
+            </tbody>
+          </table>
+        </script>
+      </div>
     </div>
-
-    <script type="text/x-handlebars" data-template-name="vid">
-      <video {{bindAttr id="id"}} controls=true>
-        <source {{bindAttr src="video" type="type"}} />
-        Broken 
-      </video>
-    </script>
-
-    <script type="text/x-handlebars" data-template-name="subtitle">
-      <table class='mark'>
-         <thead>
-           <tr>
-             <th>Source</th>
-             <th>Translation</th>
-             <th>Start</th>
-             <th>End</th>
-           </tr>
-         </thead>
-         <tbody>
-       {{#each content}}
-         <tr>
-         <td>{{source}}</td>
-         <td>{{text}}</td>
-         <td>{{start}}</td>
-         <td>{{end}}</td>
-         </tr>
-       {{/each}}
-        </tbody>
-      </table>
+    <script type="text/x-handlebars" data-template-name="application">
     </script>
   </body>
   <!-- Initialization code -->
@@ -66,20 +78,28 @@
       DmP.connect({id: 'DubAndMark'});
       var test = $("#controls");
       test.append(
-        $('<button>', {text: 'New M', click: DmP.newMark.bind(DmP, null)}),
-        $('<button>', {text: 'End M', click: DmP.endMark.bind(DmP, null)}),
-        $('<button>', {text: 'Pause M', click: DmP.pauseMark.bind(DmP)}),
-        $('<button>', {text: 'Edit M', click: DmP.editMark.bind(DmP)}),
+        $('<button>', {text: 'New M',      click: DmP.newMark.bind(DmP, null)}),
+        $('<button>', {text: 'End M',      click: DmP.endMark.bind(DmP, null)}),
+        $('<button>', {text: 'Pause M',    click: DmP.pauseMark.bind(DmP)}),
+        $('<button>', {text: 'Edit M',     click: DmP.editMark.bind(DmP)}),
         $('<button>', {text: 'get Active', click: DmP.getActiveMark.bind(DmP)}),
         $('<button>', {text: 'set Active', click: DmP.setActiveMark.bind(DmP)}),
-        $('<button>', {text: 'esc Mark', click: DmP.escMark.bind(DmP, null)})
+        $('<button>', {text: 'esc Mark',   click: DmP.escMark.bind(DmP, null)})
       );
 
       var v = DmP.getVideoCtrl();
           v.appendTo('#video');
           v.listen();
 
+       var mv = DubMark.MarkView.create();
+       mv.appendTo('#subtitle');
+
+       DubMark.mark.newSub('s', 'e', 't');
+
+       var am = DubMark.ActiveView.create();
+       am.appendTo('#active');
     });
+    
 
     //Create the Active Control
     
@@ -87,18 +107,5 @@
     //Create the Subtitle Control
 
     //Create the Video Control
-
-
-    /*
-    setTimeout(function(){
-        this.pushObject(
-          DubMark.SubModel.create({
-            text: 'Dynamic',
-            start: 'start',
-            end: 'end'
-          })
-        );
-    }.bind(DubMark.app), 500);
-    */
   </script>
 </html>
