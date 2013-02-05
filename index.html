@@ -10,63 +10,85 @@
     <script src="dub-main.js"></script>
   </head>
   <body>
-    <div id="DubAndMarkMain">
-      <video id="DubAndMark" controls=true>
-        <source src="Sample.webm" type="video/ogg" />
-      </video>
-    </div>
-    <div id="test"> Test </div>
-    <!-- Templates for doing a subtitle. -->
-    <script type="text/x-handlebars" data-template-name="application">
-      <div>
-        <div>
-          {{active}}
+    <div id="main" class="main">
+      <div id="video" class="video"> 
+        <!-- Handle the video insert. -->
+      </div>
+      <div id="active"   class="active"> 
+        <script type="text/x-handlebars" data-template-name="application">
           <p>{{view Em.TextArea valueBinding="DubMark.app.active.source"}}</p>
           <p>{{view Em.TextArea valueBinding="DubMark.app.active.text"}}</p>
-        </div>
-        <table class='mark'>
-          <thead>
-            <tr>
-              <th>Source</th>
-              <th>Translation</th>
-              <th>Start</th>
-              <th>End</th>
-            </tr>
-          </thead>
-          <tbody>
-        {{#each content}}
-          <tr>
-          <td>{{source}}</td>
-          <td>{{text}}</td>
-          <td>{{start}}</td>
-          <td>{{end}}</td>
-          </tr>
-        {{/each}}
-         </tbody>
-       </table>
-        {{outlet}}
+          {{outlet}}
+        </script>
       </div>
+      <div id="controls" class="controls"> 
+        <!-- Insert the controls here. -->
+      </div>
+    </div>
+
+    <script type="text/x-handlebars" data-template-name="vid">
+      <video {{bindAttr id="id"}} controls=true>
+        <source {{bindAttr src="video" type="type"}} />
+        Broken 
+      </video>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="subtitle">
+      <table class='mark'>
+         <thead>
+           <tr>
+             <th>Source</th>
+             <th>Translation</th>
+             <th>Start</th>
+             <th>End</th>
+           </tr>
+         </thead>
+         <tbody>
+       {{#each content}}
+         <tr>
+         <td>{{source}}</td>
+         <td>{{text}}</td>
+         <td>{{start}}</td>
+         <td>{{end}}</td>
+         </tr>
+       {{/each}}
+        </tbody>
+      </table>
     </script>
   </body>
-
   <!-- Initialization code -->
   <script type="text/javascript">
     var init = {id: "DubAndMark"};
   </script>
   <script type="text/javascript">
-    DmP = DubMark.Project.create(init);
-    DmP.connect({id: 'DubAndMark'});
+    $(function(){
+      DmP = DubMark.Project.create(init);
+      DmP.connect({id: 'DubAndMark'});
+      var test = $("#controls");
+      test.append(
+        $('<button>', {text: 'New M', click: DmP.newMark.bind(DmP, null)}),
+        $('<button>', {text: 'End M', click: DmP.endMark.bind(DmP, null)}),
+        $('<button>', {text: 'Pause M', click: DmP.pauseMark.bind(DmP)}),
+        $('<button>', {text: 'Edit M', click: DmP.editMark.bind(DmP)}),
+        $('<button>', {text: 'get Active', click: DmP.getActiveMark.bind(DmP)}),
+        $('<button>', {text: 'set Active', click: DmP.setActiveMark.bind(DmP)}),
+        $('<button>', {text: 'esc Mark', click: DmP.escMark.bind(DmP, null)})
+      );
 
-    var test = $("#test");
-    test.append(
-      $('<button>', {text: 'New M', click: DmP.newMark.bind(DmP, null)}),
-      $('<button>', {text: 'End M', click: DmP.endMark.bind(DmP, null)}),
-      $('<button>', {text: 'Pause M', click: DmP.pauseMark.bind(DmP)}),
-      $('<button>', {text: 'Edit M', click: DmP.editMark.bind(DmP)}),
-      $('<button>', {text: 'get Active', click: DmP.getActiveMark.bind(DmP)}),
-      $('<button>', {text: 'set Active', click: DmP.setActiveMark.bind(DmP)}),
-      $('<button>', {text: 'esc Mark', click: DmP.escMark.bind(DmP, null)})
-    );
+      var v = DmP.getVideoCtrl();
+          v.appendTo('#video');
+          v.listen();
+
+    });
+
+    //Create the Active Control
+    
+
+    //Create the Subtitle Control
+
+    //Create the Video Control
+
+
     /*
     setTimeout(function(){
         this.pushObject(
