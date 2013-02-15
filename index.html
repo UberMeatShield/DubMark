@@ -8,8 +8,8 @@
   </head>
   <body>
     Angular Learning
-    <div ng-controller="DubMark.Project" id="main" class="main">
-      {{title}}
+    <div ng-controller="DubMark.ProjectEntry" id="main" class="main">
+      {{project.title}}
       <div id="video" class="video"> 
       </div>
       <div id="active" class="active"> 
@@ -18,6 +18,13 @@
         <!-- Insert the controls here. -->
       </div>
       <div id="subtitle" class="subtitle">
+        <ul>
+          <li ng-repeat="sub in project.subs.arr"> 
+            {{sub.text}}
+            {{sub.time}}
+            {{sub.translation}}
+          </li>
+        </ul>
       </div>
     </div>
     <script type="text/javascript">
