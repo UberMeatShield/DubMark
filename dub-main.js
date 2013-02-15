@@ -33,6 +33,7 @@ DubMark.SubView = Em.View.extend({
   }
 });
 
+
 //This is fucking special.
 DubMark.ActiveView = Em.View.extend({
   templateName: 'active'
@@ -41,6 +42,7 @@ DubMark.ActiveMarkController = Em.Controller.extend({
   templateName: 'active',
   active: null
 });
+
 
 DubMark.MarkController  = Em.ArrayController.extend({
   content: [],
