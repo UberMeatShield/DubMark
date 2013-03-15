@@ -54,8 +54,9 @@ $.extend(DubMark.Controls.prototype, {
     console.log('Args?', args, this);
 
   },
-  setCurrent: function(){
-    console.log("Get the scope of a current iteration?", this, arguments, window.event);
+  setCurrent: function(curr){
+    //omg... it is gorgeous
+    this.subs.curr = curr;
   },
   curSub: function(){ //Get the current sub
     return this.subs.curr;
