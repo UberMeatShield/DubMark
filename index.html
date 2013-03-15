@@ -34,10 +34,12 @@
       <div id="subtitle" class="subtitle">
         <ul>
           <li ng-repeat="sub in project.subs.arr"> <!-- Click selection should make current -->
+            <span ng-click="project.controls.setCurrent(sub)">
             {{sub.text}}
             {{sub.sTime}}
             {{sub.eTime}}
             {{sub.trans}}
+            </span>
           </li>
         </ul>
       </div>
