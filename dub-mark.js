@@ -25,10 +25,10 @@ $.extend(DubMark.SubManager.prototype, {
     this.arr.push(this.curr);
   },
   endSub: function(sub, eTime){
+    console.log("END THE SUB", sub, eTime);
     sub = sub || this.curr;
     if(sub){
       sub.eTime = eTime;
-      this.curr = null;
     }
   }
 });
@@ -52,6 +52,11 @@ $.extend(DubMark.Controls.prototype, {
   },
   curSub: function(){ //Get the current sub
     return this.subs.curr;
+  },
+  pauseAndEndSub: function(){
+    var t = this.vid.getTime() || 0;
+    this.subs.endSub(null, t);
+    this.vid.pause();
   },
   newSub: function(){ //Start a sub with the current video time
     var t = this.vid.getTime() || 0;
@@ -95,12 +100,17 @@ $.extend(DubMark.VideoView.prototype, {
   },
   play: function(){
     this.vid.get(0).load();
-    //this.vid.get(0).play();
+    this.vid.get(0).play();
     //return this.getTime();
   },
   pause: function(){ //Pause the video
     this.vid.get(0).pause();
     return this.getTime();
+  },
+  setTime: function(t){
+    if(!isNaN(t)){
+      this.vid.get(0).currentTime = t;
+    }
   },
   getTime: function(){ //Time the video is currently at
     var t = this.vid.get(0).currentTime;
@@ -110,6 +120,8 @@ $.extend(DubMark.VideoView.prototype, {
     return this.vid.duration;
   }
 });
+
+
 
 
 /**
@@ -127,7 +139,7 @@ $.extend(DubMark.Project.prototype, {
 
     //For managing the loading of subtitles and addition
     this.subs  = new DubMark.SubManager();
-    args.video = args.video || 'video';
+    args.video = args.video || 'video'; //HTML element that contains the video link?  Dumb.  TODO: Fix
     if(args.video){
       this.vid = new DubMark.VideoView(this.id);
       this.vid.listen();

@@ -16,11 +16,23 @@
       </div>
       <div id="controls" class="controls"> 
         <!-- Insert the controls here. -->
-        <button ng-click="project.controls.newSub()">New</button>
+        <button ng-click="project.vid.play()">Play</button>
+        <button ng-click="project.vid.pause()">Pause</button>
+        <button ng-click="project.controls.newSub()">New Sub</button>
+        <button ng-click="project.controls.endSub()">End Sub</button>
+        <button ng-click="project.controls.pauseAndEndSub()">Pause End</button>
+      </div>
+      <div id="current" class="current_sub unfocus">
+        Current (Do click selection / edits):
+        ID:    {{project.subs.curr.id}}
+        Text:  {{project.subs.curr.text}}
+        Start: {{project.subs.curr.sTime}}
+        End:   {{project.subs.curr.eTime}}
+        End Current
       </div>
       <div id="subtitle" class="subtitle">
         <ul>
-          <li ng-repeat="sub in project.subs.arr"> 
+          <li ng-repeat="sub in project.subs.arr"> <!-- Click selection should make current -->
             {{sub.text}}
             {{sub.sTime}}
             {{sub.eTime}}
