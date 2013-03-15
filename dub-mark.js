@@ -50,6 +50,10 @@ $.extend(DubMark.Controls.prototype, {
             console.log("Funky butt Magic?", vid);
     this.vid = vid;
   },
+  update: function(args){
+    console.log('Args?', args, this);
+
+  },
   curSub: function(){ //Get the current sub
     return this.subs.curr;
   },
@@ -163,6 +167,8 @@ DubMark.ProjectEntry = function($scope){
   if(inp){
     args.video = inp.value;
   }
-  var project    = new DubMark.Project(args);
+  var project        = new DubMark.Project(args);
+      project.$scope = $scope;
+
   $scope.project = project;
 };

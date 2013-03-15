@@ -22,14 +22,17 @@
         <button ng-click="project.controls.endSub()">End Sub</button>
         <button ng-click="project.controls.pauseAndEndSub()">Pause End</button>
       </div>
-      <div id="current" class="current_sub unfocus">
+
+      <form id="current" class="current_sub unfocus" ng-submit="project.controls.update()">
         Current (Do click selection / edits):
         ID:    {{project.subs.curr.id}}
-        Text:  {{project.subs.curr.text}}
+        <input ng-model="project.subs.curr.text"  type="text" /> 
+        <input ng-model="project.subs.curr.trans" type="text" /> 
         Start: {{project.subs.curr.sTime}}
         End:   {{project.subs.curr.eTime}}
-        End Current
-      </div>
+
+        <input class="btn-primary" type="submit" />
+      </form>
       <div id="subtitle" class="subtitle">
         <ul>
           <li ng-repeat="sub in project.subs.arr"> <!-- Click selection should make current -->
