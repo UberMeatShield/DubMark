@@ -22,7 +22,7 @@ $.extend(DubMark.SubManager.prototype, {
       eTime: eTime ? eTime.toFixed(1) : 0.00,
       trans: trans
     });
-    this.arr.push(this.curr);
+    this.arr.unshift(this.curr);
   },
   setActive: function(sub){
     if(this.curr) this.curr.active = '';
