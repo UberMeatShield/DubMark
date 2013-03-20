@@ -1,49 +1,93 @@
+<!DOCTYPE html>
 <html ng-app>
   <meta charset="UTF-8"/>
   <head>
-    <script src="jquery-1.8.3.js"> </script>  
-    <script src="angular.js"></script>
     <link href='dub.css' rel="stylesheet" type='text/css'></style>
-    <script src="dub-mark.js"></script>
+    <link href='bootstrap/css/bootstrap.css' rel="stylesheet" type='text/css'></style>
+    <link href='bootstrap/css/bootstrap-responsive.css' rel="stylesheet" type='text/css'></style>
   </head>
   <body>
-    Angular Learning
-    <div ng-controller="DubMark.ProjectEntry" id="main" class="main">
-      {{project.title}}
-      <div id="video" class="video"> 
+    <div ng-controller="DubMark.ProjectEntry" id="main" class="mai">
+      <div id="topBar" class="navbar navbar-inner">
+        <form class="navbar-form pull-left">
+          <span class="brand"> Project </span>
+          <input ng-model="project.title"  type="text" /> 
+        </form>
       </div>
-      <div id="active" class="active"> 
-      </div>
-      <div id="controls" class="controls"> 
-        <!-- Insert the controls here. -->
-        <button ng-click="project.vid.play()">Play</button>
-        <button ng-click="project.vid.pause()">Pause</button>
-        <button ng-click="project.controls.newSub()">New Sub</button>
-        <button ng-click="project.controls.endSub()">End Sub</button>
-        <button ng-click="project.controls.pauseAndEndSub()">Pause End</button>
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span6">
+
+            <!-- Insert the controls here. -->
+            <div id="controls" class="navbar controls"> 
+              <div class="navbar-inner">
+              <span class="brand">Video Controls</span>
+                <div class="pull-right">
+                  <button class="btn" ng-click="project.vid.play()">Play</button>
+                  <button class="btn" ng-click="project.vid.pause()">Pause</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="navbar navbar-inner">
+              <span class="brand">Subtitle Controls</span>
+              <div class="pull-right">
+                <button class="btn" ng-click="project.controls.newSub()">New Sub</button>
+                <button class="btn" ng-click="project.controls.endSub()">End Sub</button>
+                <button class="btn" ng-click="project.controls.setStart()">Set Start</button>
+                <button class="btn" ng-click="project.controls.setEnd()">Set End</button>
+                <button class="btn" ng-click="project.controls.pauseAndEndSub()">Pause & End</button>
+                <button class="btn" ng-click="project.controls.removeSub()">Remove</button>
+              </div>
+            </div>
+            <div class="well sidebar-nav">
+              <form id="current" class="current_sub unfocus" ng-submit="project.controls.update()">
+                <div>
+                  <input ng-model="project.subs.curr.text"  type="text" placeholder="Source"/> 
+                  <span class="pull-right"> {{project.subs.curr.sTime}}</span>
+                  <br/>
+                </div>
+
+                <div>
+                  <input ng-model="project.subs.curr.trans" type="text" placeholder="Translation"/> 
+                  <span class="pull-right">{{project.subs.curr.eTime}}</span>
+                  <br/>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div id="video" class="span6"> 
+            {{project.control.activeText}}
+          </div>
+        </div>
+
+        <br/>
+      <div class="row-fluid">
+        <div class="span6">
+        <!-- Location where the video tag will be inserted. -->
+        <div id="subtitle" class="well subtitle">
+          <span class="brand"> Subs </span>
+          <ul class="nav nav-list">
+            <li ng-repeat="sub in project.subs.arr"> <!-- Click selection should make current -->
+              <span ng-click="project.controls.setCurrent(sub)"> <!-- apply class active if active -->
+              {{sub.text}}
+              {{sub.trans}}
+              {{sub.sTime}}
+              {{sub.eTime}}
+              </span>
+            </li>
+          </ul>
+        </div>
+        </div>
       </div>
 
-      <form id="current" class="current_sub unfocus" ng-submit="project.controls.update()">
-        Current (Do click selection / edits):
-        ID:    {{project.subs.curr.id}}
-        <input ng-model="project.subs.curr.text"  type="text" /> 
-        <input ng-model="project.subs.curr.trans" type="text" /> 
-        Start: {{project.subs.curr.sTime}}
-        End:   {{project.subs.curr.eTime}}
-      </form>
-      <div id="subtitle" class="subtitle">
-        <ul>
-          <li ng-repeat="sub in project.subs.arr"> <!-- Click selection should make current -->
-            <span ng-click="project.controls.setCurrent(sub)">
-            {{sub.text}}
-            {{sub.trans}}
-            {{sub.sTime}}
-            {{sub.eTime}}
-            </span>
-          </li>
-        </ul>
-      </div>
-    </div>
+      </div> <!-- End container fluid -->
+    </div> <!-- End ng controller -->
+
+    <script src="jquery-1.8.3.js"> </script>  
+    <script src="bootstrap/js/bootstrap.js"> </script>  
+    <script src="angular.js"></script>
+    <script src="dub-mark.js"></script>
     <script type="text/javascript">
       $(function(){
           try{ //Video tags do not play nice with post process operations.
