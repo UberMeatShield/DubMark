@@ -53,11 +53,11 @@
               <form id="current" class="current_sub unfocus" ng-submit="project.controls.update()">
                 <div>
                   <input ng-model="project.subs.curr.text" type="text" class="span10" placeholder="Source"/> 
-                  <input ng-model="project.subs.curr.sTime" type="number" class="span2 pull-right" placeholder="Start Time"/> 
+                  <input ng-model="project.subs.curr.sTime" type="text" class="span2 pull-right" placeholder="Start Time"/> 
                 </div>
                 <div>
                   <input ng-model="project.subs.curr.trans" type="text" class="span10" placeholder="Translation"/> 
-                  <input  ng-model="project.subs.curr.eTime" type="number" class="span2 pull-right" placeholder="End Time"/> 
+                  <input  ng-model="project.subs.curr.eTime" type="text" class="span2 pull-right" placeholder="End Time"/> 
                 </div>
               </form>
               <button class="btn" ng-click="project.controls.removeSub()">Remove</button>

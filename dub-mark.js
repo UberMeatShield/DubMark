@@ -25,6 +25,7 @@ $.extend(DubMark.SubManager.prototype, {
     this.arr.unshift(this.curr);
   },
   setActive: function(sub){
+               console.log("What is the sub?", sub);
     if(this.curr) this.curr.active = '';
     this.curr = sub;
     this.curr.active = 'active';
@@ -65,16 +66,13 @@ $.extend(DubMark.Controls.prototype, {
     this.subs = subs;
   },
   setVid: function(vid){
-            console.log("Funky butt Magic?", vid);
     this.vid = vid;
   },
   update: function(args){
     console.log('Args?', args, this);
-
   },
   setCurrent: function(curr){
     this.subs.setActive(curr);
-
   },
   curSub: function(){ //Get the current sub
     return this.subs.curr;
