@@ -14,37 +14,39 @@
         <form class="navbar-form pull-left">
           <span class="brand"> Project </span>
           <input ng-model="project.title"  type="text" /> 
+          &nbsp;
         </form>
+
+        <div class="pull-left">
+          <span class="brand">Video Controls</span>
+          <button class="btn" ng-click="project.vid.play()">Play</button>
+          <button class="btn" ng-click="project.vid.pause()">Pause</button>
+          &nbsp;
+        </div>
+
+        <div class="pull-left">
+          <span class="brand"> Subtitle Controls</span>
+          <button class="btn" ng-click="project.controls.newSub()">New Sub</button>
+          <button class="btn" ng-click="project.controls.endSub()">End Sub</button>
+          <button class="btn" ng-click="project.controls.pauseAndEndSub()">Pause & End</button>
+          <button class="btn" ng-click="project.controls.setStart()">Set Start</button>
+          <button class="btn" ng-click="project.controls.setEnd()">Set End</button>
+          &nbsp;
+        </div>
       </div>
 
       <!-- Top level container for the rest of the page elements -->
       <div class="container-fluid">
         <div class="row-fluid">
-          <div class="span6">
+          <div id="video" class="span7"> 
+          </div>
+          <!-- Placeholder for where we are going to insert the video -->
+          <div class="span5">
+            <div class="well" ng-click="project.controls.setCurrentSubByTime()">
+              <div class="nav-header">  Current Text For Video Time</div>
+              Translation: {{project.control.activeText}} 
+            </div>
             <!-- Insert the controls here. -->
-            <div id="controls" class="navbar controls"> 
-              <div class="navbar-inner">
-              <span class="brand">Video Controls</span>
-                <div class="pull-right">
-                  <button class="btn" ng-click="project.vid.play()">Play</button>
-                  <button class="btn" ng-click="project.vid.pause()">Pause</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Helpers for creating a new subtitle -->
-            <div class="navbar navbar-inner">
-              <span class="brand">Subtitle Controls</span>
-              <div class="pull-right">
-                <button class="btn" ng-click="project.controls.newSub()">New Sub</button>
-                <button class="btn" ng-click="project.controls.endSub()">End Sub</button>
-                <button class="btn" ng-click="project.controls.pauseAndEndSub()">Pause & End</button>
-                <button class="btn" ng-click="project.controls.setStart()">Set Start</button>
-                <button class="btn" ng-click="project.controls.setEnd()">Set End</button>
-                <button class="btn" ng-click="project.controls.removeSub()">Remove</button>
-              </div>
-            </div>
-
             <!-- For editing the subtitle that you select -->
             <div class="well sidebar-nav">
               <div class="nav-header">Edit Subtitle</div>
@@ -58,32 +60,23 @@
                   <input  ng-model="project.subs.curr.eTime" type="number" class="span2 pull-right" placeholder="End Time"/> 
                 </div>
               </form>
+              <button class="btn" ng-click="project.controls.removeSub()">Remove</button>
             </div>
-          </div>
-
-          <!-- Placeholder for where we are going to insert the video -->
-          <div id="video" class="span6"> 
-          </div>
-        </div>
-
-        <!-- Current time of video to visible text mapping -->
-        <div class="row-fluid">
-          <div class="well span6" ng-click="project.controls.setCurrentSubByTime()">
-            <div class="nav-header">  Current Text For Video Time</div>
-            {{project.control.activeText || "N/A"}}
           </div>
         </div>
 
         <!-- A listing of all the existing subtitles, can click to select them -->
         <div class="row-fluid">
-          <div class="span6">
+          <div class="span5 pull-right">
           <div id="subtitle" class="well sidebar-nav">
             <ul class="nav nav-list">
               <li class="nav-header">Subtitles</li>
               <li class="{{sub.active}}" id="sub_{{sub.id}}" ng-repeat="sub in project.subs.arr"> <!-- Click selection should make current -->
               <a ng-click="project.controls.setCurrent(sub);"> <!-- apply class active if active -->
-                [{{sub.sTime}} - {{sub.eTime}}]
-                {{sub.text}}&nbsp;&nbsp;{{sub.trans}}
+                [{{sub.sTime}} - {{sub.eTime}}]</br>
+                {{sub.text}}
+                  <br/>
+                {{sub.trans}}
               </a>
               </li>
             </ul>
