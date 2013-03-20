@@ -62,13 +62,8 @@
               </form>
               <button class="btn" ng-click="project.controls.removeSub()">Remove</button>
             </div>
-          </div>
-        </div>
 
-        <!-- A listing of all the existing subtitles, can click to select them -->
-        <div class="row-fluid">
-          <div class="span5 pull-right">
-          <div id="subtitle" class="well sidebar-nav">
+          <div id="subtitle" class="well">
             <ul class="nav nav-list">
               <li class="nav-header">Subtitles</li>
               <li class="{{sub.active}}" id="sub_{{sub.id}}" ng-repeat="sub in project.subs.arr"> <!-- Click selection should make current -->
@@ -84,6 +79,8 @@
           </div>
         </div>
 
+        <!-- A listing of all the existing subtitles, can click to select them -->
+
       </div> <!-- End container fluid -->
     </div> <!-- End ng controller -->
 
@@ -96,7 +93,7 @@
       $(function(){
           try{ //Video tags do not play nice with post process operations.
           var v  = $('#video').append(
-            $('<video>', {id: 'video_1', controls: true}).append(
+            $('<video>', {class: 'span12', id: 'video_1', controls: true}).append(
               $('<source>',  {type: 'video/ogg', src: 'Sample.webm'})
             )
           );
