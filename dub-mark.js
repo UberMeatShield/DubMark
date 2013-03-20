@@ -15,20 +15,38 @@ $.extend(DubMark.SubManager.prototype, {
     this.curr = null;
   },
   newSub: function(title, sTime, eTime, trans){
-    this.curr = {
+    this.setActive({
       id: (++this.sub.id),
       title: title,
-      sTime: sTime,
-      eTime: eTime,
+      sTime: sTime ? sTime.toFixed(1) : 0.00,
+      eTime: eTime ? eTime.toFixed(1) : 0.00,
       trans: trans
-    };
+    });
     this.arr.push(this.curr);
+  },
+  setActive: function(sub){
+    if(this.curr) this.curr.active = '';
+    this.curr = sub;
+    this.curr.active = 'active';
+    return this.curr;
   },
   endSub: function(sub, eTime){
     console.log("END THE SUB", sub, eTime);
     sub = sub || this.curr;
     if(sub){
-      sub.eTime = eTime;
+      sub.eTime = eTime ? eTime.toFixed(1) : 0.00;
+    }
+  },
+  removeSub: function(id){
+    id = typeof id == 'number' ? id  : (this.curr ? this.curr.id : null);
+    if(id){
+      for(var i=0; i<this.arr.length; ++i){
+        if(id == this.arr[i].id){
+          var sub = this.arr.splice(i, 1);
+          this.curr = null;
+          return sub;
+        }
+      }
     }
   }
 });
@@ -55,8 +73,8 @@ $.extend(DubMark.Controls.prototype, {
 
   },
   setCurrent: function(curr){
-    //omg... it is gorgeous
-    this.subs.curr = curr;
+    this.subs.setActive(curr);
+
   },
   curSub: function(){ //Get the current sub
     return this.subs.curr;
@@ -65,6 +83,14 @@ $.extend(DubMark.Controls.prototype, {
     var t = this.vid.getTime() || 0;
     this.subs.endSub(null, t);
     this.vid.pause();
+  },
+  isActive: function(sub){
+    console.log("Is active?");
+    if(sub && this.subs.curr){
+      if(sub.id == this.subs.curr.id){
+        return 'active';
+      }
+    }
   },
   newSub: function(){ //Start a sub with the current video time
     var t = this.vid.getTime() || 0;
@@ -75,6 +101,9 @@ $.extend(DubMark.Controls.prototype, {
   endSub: function(){ //End the current sub with the current video time
     var t = this.vid.getTime() || 0;
     this.subs.endSub(null, t); //Close open sub
+  },
+  removeSub: function(){
+    this.subs.removeSub();
   }
 });
 
@@ -106,8 +135,13 @@ $.extend(DubMark.VideoView.prototype, {
     console.log("What is the current time?", t);
     //Set the currently active subtitle
   },
+  load: function(){
+    if(!this.LOAD_CALLED){
+      this.LOAD_CALLED = true;
+      this.vid.get(0).load();
+    }
+  },
   play: function(){
-    this.vid.get(0).load();
     this.vid.get(0).play();
     //return this.getTime();
   },
@@ -155,8 +189,6 @@ $.extend(DubMark.Project.prototype, {
 
     //Buttons and keypress ahndlers.
     this.controls = new DubMark.Controls(this.subs, this.vid);
-
-    console.log("What the hell project?");
     DubMark.ProjectStore[this.id] = this;
   }
 });
