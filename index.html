@@ -30,62 +30,66 @@
       <div class="container-fluid">
         <div class="row-fluid">
           <div id="video" class="span7"> 
+            <!-- Placeholder for where we are going to insert the video -->
           </div>
-          <!-- Placeholder for where we are going to insert the video -->
-          <div class="span5">
 
-            <!-- Insert the controls here. -->
-            <!-- For editing the subtitle that you select -->
+          <!-- For editing the subtitle that you select -->
+          <div id="subtitles" class="span5">
+
+            <!-- Editing container -->
             <div class="container-fluid well">
-        <div class="navbar">
-          <span class="brand">Editing</span>
-          <button class="btn" ng-click="project.controls.newSub()">New</button>
-          <button class="btn" ng-click="project.controls.endSub()">End</button>
-          <button class="btn" ng-click="project.controls.pauseAndEndSub()">Pause & End</button>
-                <button class="btn" ng-click="project.controls.removeSub()">Split</button>
-                <button class="btn" ng-click="project.controls.removeSub()">Jump Start</button>
-                <button class="btn" ng-click="project.controls.removeSub()">Jump End</button>
+              <div class="navbar">
+                <span class="brand">Editing</span>
+                <button class="btn" ng-click="project.controls.newSub()">New</button>
+                <button class="btn" ng-click="project.controls.endSub()">End</button>
+                <button class="btn" ng-click="project.controls.pauseAndEndSub()">Pause & End</button>
+                <button class="btn" ng-click="project.controls.splitSub()">Split</button>
                 <button class="btn" ng-click="project.controls.removeSub()">R</button>
-          &nbsp;
-        </div>
+              </div>
 
+              <!-- Editing a set of subtitles -->
               <div class="row-fluid">
-                <input ng-model="project.subs.curr.text" type="text" class="span9" placeholder="Source" /> 
-                <button ng-click="project.controls.setStart()" type="button" class="btn span1 pull-right">S</button>
-                <input ng-model="project.subs.curr.sTime" type="text" class="span2 pull-right"  placeholder="Start Time" /> 
+                <input ng-model="project.subs.curr.text" type="text" class="span11" placeholder="Source" /> 
               </div>
               <div class="row-fluid">
-                <input ng-model="project.subs.curr.trans" type="text" class="span9" placeholder="Translation" /> 
-                <button class="btn span1 pull-right" ng-click="project.controls.setEnd()">E</button>
-                <input  ng-model="project.subs.curr.eTime" type="text" class="span2 pull-right" placeholder="End Time" /> 
+                <input ng-model="project.subs.curr.trans" type="text" class="span11" placeholder="Translation" /> 
               </div>
               <div class="row-fluid">
+                <form class="navbar-form pull-left">
+                  <button ng-click="project.controls.jumpStart()" type="button" class="btn">Go</button>
+                  <button ng-click="project.controls.setStart()"  type="button" class="btn" >S</button>
+                  <input  ng-model="project.subs.curr.sTime"      type="text"  class="span2"  placeholder="Start" /> 
+                  <input  ng-model="project.subs.curr.eTime" type="text" placeholder="End" class="span2" /> 
+                  <button ng-click="project.controls.setEnd()" type="button" class="btn">E</button>
+                  <button  ng-click="project.controls.jumpEnd()" class="btn">Go</button>
+                </form>
               </div>
+
             </div>
 
+            <!-- The current text per time, click will select the sub based on video time -->
             <div class="well" ng-click="project.controls.setCurrentSubByTime()">
               <div class="nav-header">  Current Text For Video Time</div>
               Translation: {{project.control.activeText}} 
             </div>
 
-          <div id="subtitle" class="well">
-            <ul class="nav nav-list">
-              <li class="nav-header">Subtitles</li>
-              <li class="{{sub.active}}" id="sub_{{sub.id}}" ng-repeat="sub in project.subs.arr"> <!-- Click selection should make current -->
-              <a ng-click="project.controls.setCurrent(sub);"> <!-- apply class active if active -->
-                [{{sub.sTime}} - {{sub.eTime}}]</br>
-                {{sub.text}}
-                  <br/>
-                {{sub.trans}}
-              </a>
-              </li>
-            </ul>
-          </div>
-          </div>
-        </div>
+            <!-- A listing of all the existing subtitles, can click to select them -->
+            <div id="subtitle" class="well">
+              <ul class="nav nav-list">
+                <li class="nav-header">Subtitles</li>
+                <li class="{{sub.active}}" id="sub_{{sub.id}}" ng-repeat="sub in project.subs.arr"> <!-- Click selection should make current -->
+                <a ng-click="project.controls.setCurrent(sub);"> <!-- apply class active if active -->
+                  [{{sub.sTime}} - {{sub.eTime}}]</br>
+                  {{sub.text}}
+                    <br/>
+                  {{sub.trans}}
+                </a>
+                </li>
+              </ul>
+            </div>
+          </div> <!-- End subtitles sub container -->
 
-        <!-- A listing of all the existing subtitles, can click to select them -->
-
+        </div><!-- End Span container -->
       </div> <!-- End container fluid -->
     </div> <!-- End ng controller -->
 
