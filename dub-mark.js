@@ -3,8 +3,6 @@ DubMark = {};
 DubMark.ProjectStore = {}; //Instances go here for ease of debugging
 
 
-console.log("What the hell?", $);
-
 DubMark.SubManager = function(){ this.init();};
 $.extend(DubMark.SubManager.prototype, {
   sub: {
@@ -25,10 +23,10 @@ $.extend(DubMark.SubManager.prototype, {
     this.arr.unshift(this.curr);
   },
   setActive: function(sub){
-               console.log("What is the sub?", sub);
+    console.log("What is the sub?", sub);
     if(this.curr) this.curr.active = '';
     this.curr = sub;
-    this.curr.active = 'active';
+    this.curr.active = 'active'; //Markup & selection status
     return this.curr;
   },
   endSub: function(sub, eTime){
@@ -102,6 +100,18 @@ $.extend(DubMark.Controls.prototype, {
   },
   removeSub: function(){
     this.subs.removeSub();
+  },
+  setStart: function(){
+    var sub = this.subs.curr;
+    if(sub){
+      sub.sTime = this.vid.getTime().toFixed(1);
+    }
+  },
+  setEnd: function(){
+    var sub = this.subs.curr;
+    if(sub){
+      sub.eTime = this.vid.getTime().toFixed(1);
+    }
   }
 });
 
