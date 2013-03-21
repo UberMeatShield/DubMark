@@ -12,15 +12,23 @@ $.extend(DubMark.SubManager.prototype, {
     this.arr  = [];
     this.curr = null;
   },
-  newSub: function(title, sTime, eTime, trans){
+  newSub: function(source, sTime, eTime, trans, index){
+    sTime = (!isNaN(sTime) && sTime != null ? parseFloat(sTime) : 0.0).toFixed(1);
+    eTime = (!isNaN(eTime) && eTime != null ? parseFloat(eTime) : 0.0).toFixed(1);
+
     this.setActive({
       id: (++this.sub.id),
-      title: title,
-      sTime: sTime ? sTime.toFixed(1) : 0.00,
-      eTime: eTime ? eTime.toFixed(1) : 0.00,
+      source: source,
+      sTime: sTime,
+      eTime: eTime,
       trans: trans
     });
-    this.arr.unshift(this.curr);
+
+    if(!isNaN(index) && index != null){
+      this.arr.splice(index, 0, this.curr);
+    }else{
+      this.arr.unshift(this.curr);
+    }
   },
   setActive: function(sub){
     console.log("What is the sub?", sub);
@@ -29,12 +37,37 @@ $.extend(DubMark.SubManager.prototype, {
     this.curr.active = 'active'; //Markup & selection status
     return this.curr;
   },
+  splitSub: function(sub){
+    sub = sub || this.curr;
+    if(sub && sub.id){
+      var sTime = sub.sTime;
+      var eTime = sub.eTime;
+      sTime = (!isNaN(sTime) && sTime != null ? parseFloat(sTime) : 0.0).toFixed(1);
+      eTime = (!isNaN(eTime) && eTime != null ? parseFloat(eTime) : 0.0).toFixed(1);
+      
+      //Freaking javascript string mods...
+      var mid = ((parseFloat(eTime) + parseFloat(sTime))/2.0);
+          mid   = (!isNaN(mid) && mid != null ? parseFloat(mid) : 0.0).toFixed(1);
+      sub.eTime = mid;
+      var index = this.getIndex(sub);
+      this.newSub(sub.source, mid, eTime, sub.trans, index);
+    }
+  },
+  getIndex: function(sub){
+    if(sub && sub.id){
+      for(var i=0; i< this.arr.length; ++i){
+        if(this.arr[i].id == sub.id){
+          return i;
+        }
+      }
+    }
+  },
   endSub: function(sub, eTime){
     console.log("END THE SUB", sub, eTime);
     sub = sub || this.curr;
     if(sub){
-      sub.eTime = eTime ? eTime.toFixed(1) : 0.00;
-    }
+      sub.eTime = (!isNaN(eTime) && eTime != null ? parseFloat(eTime) : 0.0).toFixed(1);
+   }
   },
   removeSub: function(id){
     id = typeof id == 'number' ? id  : (this.curr ? this.curr.id : null);
@@ -72,6 +105,9 @@ $.extend(DubMark.Controls.prototype, {
   setCurrent: function(curr){
     this.subs.setActive(curr);
   },
+  canEdit: function(){
+    return this.subs.curr ? true : false;
+  },
   curSub: function(){ //Get the current sub
     return this.subs.curr;
   },
@@ -100,6 +136,21 @@ $.extend(DubMark.Controls.prototype, {
   },
   removeSub: function(){
     this.subs.removeSub();
+  },
+  jumpStart: function(){
+    var sub = this.subs.curr;
+    if(sub){
+      this.vid.setTime(sub.sTime);
+    }
+  },
+  splitSub: function(){
+    this.subs.splitSub();
+  },
+  jumpEnd: function(){
+    var sub = this.subs.curr;
+    if(sub){
+      this.vid.setTime(sub.eTime);
+    }
   },
   setStart: function(){
     var sub = this.subs.curr;
@@ -141,7 +192,7 @@ $.extend(DubMark.VideoView.prototype, {
   },
   timeupdate: function(t){
     console.log("What is the current time?", t);
-    //Set the currently active subtitle
+    //Set the currently active subsource
   },
   load: function(){
     if(!this.LOAD_CALLED){
