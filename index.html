@@ -16,14 +16,6 @@
           <input ng-model="project.title"  type="text" /> 
           &nbsp;
         </form>
-
-        <div class="pull-left">
-          <span class="brand">Video Controls</span>
-          <button class="btn" ng-click="project.vid.play()"><i class="icon-play"></i></button>
-          <button class="btn" ng-click="project.vid.pause()"><i class="icon-pause"></i></button>
-          &nbsp;
-        </div>
-
       </div>
 
       <!-- Top level container for the rest of the page elements -->
@@ -48,6 +40,12 @@
                 </button>
                 <button class="btn" ng-click="project.controls.splitSub()"><i class="icon-resize-full"></i></button>
                 <button class="btn" ng-click="project.controls.removeSub()"><i class="icon-trash"></i></button>
+
+                <div class="pull-right">
+                <span class="brand">&nbsp;Video</span>
+                <button class="btn" ng-click="project.vid.play()"><i class="icon-play"></i></button>
+                <button class="btn" ng-click="project.vid.pause()"><i class="icon-pause"></i></button>
+                </div>
               </div>
 
               <!-- Editing a set of subtitles -->
