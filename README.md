@@ -3,4 +3,7 @@ DubMark
 
 Hopefully a useful tool for adding subtitles to a video.
 
-Well this is a start, time to get EMBER and some basic ruby code installed.  Also this is pretty crappy coding from Cygwin and dealing with an office stuck with CVS access.
+The main idea is to make it much easier to get the timing, translations and groups all able to edit the same projects without crazy email chains, strange file directory exchanges etc.
+
+Uses Angular.js to edit and keep things in sync, next will come a backend after getting some feedback from a sub group.
+
