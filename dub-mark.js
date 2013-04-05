@@ -15,6 +15,9 @@ $.extend(DubMark.SubManager.prototype, {
   newSub: function(source, sTime, eTime, trans, index){
     sTime = (!isNaN(sTime) && sTime != null ? parseFloat(sTime) : 0.0).toFixed(1);
     eTime = (!isNaN(eTime) && eTime != null ? parseFloat(eTime) : 0.0).toFixed(1);
+    if(eTime == 0.0){
+      eTime = sTime;
+    }
 
     this.setActive({
       id: (++this.sub.id),
@@ -254,16 +257,49 @@ $.extend(DubMark.Project.prototype, {
 
 
 /**
- * Control class for starting to use AugmentJs
+ *  Loading support for getting paginated lists and loading a new project
  */
-DubMark.ProjectEntry = function($scope){
-  var args = {};
-  var inp = $("#video_url");
-  if(inp){
-    args.video = inp.value;
-  }
-  var project        = new DubMark.Project(args);
-      project.$scope = $scope;
-
-  $scope.project = project;
+DubMark.ProjectList = function(args){
+  this.init(args);
 };
+$.extend(DubMark.ProjectList.prototype, {
+  init: function(args){
+     this.arr = [];
+     this.active = null;
+  },
+  search: function(){
+    console.log("Search");
+  },
+  create: function(){
+    console.log("New Project");
+  },
+  refresh: function(){
+    console.log("Refresh");
+  },
+  next: function(){
+    console.log("Next");
+  },
+  prev: function(){
+    console.log("Previous");
+  },
+  setActive: function(proj){
+    if(proj){
+      this.active = proj;
+    }
+  },
+  openId: function(id){
+    window.open('/project/' + id);
+  },
+  openActive: function(){
+     if(this.active && this.active.id){
+       this.openId(this.active.id); 
+     }
+  },
+  isActive: function(proj){
+    if(this.active && this.active.title == proj.title){
+      return 'active'; 
+    }
+  }
+});
+
+

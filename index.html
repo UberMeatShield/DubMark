@@ -96,11 +96,15 @@
     </div> <!-- End ng controller -->
 
     <!-- All the script includes -->
-    <script src="jquery-1.8.3.js"> </script>  
+    <script src="jquery/js/jquery-1.9.1.js"> </script>  
+    <script src="jquery/js/jquery-ui-1.10.2.custom.js"> </script>  
     <script src="bootstrap/js/bootstrap.js"> </script>  
     <script src="angular.js"></script>
     <script src="dub-mark.js"></script>
     <script type="text/javascript">
+      /*Produce this page using erb page load information about what video to load and
+       *the subs to load in etc.
+       */
       $(function(){
           try{ //Video tags do not play nice with post process operations.
           var v  = $('#video').append(
@@ -112,6 +116,20 @@
             console.error('Failed to load.');
           }
       });
+
+      /**
+       * Control class for starting to use AugmentJs
+       */
+      DubMark.ProjectEntry = function($scope){
+        var args = {};
+        var inp = $("#video_url");
+        if(inp){
+          args.video = inp.value;
+        }
+        var project        = new DubMark.Project(args);
+            project.$scope = $scope;
+        $scope.project = project;
+      };
     </script>
   </body>
 </html>
