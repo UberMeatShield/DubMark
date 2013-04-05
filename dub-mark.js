@@ -266,13 +266,18 @@ $.extend(DubMark.ProjectList.prototype, {
   init: function(args){
      this.arr = [];
      this.active = null;
+
+     this.newProject = {};
   },
   search: function(){
     console.log("Search");
   },
   createDialog: function(){
     console.log("New Project");
-
+    this.newProject = {
+      title: '',
+      vid: ''
+    };
     this.getDialog();
     this.enableCreate(); //Ensure if something goes horribly wrong they can try to create
   },
@@ -300,10 +305,14 @@ $.extend(DubMark.ProjectList.prototype, {
   },
   validateCreate: function(params, response){
     console.log("Did we actually create this thing?");
-
     var id='fake' || response.id;
-    this.openId(id);
-
+    var active = {
+      id: id,
+      title: this.newProject.title || 'No title',
+      vid: this.newProject.vid || '',
+    };
+    this.arr.unshift(active);
+    this.setActive(active);
     this.enableCreate();
   },
   refresh: function(){
@@ -332,6 +341,7 @@ $.extend(DubMark.ProjectList.prototype, {
     }.bind(this), 500);
   },
   openActive: function(){
+     console.log("Open Active.", this.active);
      if(this.active && this.active.id){
        this.openId(this.active.id); 
      }
