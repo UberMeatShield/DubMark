@@ -273,15 +273,22 @@ $.extend(DubMark.ProjectList.prototype, {
   createDialog: function(){
     console.log("New Project");
 
-    var n = $('#newProject');
-    n.removeClass('hidden');
-    n.dialog({title: 'New Project'});
+    this.getDialog();
     this.enableCreate(); //Ensure if something goes horribly wrong they can try to create
+  },
+  getDialog: function(){
+   var n = $('#newProject');
+   n.removeClass('hidden');
+   n.dialog({title: 'New Project'});
+  },
+  closeDialog: function(){
+    $('#newProject').dialog('close');
   },
   createAndOpen: function(){
     console.log("Actually commit to db and open project window.");
 
      this.disableCreate();
+     this.closeDialog();
     
     //Make ajax call
 
