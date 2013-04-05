@@ -270,8 +270,34 @@ $.extend(DubMark.ProjectList.prototype, {
   search: function(){
     console.log("Search");
   },
-  create: function(){
+  createDialog: function(){
     console.log("New Project");
+
+    var n = $('#newProject');
+    n.removeClass('hidden');
+    n.dialog({title: 'New Project'});
+    this.enableCreate(); //Ensure if something goes horribly wrong they can try to create
+  },
+  createAndOpen: function(){
+    console.log("Actually commit to db and open project window.");
+
+     this.disableCreate();
+    
+    //Make ajax call
+
+    //Grab id from result
+    
+    //Test video link if present?
+
+    this.validateCreate();
+  },
+  validateCreate: function(params, response){
+    console.log("Did we actually create this thing?");
+
+    var id='fake' || response.id;
+    this.openId(id);
+
+    this.enableCreate();
   },
   refresh: function(){
     console.log("Refresh");
@@ -288,7 +314,15 @@ $.extend(DubMark.ProjectList.prototype, {
     }
   },
   openId: function(id){
-    window.open('/project/' + id);
+    window.open('project/' + id); //rails controller?
+  },
+  disableCreate: function(){
+    this.disabledCreateButton = true;
+  },
+  enableCreate: function(){
+    setTimeout(function(){
+      this.disabledCreateButton = false;
+    }.bind(this), 500);
   },
   openActive: function(){
      if(this.active && this.active.id){

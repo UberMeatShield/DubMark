@@ -5,6 +5,7 @@
     <link href='dub.css' rel="stylesheet" type='text/css'></style>
     <link href='bootstrap/css/bootstrap.css' rel="stylesheet" type='text/css'></style>
     <link href='bootstrap/css/bootstrap-responsive.css' rel="stylesheet" type='text/css'></style>
+    <link href='jquery/css/ui-lightness/jquery-ui-1.10.2.custom.css' rel="stylesheet" type='text/css'></style>
   </head>
   <body>
 
@@ -19,7 +20,7 @@
           <div class="navbar navbar-inner">
           <form class="span13 navbar-form">
             <span class='brand'>Projects</span>
-              <button title='Create a new project' ng-click="list.create()"    class="btn">
+              <button title='Create a new project' ng-click="list.createDialog()"    class="btn">
                 <i class="icon-plus-sign"></i>
               </button>
               &nbsp;
@@ -69,6 +70,12 @@
           </div>
         </div>
 
+      </div>
+
+      <div class="hidden" id="newProject">
+        <input  ng-model="list.newProject.title" type=text placeholder="Title"/>
+        <input  ng-model="list.newProject.vid" type=text placeholder="Video url"/>
+        <button ng-disabled='list.disableCreateButton' class="btn" ng-click="list.createAndOpen()"> Confirm</button>
       </div>
     </div> <!-- End main controller section -->
 
