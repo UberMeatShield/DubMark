@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Stime:</b>
+  <%= @sub.sTime %>
+</p>
+
+<p>
+  <b>Etime:</b>
+  <%= @sub.eTime %>
+</p>
+
+<p>
+  <b>Source:</b>
+  <%= @sub.source %>
+</p>
+
+<p>
+  <b>Trans:</b>
+  <%= @sub.trans %>
+</p>
+
+<p>
+  <b>Lang:</b>
+  <%= @sub.lang %>
+</p>
+
+
+<%= link_to 'Edit', edit_sub_path(@sub) %> |
+<%= link_to 'Back', subs_path %>
