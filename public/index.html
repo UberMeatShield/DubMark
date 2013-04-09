@@ -9,8 +9,6 @@
   </head>
   <body>
 
-
-
     <!-- Some sort of Banner? -->
 
     <!-- Probably want to make this entire thing into a template -->
@@ -90,24 +88,32 @@
 
 
     <script type="text/javascript">
+      var dub = angular.module('dub', ['ngResource']);
+
+
+      function fuck(){ console.log("FUCK"); }
+
       DubMark.Config.base.url = 'http://localhost:3000/';
       DubMark.ProjectListings = function($scope, $resource){
 
-        console.log("What the shit?", $scope, $resource);
-        var lM = $resource('projects', {format: 'json'});
-        MONKEY = lM;
+        console.log("Why is this thing such a hunk of crap?", $resource);
+        
+        var ld = $resource(
+            'projects', 
+            {format: 'json'}, //Fucking docs...
+            { 'get':    {method:'GET', isArray: true},
+              'save':   {method:'POST'},
+              'query':  {method:'GET', isArray:true},
+              'remove': {method:'DELETE'},
+              'delete': {method:'DELETE'} 
+            }
+        );
 
         var list = new DubMark.ProjectList();
-        list.load();
-
-        list.title = 'UM';
         list.$scope = $scope;
-        list.arr.push({title: 'hi 1', description: '1'});
-        list.arr.push({title: 'hi 2', description: '2'});
-        list.arr.push({title: 'hi 3', description: '3'});
-        list.arr.push({title: 'hi 4', description: '4'});
-
+        list.loader = ld;
         $scope.list = list;
+        list.load();
       };
     </script>
   </body>

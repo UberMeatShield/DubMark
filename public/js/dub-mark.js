@@ -1,7 +1,6 @@
 //Make this provide the ngResource as args to a controller, lets us define and create certain resource
-//level app items.
-angular.module('dub', ['ngResource']);
 
+//Angular seriously handles some strange ass magic.
 DubMark = {};
 DubMark.ProjectStore = {}; //Instances go here for ease of debugging
 
@@ -308,6 +307,10 @@ $.extend(DubMark.ProjectList.prototype, {
   },
   load: function(){
     //Ajax call to the server, attempt to load the list of projects we have avail
+    this.loader = this.loader || {query: function() { return [{title: 'mock'}] }};
+    this.arr = this.loader.query(function(wtf){
+      console.log("Feel the hate", wtf);
+    });
   },
   search: function(){
     console.log("Search");
