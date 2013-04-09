@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html ng-app>
+  <meta charset="UTF-8"/>
+  <head>
+    <link href='dub.css' rel="stylesheet" type='text/css'></style>
+    <link href='bootstrap/css/bootstrap.css' rel="stylesheet" type='text/css'></style>
+    <link href='bootstrap/css/bootstrap-responsive.css' rel="stylesheet" type='text/css'></style>
+  </head>
+  <body>
+    <div ng-controller="DubMark.ProjectEntry" id="main" class="main">
+
+      <!-- Navbar, TODO: add google translate options here? -->
+      <div id="topBar" class="navbar navbar-inner">
+        <form class="navbar-form pull-left">
+          <span class="brand"> Project </span>
+          <input ng-model="project.title"  type="text" /> 
+          &nbsp;
+        </form>
+      </div>
+
+      <!-- Top level container for the rest of the page elements -->
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div id="video" class="span7"> 
+            <!-- Placeholder for where we are going to insert the video -->
+          </div>
+
+          <!-- For editing the subtitle that you select -->
+          <div id="subtitles" class="span5">
+
+            <!-- Editing container -->
+            <div class="container-fluid well">
+              <div id="subcontrols" class="navbar">
+                <span class="brand">Editing</span>
+                <button title="Create a new subtitle" id="new" class="btn" ng-click="project.controls.newSub()">
+<i class="icon-plus"></i></button>
+                <button title="End the current subtitle" id="end" class="btn" ng-click="project.controls.endSub()"><i class="icon-ok"></i></button>
+                <button title="End subtitle and Pause" class="btn" ng-click="project.controls.pauseAndEndSub()">
+                  <i class="icon-ok"></i>
+                  <i class="icon-pause"></i>
+                </button>
+                <button title="Split the currently selected sub into two" class="btn" ng-click="project.controls.splitSub()"><i class="icon-resize-full"></i></button>
+                <button title="Remove the currently selected sub" class="btn" ng-click="project.controls.removeSub()"><i class="icon-trash"></i></button>
+
+                <div class="pull-right">
+                <span class="brand">&nbsp;Video</span>
+                <button class="btn" ng-click="project.vid.play()"><i class="icon-play"></i></button>
+                <button class="btn" ng-click="project.vid.pause()"><i class="icon-pause"></i></button>
+                </div>
+              </div>
+
+              <!-- Editing a set of subtitles -->
+              <div class="row-fluid">
+                <input ng-model="project.subs.curr.source" type="text" class="span11" placeholder="Source" /> 
+              </div>
+              <div class="row-fluid">
+                <input ng-model="project.subs.curr.trans" type="text" class="span11" placeholder="Translation" /> 
+              </div>
+              <div class="row-fluid">
+                <form class="navbar-form pull-left">
+                  <button title="Jump video to start of sub." ng-click="project.controls.jumpStart()" type="button" class="btn"><i class="icon-fast-backward"></i></button>
+                  <button title="Set subtitle start to current video time." ng-click="project.controls.setStart()"  type="button" class="btn" ><i class="icon-time"></i></button>
+                  <input  ng-model="project.subs.curr.sTime"      type="text"  class="span2"  placeholder="Start" /> 
+                  <input  ng-model="project.subs.curr.eTime"      type="text" placeholder="End" class="span2" /> 
+                  <button title="Set subtitle end to current video time." ng-click="project.controls.setEnd()"    type="button" class="btn"><i class="icon-time"></i></button>
+                  <button title="Jump video to end time for subtitle" ng-click="project.controls.jumpEnd()"  class="btn"><i class="icon-fast-forward"></i></button>
+                </form>
+              </div>
+
+            </div>
+
+            <!-- The current text per time, click will select the sub based on video time -->
+            <div class="well" ng-click="project.controls.setCurrentSubByTime()">
+              <div class="nav-header">  Current Text For Video Time</div>
+              Translation: {{project.control.activeText}} 
+            </div>
+
+            <!-- A listing of all the existing subtitles, can click to select them -->
+            <div id="subtitle" class="well">
+              <ul class="nav nav-list">
+                <li class="nav-header">Subtitles</li>
+                <li class="{{sub.active}}" id="sub_{{sub.id}}" ng-repeat="sub in project.subs.arr"> <!-- Click selection should make current -->
+                <a ng-click="project.controls.setCurrent(sub);"> <!-- apply class active if active -->
+                  [{{sub.sTime}} - {{sub.eTime}}]</br>
+                  {{sub.source}}
+                    <br/>
+                  {{sub.trans}}
+                </a>
+                </li>
+              </ul>
+            </div>
+          </div> <!-- End subtitles sub container -->
+
+        </div><!-- End Span container -->
+      </div> <!-- End container fluid -->
+    </div> <!-- End ng controller -->
+
+    <!-- All the script includes -->
+    <script src="jquery/js/jquery-1.9.1.js"> </script>  
+    <script src="jquery/js/jquery-ui-1.10.2.custom.js"> </script>  
+    <script src="bootstrap/js/bootstrap.js"> </script>  
+    <script src="angular.js"></script>
+    <script src="dub-mark.js"></script>
+    <script type="text/javascript">
+      /*Produce this page using erb page load information about what video to load and
+       *the subs to load in etc.
+       */
+      $(function(){
+          try{ //Video tags do not play nice with post process operations.
+          var v  = $('#video').append(
+            $('<video>', {class: 'span12', id: 'video_1', controls: true}).append(
+              $('<source>',  {type: 'video/ogg', src: 'Sample.webm'})
+            )
+          );
+          }catch(e){
+            console.error('Failed to load.');
+          }
+      });
+
+      /**
+       * Control class for starting to use AugmentJs
+       */
+      DubMark.ProjectEntry = function($scope){
+        var args = {};
+        var inp = $("#video_url");
+        if(inp){
+          args.video = inp.value;
+        }
+        var project        = new DubMark.Project(args);
+            project.$scope = $scope;
+        $scope.project = project;
+      };
+    </script>
+  </body>
+</html>

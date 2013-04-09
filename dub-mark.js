@@ -1,6 +1,38 @@
+//Make this provide the ngResource as args to a controller, lets us define and create certain resource
+//level app items.
+angular.module('dub', ['ngResource']);
 
 DubMark = {};
 DubMark.ProjectStore = {}; //Instances go here for ease of debugging
+
+//Tweak these config settings before creating an instance so that we know where
+//to make ajax calls.
+DubMark.Config = {
+  base: {
+    url: '' //Assume same server url
+  },
+  project:{ //The listings of the projects
+    url: 'project'
+  },
+  subs: { //Ja subtitles, jaaa
+    url: 'subs'
+  },
+  video: { //Get video location & hopefully proper headers?
+    url: 'vid'
+  },
+  getUrl: function(name){
+    var C = DubMark.Config;
+    var url = C[name];
+    if(url){
+      if(url.match('http')){
+        return url;
+      }else if(C.base.url){ //Use reletive paths unless we are told otherwise
+        return C.base.url + '/' + url;
+      }
+    }
+    throw Exception('Cannot find config for ' + name);
+  }
+};
 
 
 DubMark.SubManager = function(){ this.init();};
@@ -238,7 +270,7 @@ $.extend(DubMark.Project.prototype, {
   },
   init: function(args){
     args = args || {};
-    this.id    = ++this.seq.id;
+    this.id    = args.id    || ++this.seq.id;
     this.title = args.title || 'A Title'; //Make this editable
 
     //For managing the loading of subtitles and addition
@@ -252,6 +284,11 @@ $.extend(DubMark.Project.prototype, {
     //Buttons and keypress ahndlers.
     this.controls = new DubMark.Controls(this.subs, this.vid);
     DubMark.ProjectStore[this.id] = this;
+  },
+  load: function(){
+    if(this.id){
+      console.log('Attempting to load up id', this.id);
+    }
   }
 });
 
@@ -268,6 +305,9 @@ $.extend(DubMark.ProjectList.prototype, {
      this.active = null;
 
      this.newProject = {};
+  },
+  load: function(){
+    //Ajax call to the server, attempt to load the list of projects we have avail
   },
   search: function(){
     console.log("Search");
