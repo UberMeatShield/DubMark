@@ -91,13 +91,9 @@
       var dub = angular.module('dub', ['ngResource']);
 
 
-      function fuck(){ console.log("FUCK"); }
 
       DubMark.Config.base.url = 'http://localhost:3000/';
       DubMark.ProjectListings = function($scope, $resource){
-
-        console.log("Why is this thing such a hunk of crap?", $resource);
-        
         var ld = $resource(
             'projects', 
             {format: 'json'}, //Fucking docs...
