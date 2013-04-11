@@ -10,6 +10,9 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require jquery
-//= require jquery_ujs
+//= require jquery/js/jquery-1.9.1.js
+//= require jquery/js/jquery-ui-1.10.2.custom.js
+//= require bootstrap
+//= require angular
+//= require angular-resource
 //= require_tree .
