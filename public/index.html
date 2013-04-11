@@ -41,11 +41,11 @@
               <input type="text"       ng-model="list.filter"    class="pull-right" placeholder="Filter projects"> </input>
           </form>
           </div>
-          <ul class="nav nav-list">
+          <ul class="nav nav-list"> <!-- Probably should just be a table. -->
             <li class='{{list.isActive(proj)}}' ng-repeat="proj in list.arr" ng-click="list.setActive(proj)"> 
             <a>
               {{proj.title}} 
-              <span> - {{proj.state || 'state'}} {{proj.date}}</span> <!-- Use icons -->
+              <span> - {{proj.state}} {{proj.date}}</span> <!-- Use icons -->
             </a>
             </li>
           </ul>
@@ -88,14 +88,18 @@
 
 
     <script type="text/javascript">
+      //Angular uses : to denote replacement elements... this is dumb
+      //So if you need to specify a port, you have to include the escaped \ in front of any : 
+      DubMark.Config.base.url = 'http\\://localhost\\:3000/';
+
+      //Note the module name is the same as ng-app="dub"
       var dub = angular.module('dub', ['ngResource']);
-
-
-
-      DubMark.Config.base.url = 'http://localhost:3000/';
-      DubMark.ProjectListings = function($scope, $resource){
-        var ld = $resource(
-            'projects', 
+      
+      //Naming something project, will then pass this object into the controller
+      //into a named variable.... magically.
+      dub.factory('Project', function($resource){
+        return $resource(
+            DubMark.Config.getUrl('projects'), 
             {format: 'json'}, //Fucking docs...
             { 'get':    {method:'GET', isArray: true},
               'save':   {method:'POST'},
@@ -104,10 +108,12 @@
               'delete': {method:'DELETE'} 
             }
         );
+      });
 
+      DubMark.ProjectListings = function($scope, $resource, Project){
         var list = new DubMark.ProjectList();
         list.$scope = $scope;
-        list.loader = ld;
+        list.loader = Project;
         $scope.list = list;
         list.load();
       };

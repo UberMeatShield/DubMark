@@ -10,23 +10,23 @@ DubMark.Config = {
   base: {
     url: '' //Assume same server url
   },
-  project:{ //The listings of the projects
-    url: 'project'
+  projects:{ //The listings of the projects
+    url: 'projects'
   },
   subs: { //Ja subtitles, jaaa
     url: 'subs'
   },
-  video: { //Get video location & hopefully proper headers?
+  videos: { //Get video location & hopefully proper headers?
     url: 'vid'
   },
   getUrl: function(name){
     var C = DubMark.Config;
-    var url = C[name];
+    var url = C[name] ? C[name].url : name;
     if(url){
       if(url.match('http')){
         return url;
       }else if(C.base.url){ //Use reletive paths unless we are told otherwise
-        return C.base.url + '/' + url;
+        return C.base.url + url;
       }
     }
     throw Exception('Cannot find config for ' + name);
@@ -49,7 +49,6 @@ $.extend(DubMark.SubManager.prototype, {
     if(eTime == 0.0){
       eTime = sTime;
     }
-
     this.setActive({
       id: (++this.sub.id),
       source: source,
@@ -339,24 +338,28 @@ $.extend(DubMark.ProjectList.prototype, {
      this.closeDialog();
     
     //Make ajax call
+    this.newProject.state = 'New';
+    this.loader.save(this.newProject, this.validateCreate.bind(this));
+    this.newProject = null;
 
-    //Grab id from result
-    
-    //Test video link if present?
 
-    this.validateCreate();
+    //Should I try and test the video link?
   },
-  validateCreate: function(params, response){
-    console.log("Did we actually create this thing?");
-    var id='fake' || response.id;
+  validateCreate: function(response){
+    this.enableCreate(); //Ensure you can try and hit the submit button again.
+
+    if(!response || !response.id){
+      console.error("Failed to create.", response);
+      return;
+    }
+    var id = response.id;
     var active = {
       id: id,
-      title: this.newProject.title || 'No title',
-      vid: this.newProject.vid || '',
+      title: response.title,
+      vid: response.vid
     };
     this.arr.unshift(active);
     this.setActive(active);
-    this.enableCreate();
   },
   refresh: function(){
     console.log("Refresh");
@@ -368,6 +371,7 @@ $.extend(DubMark.ProjectList.prototype, {
     console.log("Previous");
   },
   setActive: function(proj){
+    console.log("Set Active", proj);
     if(proj){
       this.active = proj;
     }
@@ -390,7 +394,7 @@ $.extend(DubMark.ProjectList.prototype, {
      }
   },
   isActive: function(proj){
-    if(this.active && this.active.title == proj.title){
+    if(this.active && this.active.id == proj.id){
       return 'active'; 
     }
   }
