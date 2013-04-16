@@ -377,7 +377,7 @@ $.extend(DubMark.ProjectList.prototype, {
     }
   },
   openId: function(id){
-    window.open('project/' + id); //rails controller?
+    window.open('projects/' + id + '/edit/'); //rails controller?
   },
   disableCreate: function(){
     this.disabledCreateButton = true;
