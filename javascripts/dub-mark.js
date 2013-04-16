@@ -1,6 +1,37 @@
+//Make this provide the ngResource as args to a controller, lets us define and create certain resource
 
+//Angular seriously handles some strange ass magic.
 DubMark = {};
 DubMark.ProjectStore = {}; //Instances go here for ease of debugging
+
+//Tweak these config settings before creating an instance so that we know where
+//to make ajax calls.
+DubMark.Config = {
+  base: {
+    url: '' //Assume same server url
+  },
+  projects:{ //The listings of the projects
+    url: 'projects'
+  },
+  subs: { //Ja subtitles, jaaa
+    url: 'subs'
+  },
+  videos: { //Get video location & hopefully proper headers?
+    url: 'vid'
+  },
+  getUrl: function(name){
+    var C = DubMark.Config;
+    var url = C[name] ? C[name].url : name;
+    if(url){
+      if(url.match('http')){
+        return url;
+      }else if(C.base.url){ //Use reletive paths unless we are told otherwise
+        return C.base.url + url;
+      }
+    }
+    throw Exception('Cannot find config for ' + name);
+  }
+};
 
 
 DubMark.SubManager = function(){ this.init();};
@@ -15,7 +46,9 @@ $.extend(DubMark.SubManager.prototype, {
   newSub: function(source, sTime, eTime, trans, index){
     sTime = (!isNaN(sTime) && sTime != null ? parseFloat(sTime) : 0.0).toFixed(1);
     eTime = (!isNaN(eTime) && eTime != null ? parseFloat(eTime) : 0.0).toFixed(1);
-
+    if(eTime == 0.0){
+      eTime = sTime;
+    }
     this.setActive({
       id: (++this.sub.id),
       source: source,
@@ -235,7 +268,7 @@ $.extend(DubMark.Project.prototype, {
   },
   init: function(args){
     args = args || {};
-    this.id    = ++this.seq.id;
+    this.id    = args.id    || ++this.seq.id;
     this.title = args.title || 'A Title'; //Make this editable
 
     //For managing the loading of subtitles and addition
@@ -249,21 +282,137 @@ $.extend(DubMark.Project.prototype, {
     //Buttons and keypress ahndlers.
     this.controls = new DubMark.Controls(this.subs, this.vid);
     DubMark.ProjectStore[this.id] = this;
+  },
+  load: function(){
+    if(this.id){
+      console.log('Attempting to load up id', this.id);
+    }
   }
 });
 
 
-/**
- * Control class for starting to use AugmentJs
- */
-DubMark.ProjectEntry = function($scope){
-  var args = {};
-  var inp = $("#video_url");
-  if(inp){
-    args.video = inp.value;
-  }
-  var project        = new DubMark.Project(args);
-      project.$scope = $scope;
 
-  $scope.project = project;
+DubMark.MockProjectResource = function(){
+  this.id = 0;
 };
+
+
+$.extend(DubMark.MockProjectResource.prototype, {
+  query: function() { return [{title: 'Mock', id: 'mock'}] },
+  save: function(args, cb) { 
+    console.log("Save", args, cb);
+    if(typeof cb == 'function'){ 
+      args.id = ++this.id;
+      args.title = args.title + ' MOCK';
+      cb(args);
+    }
+    return args;
+  },
+  open: function(id){
+    window.open('edit.html?id=' + id);
+  }
+});
+/**
+ *  Loading support for getting paginated lists and loading a new project
+ */
+DubMark.ProjectList = function(args){
+  this.init(args);
+};
+$.extend(DubMark.ProjectList.prototype, {
+  init: function(args){
+     this.arr = [];
+     this.active = null;
+     this.newProject = {};
+  },
+  load: function(){
+    //Ajax call to the server, attempt to load the list of projects we have avail
+    this.loader = this.loader || new DubMark.MockProjectResource();
+    this.arr = this.loader.query(function(wtf){
+      console.log("Feel the hate", wtf);
+    });
+  },
+  search: function(){
+    console.log("Search");
+  },
+  createDialog: function(){
+    console.log("New Project");
+    this.newProject = {
+      title: '',
+      vid: ''
+    };
+    this.getDialog();
+    this.enableCreate(); //Ensure if something goes horribly wrong they can try to create
+  },
+  getDialog: function(){
+   var n = $('#newProject');
+   n.removeClass('hidden');
+   n.dialog({title: 'New Project'});
+  },
+  closeDialog: function(){
+    $('#newProject').dialog('close');
+  },
+  createAndOpen: function(){
+    console.log("Actually commit to db and open project window.");
+
+     this.disableCreate();
+     this.closeDialog();
+    
+    //Make ajax call
+    this.newProject.state = 'New';
+    this.loader.save(this.newProject, this.validateCreate.bind(this));
+    this.newProject = null;
+
+
+    //Should I try and test the video link?
+  },
+  validateCreate: function(response){
+    this.enableCreate(); //Ensure you can try and hit the submit button again.
+    if(!response || !response.id){
+      console.error("Failed to create.", response);
+      return;
+    }
+    var id = response.id;
+    var active = {
+      id: id,
+      title: response.title,
+      vid: response.vid
+    };
+    this.arr.unshift(active);
+    this.setActive(active);
+  },
+  refresh: function(){
+    console.log("Refresh");
+  },
+  next: function(){
+    console.log("Next");
+  },
+  prev: function(){
+    console.log("Previous");
+  },
+  setActive: function(proj){
+    console.log("Set Active", proj);
+    if(proj){
+      this.active = proj;
+    }
+  },
+  disableCreate: function(){
+    this.disabledCreateButton = true;
+  },
+  enableCreate: function(){
+    setTimeout(function(){
+      this.disabledCreateButton = false;
+    }.bind(this), 500);
+  },
+  openActive: function(){
+     if(this.active && this.active.id){
+       this.loader.open(this.active.id);
+     }
+  },
+  isActive: function(proj){
+    if(this.active && this.active.id == proj.id){
+      return 'active'; 
+    }
+  }
+});
+
+
