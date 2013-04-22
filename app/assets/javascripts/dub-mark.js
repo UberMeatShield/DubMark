@@ -2,7 +2,10 @@
 
 //Angular seriously handles some strange ass magic.
 DubMark = {};
-DubMark.ProjectStore = {}; //Instances go here for ease of debugging
+DubMark.Store = { //Instances go here for ease of debugging and console dev
+  Project: {},
+  ProjectList: {}
+}; 
 DubMark.Modules = {};
 
 
@@ -39,9 +42,6 @@ dub.factory('Subtitles', function($resource){
         'delete': {method:'DELETE'} 
       }      
   );
-  rez.open = function(id){
-    window.open('projects/' + id + '/edit/');
-  };
   return rez;
 });
 DubMark.Modules.Dub = dub;
@@ -73,7 +73,7 @@ DubMark.Config = {
       }else if(C.base.url){ //Use reletive paths unless we are told otherwise
         return C.base.url + url;
       }else{
-        console.warn('No DubMark.Base.url set was set, guessing the name is simply the correct path.');
+        console.warn('No DubMark.Base.url set was set, guessing that (', name, ') is simply the correct path.');
         return name; 
       }
     }
@@ -82,14 +82,19 @@ DubMark.Config = {
 };
 
 
-DubMark.SubManager = function(){ this.init();};
+DubMark.SubManager = function(args){ this.init(args);};
 $.extend(DubMark.SubManager.prototype, {
   sub: {
     id: 0
   },
-  init: function(){
+  init: function(args){
+    args = args || {};
+
     this.arr  = [];
     this.curr = null;
+
+    this.projectId   = args.projectId;
+    this.ResourceSub = args.ResourceSubtitles; 
   },
   newSub: function(source, sTime, eTime, trans, index){
     sTime = (!isNaN(sTime) && sTime != null ? parseFloat(sTime) : 0.0).toFixed(1);
@@ -98,7 +103,7 @@ $.extend(DubMark.SubManager.prototype, {
       eTime = sTime;
     }
     this.setActive({
-      id: (++this.sub.id),
+      projectId: this.projectId,
       source: source,
       sTime: sTime,
       eTime: eTime,
@@ -319,32 +324,49 @@ $.extend(DubMark.Project.prototype, {
     this.id    = args.id    || ++this.seq.id;
     this.title = args.title || 'A Title'; //Make this editable
 
+    //Resource loaders from Angular module and the angular scope
+    this.ResourceProject   = args.ResourceProject;
+    this.$scope            = args.$scope;
+
     //For managing the loading of subtitles and addition
-    this.subs  = new DubMark.SubManager();
-    args.video = args.video || 'video'; //HTML element that contains the video link?  Dumb.  TODO: Fix
+    this.subs  = new DubMark.SubManager({
+      projectId: this.id,
+      ResourceSubtitles: args.ResourceSubtitles,
+    });
+
+    //HTML element that contains the video link?  Dumb.  TODO: Fix
+    args.video = args.video || 'video'; 
     if(args.video){
       this.vid = new DubMark.VideoView(this.id);
       this.vid.listen();
     }
-
     //Buttons and keypress ahndlers.
     this.controls = new DubMark.Controls(this.subs, this.vid);
-    DubMark.ProjectStore[this.id] = this;
+
+    //Instance reference for ease of firebug
+    DubMark.Store.Project[this.id] = this;
   },
+  /**
+   * Uses instance variables
+   */
   load: function(){
-    if(this.id){
-      console.log('Attempting to load up id', this.id);
+    if(this.ResourceProject){
+      this.ResourceProject.get({id: this.id}, this.loadCb.bind(this));
     }
+  },
+  loadCb: function(response){
+    console.log("Load Callback.");
   }
 });
 
 
 
+/**
+ *  Todo: check out the angular mock classes
+ */
 DubMark.MockProjectResource = function(){
   this.id = 0;
 };
-
-
 $.extend(DubMark.MockProjectResource.prototype, {
   query: function() { return [{title: 'Mock', id: 'mock'}] },
   save: function(args, cb) { 
@@ -365,12 +387,17 @@ $.extend(DubMark.MockProjectResource.prototype, {
  */
 DubMark.ProjectList = function(args){
   this.init(args);
+
+
 };
 $.extend(DubMark.ProjectList.prototype, {
+  sequence: {id: 0},
   init: function(args){
      this.arr = [];
      this.active = null;
      this.newProject = {};
+  
+     DubMark.Store.ProjectList[this.sequence.id++] = this;
   },
   load: function(){
     //Ajax call to the server, attempt to load the list of projects we have avail

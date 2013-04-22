@@ -88,6 +88,7 @@
 
     <!-- All the script includes -->
     <script type="text/javascript">
+      var args = JSON.parse(decodeURIComponent('<%= @project.to_json.html_safe =%>'));
       /*Produce this page using erb page load information about what video to load and
        *the subs to load in etc.
        */
@@ -106,13 +107,17 @@
        * Control class for starting to use AugmentJs
        */
       DubMark.ProjectEntry = function($scope, Project, Subtitles){
-        var args = {};
+        args.ResourceProject =    Project;
+        args.ResourceSubtitles =  Subtitles;
+        args.$scope =             $scope;
         var inp = $("#video_url");
         if(inp){
           args.video = inp.value;
         }
-        var project        = new DubMark.Project(args);
-            project.$scope = $scope;
-        $scope.project = project;
+
+        console.log("Args", args);
+        $scope.project  = new DubMark.Project(args);
+
+        console.log("Project correct?, Subtitle correct?", Project, Subtitles);
       };
     </script>
