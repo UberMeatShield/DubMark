@@ -1,5 +1,8 @@
 Dub::Application.routes.draw do
   resources :subs
+
+
+  resources :subs
   resources :projects
 
 

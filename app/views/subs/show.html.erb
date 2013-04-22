@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Project:</b>
+  <%= @sub.project_id %>
+</p>
+
+<p>
+  <b>Source lang:</b>
+  <%= @sub.source_lang %>
+</p>
+
+<p>
+  <b>Trans lang:</b>
+  <%= @sub.trans_lang %>
+</p>
+
+<p>
+  <b>Subtitles:</b>
+  <%= @sub.subtitles %>
+</p>
+
+
+<%= link_to 'Edit', edit_sub_path(@sub) %> |
+<%= link_to 'Back', subs_path %>
