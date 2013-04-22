@@ -48,7 +48,7 @@ dub.factory('Project', function($resource){
   var rez = $resource(
       DubMark.Config.getUrl('projects') + '/:id', 
       {format: 'json'}, //Fucking docs...
-      { 'get':    {method:'GET', isArray: true},
+      { 'get':    {method:'GET'},
         'save':   {method:'POST'},
         'query':  {method:'GET', isArray:true},
         'remove': {method:'DELETE'},
@@ -65,7 +65,7 @@ dub.factory('Subtitles', function($resource){
   var rez = $resource(
       DubMark.Config.getUrl('subs') + '/:id', 
       {format: 'json'}, //Fucking docs...
-      { 'get':    {method:'GET', isArray: true}, 
+      { 'get':    {method:'GET'},
         'save':   {method:'POST'},
         'query':  {method:'GET', isArray:true},
         'remove': {method:'DELETE'},
@@ -92,6 +92,18 @@ $.extend(DubMark.SubManager.prototype, {
 
     this.projectId   = args.projectId;
     this.ResourceSub = args.ResourceSubtitles; 
+  },
+  load: function(args){
+    args = args || {projectId: this.projectId};
+
+    if(this.ResourceSub){
+      this.ResourceSub.query(args, this.loadCb.bind(this));
+    }else{
+      console.warn("No Resource Sub defined in this SubManager", this);
+    }
+  },
+  loadCb: function(response){
+    console.log("Subs load Callback.", response);
   },
   newSub: function(source, sTime, eTime, trans, index){
     sTime = (!isNaN(sTime) && sTime != null ? parseFloat(sTime) : 0.0).toFixed(1);
@@ -200,7 +212,6 @@ $.extend(DubMark.Controls.prototype, {
     this.vid.pause();
   },
   isActive: function(sub){
-    console.log("Is active?");
     if(sub && this.subs.curr){
       if(sub.id == this.subs.curr.id){
         return 'active';
@@ -349,10 +360,12 @@ $.extend(DubMark.Project.prototype, {
   load: function(){
     if(this.ResourceProject){
       this.ResourceProject.get({id: this.id}, this.loadCb.bind(this));
+
+      this.subs.load();
     }
   },
   loadCb: function(response){
-    console.log("Load Callback.");
+    console.log("Project Load Callback.", response);
   }
 });
 

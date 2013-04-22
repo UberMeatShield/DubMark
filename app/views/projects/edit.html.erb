@@ -115,10 +115,10 @@
         if(inp){
           args.video = inp.value;
         }
+        var proj = new DubMark.Project(args);
+        $scope.project = proj;  //Don't re-namespace unless you change all the refs in the html
 
-        console.log("Args", args);
-        $scope.project  = new DubMark.Project(args);
-
+        proj.load();
         console.log("Project correct?, Subtitle correct?", Project, Subtitles);
       };
     </script>

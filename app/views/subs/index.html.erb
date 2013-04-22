@@ -2,10 +2,13 @@
 
 <table>
   <tr>
-    <th>Project</th>
-    <th>Source lang</th>
-    <th>Trans lang</th>
-    <th>Subtitles</th>
+    <th>Stime</th>
+    <th>Etime</th>
+    <th>Sourcelang</th>
+    <th>Translang</th>
+    <th>Source</th>
+    <th>Trans</th>
+    <th>Projectid</th>
     <th></th>
     <th></th>
     <th></th>
@@ -13,10 +16,13 @@
 
 <% @subs.each do |sub| %>
   <tr>
-    <td><%= sub.project_id %></td>
-    <td><%= sub.source_lang %></td>
-    <td><%= sub.trans_lang %></td>
-    <td><%= sub.subtitles %></td>
+    <td><%= sub.sTime %></td>
+    <td><%= sub.eTime %></td>
+    <td><%= sub.sourceLang %></td>
+    <td><%= sub.transLang %></td>
+    <td><%= sub.source %></td>
+    <td><%= sub.trans %></td>
+    <td><%= sub.projectId %></td>
     <td><%= link_to 'Show', sub %></td>
     <td><%= link_to 'Edit', edit_sub_path(sub) %></td>
     <td><%= link_to 'Destroy', sub, method: :delete, data: { confirm: 'Are you sure?' } %></td>

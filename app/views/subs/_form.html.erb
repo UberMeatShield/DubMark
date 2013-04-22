@@ -12,20 +12,32 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :project_id %><br />
-    <%= f.text_field :project_id %>
+    <%= f.label :sTime %><br />
+    <%= f.text_field :sTime %>
   </div>
   <div class="field">
-    <%= f.label :source_lang %><br />
-    <%= f.text_field :source_lang %>
+    <%= f.label :eTime %><br />
+    <%= f.text_field :eTime %>
   </div>
   <div class="field">
-    <%= f.label :trans_lang %><br />
-    <%= f.text_field :trans_lang %>
+    <%= f.label :sourceLang %><br />
+    <%= f.text_field :sourceLang %>
   </div>
   <div class="field">
-    <%= f.label :subtitles %><br />
-    <%= f.text_field :subtitles %>
+    <%= f.label :transLang %><br />
+    <%= f.text_field :transLang %>
+  </div>
+  <div class="field">
+    <%= f.label :source %><br />
+    <%= f.text_field :source %>
+  </div>
+  <div class="field">
+    <%= f.label :trans %><br />
+    <%= f.text_field :trans %>
+  </div>
+  <div class="field">
+    <%= f.label :projectId %><br />
+    <%= f.text_field :projectId %>
   </div>
   <div class="actions">
     <%= f.submit %>
