@@ -1,4 +1,4 @@
-    <div ng-app ng-controller="DubMark.ProjectEntry" id="main" class="main">
+    <div ng-app='dub' ng-controller="DubMark.ProjectEntry" id="main" class="main">
 
       <!-- Navbar, TODO: add google translate options here? -->
       <div id="topBar" class="navbar navbar-inner">
@@ -91,7 +91,7 @@
       /*Produce this page using erb page load information about what video to load and
        *the subs to load in etc.
        */
-      $(function(){
+      $(function(){ //Definitely need to clean this up...
           try{ //Video tags do not play nice with post process operations.
           var v  = $('#video').append(
             $('<video>', {class: 'span12', id: 'video_1', controls: true}).append(
@@ -102,11 +102,10 @@
             console.error('Failed to load.');
           }
       });
-
       /**
        * Control class for starting to use AugmentJs
        */
-      DubMark.ProjectEntry = function($scope){
+      DubMark.ProjectEntry = function($scope, Project, Subtitles){
         var args = {};
         var inp = $("#video_url");
         if(inp){

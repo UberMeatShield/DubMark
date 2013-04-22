@@ -3,6 +3,51 @@
 //Angular seriously handles some strange ass magic.
 DubMark = {};
 DubMark.ProjectStore = {}; //Instances go here for ease of debugging
+DubMark.Modules = {};
+
+
+//Note the module name is the same as ng-app="dub"
+var dub = angular.module('dub', ['ngResource']);
+       
+//Naming something project, will then pass this object into the controller
+//into a named variable.... magically.
+dub.factory('Project', function($resource){
+  var rez = $resource(
+      DubMark.Config.getUrl('projects'), 
+      {format: 'json'}, //Fucking docs...
+      { 'get':    {method:'GET', isArray: true},
+        'save':   {method:'POST'},
+        'query':  {method:'GET', isArray:true},
+        'remove': {method:'DELETE'},
+        'delete': {method:'DELETE'} 
+      }
+  );
+  rez.open = function(id){
+    window.open('projects/' + id + '/edit/');
+  };
+  return rez;
+});
+
+dub.factory('Subtitles', function($resource){
+  var rez = $resource(
+      DubMark.Config.getUrl('subs'), 
+      {format: 'json'}, //Fucking docs...
+      { 'get':    {method:'GET', isArray: true}, 
+        'save':   {method:'POST'},
+        'query':  {method:'GET', isArray:true},
+        'remove': {method:'DELETE'},
+        'delete': {method:'DELETE'} 
+      }      
+  );
+  rez.open = function(id){
+    window.open('projects/' + id + '/edit/');
+  };
+  return rez;
+});
+DubMark.Modules.Dub = dub;
+
+
+
 
 //Tweak these config settings before creating an instance so that we know where
 //to make ajax calls.
@@ -27,9 +72,12 @@ DubMark.Config = {
         return url;
       }else if(C.base.url){ //Use reletive paths unless we are told otherwise
         return C.base.url + url;
+      }else{
+        console.warn('No DubMark.Base.url set was set, guessing the name is simply the correct path.');
+        return name; 
       }
     }
-    throw Exception('Cannot find config for ' + name);
+    throw 'Cannot find config for ' + name;
   }
 };
 
@@ -291,6 +339,27 @@ $.extend(DubMark.Project.prototype, {
 });
 
 
+
+DubMark.MockProjectResource = function(){
+  this.id = 0;
+};
+
+
+$.extend(DubMark.MockProjectResource.prototype, {
+  query: function() { return [{title: 'Mock', id: 'mock'}] },
+  save: function(args, cb) { 
+    console.log("Save", args, cb);
+    if(typeof cb == 'function'){ 
+      args.id = ++this.id;
+      args.title = args.title + ' MOCK';
+      cb(args);
+    }
+    return args;
+  },
+  open: function(id){
+    window.open('edit.html?id=' + id);
+  }
+});
 /**
  *  Loading support for getting paginated lists and loading a new project
  */
@@ -301,12 +370,11 @@ $.extend(DubMark.ProjectList.prototype, {
   init: function(args){
      this.arr = [];
      this.active = null;
-
      this.newProject = {};
   },
   load: function(){
     //Ajax call to the server, attempt to load the list of projects we have avail
-    this.loader = this.loader || {query: function() { return [{title: 'mock'}] }};
+    this.loader = this.loader || new DubMark.MockProjectResource();
     this.arr = this.loader.query(function(wtf){
       console.log("Feel the hate", wtf);
     });
@@ -347,7 +415,6 @@ $.extend(DubMark.ProjectList.prototype, {
   },
   validateCreate: function(response){
     this.enableCreate(); //Ensure you can try and hit the submit button again.
-
     if(!response || !response.id){
       console.error("Failed to create.", response);
       return;
@@ -376,9 +443,6 @@ $.extend(DubMark.ProjectList.prototype, {
       this.active = proj;
     }
   },
-  openId: function(id){
-    window.open('projects/' + id + '/edit/'); //rails controller?
-  },
   disableCreate: function(){
     this.disabledCreateButton = true;
   },
@@ -388,9 +452,8 @@ $.extend(DubMark.ProjectList.prototype, {
     }.bind(this), 500);
   },
   openActive: function(){
-     console.log("Open Active.", this.active);
      if(this.active && this.active.id){
-       this.openId(this.active.id); 
+       this.loader.open(this.active.id);
      }
   },
   isActive: function(proj){
