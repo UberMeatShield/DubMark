@@ -65,6 +65,7 @@
     </div> <!-- End main controller section -->
 
     <script type="text/javascript">
+      DubMark.Config.base.url = 'http://localhost\\:3000/';
       //Angular uses : to denote replacement elements... this is dumb
       //So if you need to specify a port, you have to include the escaped \ in front of any : 
       DubMark.ProjectListings = function($scope, $resource, Project){

@@ -9,46 +9,6 @@ DubMark.Store = { //Instances go here for ease of debugging and console dev
 DubMark.Modules = {};
 
 
-//Note the module name is the same as ng-app="dub"
-var dub = angular.module('dub', ['ngResource']);
-       
-//Naming something project, will then pass this object into the controller
-//into a named variable.... magically.
-dub.factory('Project', function($resource){
-  var rez = $resource(
-      DubMark.Config.getUrl('projects'), 
-      {format: 'json'}, //Fucking docs...
-      { 'get':    {method:'GET', isArray: true},
-        'save':   {method:'POST'},
-        'query':  {method:'GET', isArray:true},
-        'remove': {method:'DELETE'},
-        'delete': {method:'DELETE'} 
-      }
-  );
-  rez.open = function(id){
-    window.open('projects/' + id + '/edit/');
-  };
-  return rez;
-});
-
-dub.factory('Subtitles', function($resource){
-  var rez = $resource(
-      DubMark.Config.getUrl('subs'), 
-      {format: 'json'}, //Fucking docs...
-      { 'get':    {method:'GET', isArray: true}, 
-        'save':   {method:'POST'},
-        'query':  {method:'GET', isArray:true},
-        'remove': {method:'DELETE'},
-        'delete': {method:'DELETE'} 
-      }      
-  );
-  return rez;
-});
-DubMark.Modules.Dub = dub;
-
-
-
-
 //Tweak these config settings before creating an instance so that we know where
 //to make ajax calls.
 DubMark.Config = {
@@ -82,6 +42,43 @@ DubMark.Config = {
 };
 
 
+//Note the module name is the same as ng-app="dub"
+var dub = angular.module('dub', ['ngResource']);
+dub.factory('Project', function($resource){
+  var rez = $resource(
+      DubMark.Config.getUrl('projects') + '/:id', 
+      {format: 'json'}, //Fucking docs...
+      { 'get':    {method:'GET', isArray: true},
+        'save':   {method:'POST'},
+        'query':  {method:'GET', isArray:true},
+        'remove': {method:'DELETE'},
+        'delete': {method:'DELETE'} 
+      }
+  );
+  rez.open = function(id){
+    window.open('projects/' + id + '/edit/');
+  };
+  return rez;
+});
+
+dub.factory('Subtitles', function($resource){
+  var rez = $resource(
+      DubMark.Config.getUrl('subs') + '/:id', 
+      {format: 'json'}, //Fucking docs...
+      { 'get':    {method:'GET', isArray: true}, 
+        'save':   {method:'POST'},
+        'query':  {method:'GET', isArray:true},
+        'remove': {method:'DELETE'},
+        'delete': {method:'DELETE'} 
+      }      
+  );
+  return rez;
+});
+DubMark.Modules.Dub = dub;
+
+/**
+ *  Manages loads and writes to the subtitle module
+ */
 DubMark.SubManager = function(args){ this.init(args);};
 $.extend(DubMark.SubManager.prototype, {
   sub: {

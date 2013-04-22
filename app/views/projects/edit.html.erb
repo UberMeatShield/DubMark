@@ -88,6 +88,7 @@
 
     <!-- All the script includes -->
     <script type="text/javascript">
+      DubMark.Config.base.url = 'http://localhost\\:3000/';
       var args = JSON.parse(decodeURIComponent('<%= @project.to_json.html_safe =%>'));
       /*Produce this page using erb page load information about what video to load and
        *the subs to load in etc.
