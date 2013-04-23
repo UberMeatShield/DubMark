@@ -95,15 +95,11 @@ $.extend(DubMark.SubManager.prototype, {
   },
   load: function(args){
     args = args || {projectId: this.projectId};
-
     if(this.ResourceSub){
-      this.ResourceSub.query(args, this.loadCb.bind(this));
+      this.arr = this.ResourceSub.query(args);
     }else{
       console.warn("No Resource Sub defined in this SubManager", this);
     }
-  },
-  loadCb: function(response){
-    console.log("Subs load Callback.", response);
   },
   newSub: function(source, sTime, eTime, trans, index){
     sTime = (!isNaN(sTime) && sTime != null ? parseFloat(sTime) : 0.0).toFixed(1);
