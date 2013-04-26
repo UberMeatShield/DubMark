@@ -107,14 +107,16 @@ $.extend(DubMark.SubManager.prototype, {
     if(eTime == 0.0){
       eTime = sTime;
     }
-    this.setActive({
-      projectId: this.projectId,
-      source: source,
-      sTime: sTime,
-      eTime: eTime,
-      trans: trans
-    });
 
+    this.setActive(
+      this.ResourceSub.save({
+        projectId: this.projectId,
+        source: source,
+        sTime: sTime,
+        eTime: eTime,
+        trans: trans
+      })
+    );
     if(!isNaN(index) && index != null){
       this.arr.splice(index, 0, this.curr);
     }else{
@@ -122,11 +124,15 @@ $.extend(DubMark.SubManager.prototype, {
     }
   },
   setActive: function(sub){
-    console.log("What is the sub?", sub);
     if(this.curr) this.curr.active = '';
     this.curr = sub;
     this.curr.active = 'active'; //Markup & selection status
     return this.curr;
+  },
+  updateActive: function(){ //Call this on proper edit completion, time updates etc.
+    if(this.curr){
+      this.curr.save();
+    }
   },
   splitSub: function(sub){
     sub = sub || this.curr;
@@ -215,7 +221,6 @@ $.extend(DubMark.Controls.prototype, {
   },
   newSub: function(){ //Start a sub with the current video time
     var t = this.vid.getTime() || 0;
-    console.log("What is the time?", t);
     this.subs.endSub(null, t); //Close open sub
     this.subs.newSub(null, t); //Create a new sub.
   },
