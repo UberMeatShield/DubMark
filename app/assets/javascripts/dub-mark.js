@@ -182,7 +182,6 @@ $.extend(DubMark.Controls.prototype, {
   init: function(subs, vid){
     this.subs = subs;
     this.vid  = vid;
-    console.log("What the shit?", subs, vid);
   },
   setSubs: function(subs){
     this.subs = subs;
@@ -263,15 +262,38 @@ $.extend(DubMark.VideoView.prototype, {
     this.id   = id;
     this.fail_listen = 0;
   },
-  video: null, //Url for the video
-  type: null,  //Type of video for the video tag
+  createVideo: function(vidUrl, vidType){
+    if(vidUrl && this.videoDom){
+      try{ //Video tags do not play nice with post process operations.
+        var v  = $('#' + this.videoDom)
+        if(!v) {
+          console.log("Forced to create it.... sad times.");
+          v = $('body').append($('<div>', {id: this.videoDom}));
+        }
+        var vidId = 'video_' + this.id;
+        var vid = $('<video>', {class: 'span12', id: vidId, controls: true}).append(
+          $('<source>',  {
+            type: vidType || 'video/ogg',  //Guess source type
+            src: vidUrl
+          })
+        );
+        v.append(vid);
+        this.listen($('#' + vidId));
+      }catch(e){
+        console.error('Failed to create the video element', e);
+      }
+      return true;
+    }
+    return false;
+  },
+  setDomContainer: function(domId){
+    this.videoDom = domId;
+  },
   listen: function(vid){ //Supposedly didCreateElement works.. but no such luck for me?
     if(this.fail_listen > 20) return;
-
     if(!vid && this.id){
        vid = $('#video_' + this.id);
     }
-
     if(vid && vid.length){
       this.vid = vid;
       vid.bind('timeupdate', this.timeupdate.bind(this));
@@ -339,11 +361,10 @@ $.extend(DubMark.Project.prototype, {
     });
 
     //HTML element that contains the video link?  Dumb.  TODO: Fix
-    args.video = args.video || 'video'; 
-    if(args.video){
-      this.vid = new DubMark.VideoView(this.id);
-      this.vid.listen();
-    }
+    this.vid = new DubMark.VideoView(this.id);
+    this.vid.setDomContainer(args.vidDomId || 'video');
+    this.vid.createVideo(args.vidUrl, args.vidType);
+
     //Buttons and keypress ahndlers.
     this.controls = new DubMark.Controls(this.subs, this.vid);
 
@@ -419,7 +440,7 @@ $.extend(DubMark.ProjectList.prototype, {
     console.log("New Project");
     this.newProject = {
       title: '',
-      vid: ''
+      vidUrl: ''
     };
     this.getDialog();
     this.enableCreate(); //Ensure if something goes horribly wrong they can try to create
@@ -452,14 +473,8 @@ $.extend(DubMark.ProjectList.prototype, {
       console.error("Failed to create.", response);
       return;
     }
-    var id = response.id;
-    var active = {
-      id: id,
-      title: response.title,
-      vid: response.vid
-    };
-    this.arr.unshift(active);
-    this.setActive(active);
+    this.arr.unshift(response);
+    this.setActive(response);
   },
   refresh: function(){
     console.log("Refresh");

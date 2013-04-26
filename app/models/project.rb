@@ -7,5 +7,7 @@ class Project
   key :start_date, String
   key :end_date, String
   key :status, String
+  key :vidUrl, String
+  key :vidType, String
 
 end

@@ -90,20 +90,14 @@
     <script type="text/javascript">
       DubMark.Config.base.url = 'http://localhost\\:3000/';
       var args = JSON.parse(decodeURIComponent('<%= @project.to_json.html_safe =%>'));
+
+      console.warn("Video URL is being set by default hacky test purposes");
+      args.vidUrl  = 'http://localhost:3000/Sample.webm';
+      args.vidType = 'video/ogg';
+
       /*Produce this page using erb page load information about what video to load and
        *the subs to load in etc.
        */
-      $(function(){ //Definitely need to clean this up...
-          try{ //Video tags do not play nice with post process operations.
-          var v  = $('#video').append(
-            $('<video>', {class: 'span12', id: 'video_1', controls: true}).append(
-              $('<source>',  {type: 'video/ogg', src: 'http://localhost:3000/Sample.webm'})
-            )
-          );
-          }catch(e){
-            console.error('Failed to load.');
-          }
-      });
       /**
        * Control class for starting to use AugmentJs
        */
@@ -111,6 +105,7 @@
         args.ResourceProject =    Project;
         args.ResourceSubtitles =  Subtitles;
         args.$scope =             $scope;
+
         var inp = $("#video_url");
         if(inp){
           args.video = inp.value;
