@@ -101,6 +101,9 @@ $.extend(DubMark.SubManager.prototype, {
       console.warn("No Resource Sub defined in this SubManager", this);
     }
   },
+  changeSub: function(){
+    console.log("Change Sub");
+  },
   newSub: function(source, sTime, eTime, trans, index){
     sTime = (!isNaN(sTime) && sTime != null ? parseFloat(sTime) : 0.0).toFixed(1);
     eTime = (!isNaN(eTime) && eTime != null ? parseFloat(eTime) : 0.0).toFixed(1);
