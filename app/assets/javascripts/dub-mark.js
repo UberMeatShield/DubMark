@@ -102,7 +102,31 @@ $.extend(DubMark.SubManager.prototype, {
     }
   },
   changeSub: function(){
-    console.log("Change Sub");
+    //Defer the save till no modification is done for 2 seconds
+    if(this.curr && jQuery.isFunction(this.curr.$save)){
+      this.lastTimeChanged = new Date();
+      this.deferSave(this.curr);
+    }
+  },
+  deferSave: function(obj){
+    if(this.saveIt) return;
+
+    this.saveIt = function(obj){
+      try{
+        var d = new Date();
+        if((d - this.lastTimeChanged) > 2000){
+          this.saveIt = null;
+          obj.$save();
+        }else{
+          console.log("I should wait");
+          setTimeout(this.saveIt.bind(this, obj), 2050); 
+        }
+      }catch(e){
+        console.error('Error on the save defer.', e);
+      }
+    }.bind(this, obj);
+
+    this.saveIt();
   },
   newSub: function(source, sTime, eTime, trans, index){
     sTime = (!isNaN(sTime) && sTime != null ? parseFloat(sTime) : 0.0).toFixed(1);
@@ -127,9 +151,7 @@ $.extend(DubMark.SubManager.prototype, {
     }
   },
   setActive: function(sub){
-    if(this.curr) this.curr.active = '';
     this.curr = sub;
-    this.curr.active = 'active'; //Markup & selection status
     return this.curr;
   },
   updateActive: function(){ //Call this on proper edit completion, time updates etc.

@@ -96,7 +96,7 @@
             <div id="subtitle" class="well">
               <ul class="nav nav-list">
                 <li class="nav-header">Subtitles</li>
-                <li class="{{sub.active}}" id="sub_{{sub.id}}" ng-repeat="sub in project.subs.arr"> <!-- Click selection should make current -->
+                <li class="{{project.controls.isActive(sub)}}" id="sub_{{sub.id}}" ng-repeat="sub in project.subs.arr"> <!-- Click selection should make current -->
                 <a ng-click="project.controls.setCurrent(sub);"> <!-- apply class active if active -->
                   [{{sub.sTime}} - {{sub.eTime}}]</br>
                   {{sub.source}}
