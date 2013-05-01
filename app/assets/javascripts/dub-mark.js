@@ -273,14 +273,16 @@ $.extend(DubMark.Controls.prototype, {
   },
   setStart: function(){
     var sub = this.subs.curr;
-    if(sub){
+    if(sub){//Hmm.. this doesn't trigger the on change event?
       sub.sTime = this.vid.getTime().toFixed(1);
+      this.subs.changeSub(); 
     }
   },
   setEnd: function(){
     var sub = this.subs.curr;
-    if(sub){
+    if(sub){ //A set end doesn't change the set end but does update the UI correctly, odd
       sub.eTime = this.vid.getTime().toFixed(1);
+      this.subs.changeSub(); 
     }
   }
 });
