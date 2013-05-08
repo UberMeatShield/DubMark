@@ -486,8 +486,6 @@ $.extend(DubMark.ProjectList.prototype, {
     $('#newProject').dialog('close');
   },
   createAndOpen: function(){
-    console.log("Actually commit to db and open project window.");
-
      this.disableCreate();
      this.closeDialog();
     
@@ -495,9 +493,6 @@ $.extend(DubMark.ProjectList.prototype, {
     this.newProject.state = 'New';
     this.loader.save(this.newProject, this.validateCreate.bind(this));
     this.newProject = null;
-
-
-    //Should I try and test the video link?
   },
   validateCreate: function(response){
     this.enableCreate(); //Ensure you can try and hit the submit button again.
@@ -505,11 +500,14 @@ $.extend(DubMark.ProjectList.prototype, {
       console.error("Failed to create.", response);
       return;
     }
-    this.arr.unshift(response);
+    this.arr.unshift(response); //Might not need to do this?
     this.setActive(response);
+
+    //Open the thing to edit if it was created correctly.
+    this.loader.open(response.id);
   },
   refresh: function(){
-    console.log("Refresh");
+    this.load();
   },
   next: function(){
     console.log("Next");
@@ -538,7 +536,7 @@ $.extend(DubMark.ProjectList.prototype, {
   },
   isActive: function(proj){
     if(this.active && this.active.id == proj.id){
-      return 'active'; 
+      return 'info'; 
     }
   }
 });

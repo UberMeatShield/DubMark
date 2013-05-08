@@ -28,14 +28,32 @@
               <input type="text"       ng-model="list.filter"    class="pull-right" placeholder="Filter projects"> </input>
           </form>
           </div>
-          <ul class="nav nav-list"> <!-- Probably should just be a table. -->
+
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <td>Title</td>
+              <td>Status</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='{{list.isActive(proj)}}' ng-repeat="proj in list.arr" ng-click="list.setActive(proj)"> 
+              <td>{{proj.title}}</td>
+              <td>{{proj.state}}</td>
+            </tr>
+            </tbody>
+          </table>
+
+          <!--
+          <ul class="nav nav-list"> 
             <li class='{{list.isActive(proj)}}' ng-repeat="proj in list.arr" ng-click="list.setActive(proj)"> 
             <a>
               {{proj.title}} 
-              <span> - {{proj.state}} {{proj.date}}</span> <!-- Use icons -->
+              <span> - {{proj.state}} {{proj.date}}</span> 
             </a>
             </li>
           </ul>
+          -->
         </div>
 
         <div class="span7 project_info">
