@@ -2,7 +2,17 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.all
+    @projects = nil
+
+    conditions = {} #Better filter methods?  This seems dumb
+    if params[:title]
+      conditions[:title] = { "$regex" => params[:title], "$options" => "-i" } 
+    end
+    if params[:state]
+      conditions[:state] = '/.*' + params[:state] + '.*/i'
+    end
+    #@projects = Project.all({:conditions => conditions})
+    @projects = Project.all({:conditions => conditions})
 
     respond_to do |format|
       format.html # index.html.erb

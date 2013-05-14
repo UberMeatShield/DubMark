@@ -89,6 +89,7 @@ $.extend(DubMark.SubManager.prototype, {
 
     this.arr  = [];
     this.curr = null;
+    this.deferTime = 1500;
 
     this.projectId   = args.projectId;
     this.ResourceSub = args.ResourceSubtitles; 
@@ -109,23 +110,20 @@ $.extend(DubMark.SubManager.prototype, {
     }
   },
   deferSave: function(obj){
-    if(this.saveIt) return;
-
+    if(this.saveIt && obj) return;
     this.saveIt = function(obj){
       try{
         var d = new Date();
-        if((d - this.lastTimeChanged) > 2000){
+        if((d - this.lastTimeChanged) > this.deferTime){
           this.saveIt = null;
           obj.$save();
         }else{
-          console.log("I should wait");
-          setTimeout(this.saveIt.bind(this, obj), 2050); 
+          setTimeout(this.saveIt.bind(this, obj), this.deferTime+50); 
         }
       }catch(e){
         console.error('Error on the save defer.', e);
       }
     }.bind(this, obj);
-
     this.saveIt();
   },
   newSub: function(source, sTime, eTime, trans, index){
@@ -446,15 +444,16 @@ $.extend(DubMark.MockProjectResource.prototype, {
  */
 DubMark.ProjectList = function(args){
   this.init(args);
-
-
 };
+
 $.extend(DubMark.ProjectList.prototype, {
   sequence: {id: 0},
   init: function(args){
      this.arr = [];
      this.active = null;
-     this.newProject = {};
+     this.newProject  = {};
+     this.filterTitle = ''
+     this.deferTime   = 500;
   
      DubMark.Store.ProjectList[this.sequence.id++] = this;
   },
@@ -465,8 +464,43 @@ $.extend(DubMark.ProjectList.prototype, {
       console.log("Feel the hate", wtf);
     });
   },
+  filterChange: function(){ //Needs to be made case insensitve
+    try{
+      var cb = function(){
+        if(this.filterTitle != ''){
+          this.arr = this.loader.query({title: this.filterTitle})
+        }else{
+          this.load();
+        }
+      }.bind(this);
+
+      this.deferOp(cb);
+    }catch(e){
+      console.error("Failed to filter hange.", e)
+    }
+  },
+  deferOp: function(cb){
+    this.lastTimeChanged = new Date();
+    if(this.callIt || typeof cb != 'function'){return;}
+
+    this.callIt = function(cb){
+      try{
+        var d = new Date();
+        if((d - this.lastTimeChanged) > this.deferTime){
+          this.callIt = null;
+          this.lastTimeChanged = null;
+          cb();
+        }else{
+          setTimeout(this.callIt.bind(this, cb), this.deferTime+50); 
+        }
+      }catch(e){
+        console.error('Error on the save defer.', e);
+      }
+    }.bind(this, cb);
+    this.callIt();
+  },
   search: function(){
-    console.log("Search");
+    this.filterChange();
   },
   createDialog: function(){
     console.log("New Project");
