@@ -1,7 +1,8 @@
 class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
-  def index
+  def index 
+    #provide an initial splash page, and don't let mongo load the everything...
     @projects = nil
 
     conditions = {} #Better filter methods?  This seems dumb
@@ -9,15 +10,19 @@ class ProjectsController < ApplicationController
       conditions[:title] = { "$regex" => params[:title], "$options" => "-i" } 
     end
     if params[:state]
-      conditions[:state] = '/.*' + params[:state] + '.*/i'
+      conditions[:state] = { "$regex" => params[:state], "$options" => "-i" } 
     end
-    #@projects = Project.all({:conditions => conditions})
-    @projects = Project.all({:conditions => conditions})
 
+    #Pagination... but how do I get a count back without looking up the count?
+    @projects = Project.paginate(
+      :conditions => conditions,
+      :per_page => params[:per_page] ? params[:per_page].to_i : 100,
+      :page     => params[:page]     ? params[:page].to_i     : 0
+    )
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @projects }
-    end
+    end 
   end
 
   # GET /projects/1
