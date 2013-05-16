@@ -524,7 +524,9 @@ $.extend(DubMark.ProjectList.prototype, {
      this.closeDialog();
     
     //Make ajax call
-    this.newProject.state = 'New';
+    this.newProject.state        = 'New';
+    this.newProject.create_date  = new Date();
+
     this.loader.save(this.newProject, this.validateCreate.bind(this));
     this.newProject = null;
   },

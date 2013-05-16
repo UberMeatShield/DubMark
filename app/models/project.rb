@@ -4,6 +4,7 @@ class Project
   key :title, String
   key :description, String
   key :organization, String
+  key :create_date, DateTime
   key :start_date, String
   key :end_date, String
   key :status, String
