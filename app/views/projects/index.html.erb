@@ -11,12 +11,15 @@
               &nbsp;
               &nbsp;
               &nbsp;
+              <!-- TODO: Make the UI actually have a proper pagination counter... sadly counts in mongo are actually expensive? -->
               <button title='Previous' ng-click="list.prev()"    class="btn">
                 <i class="icon-step-backward"></i>
               </button>
+
               <button title='Refresh'  ng-click="list.refresh()" class="btn">
                 <i class="icon-refresh"></i>
               </button>
+
               <button title='Next'     ng-click="list.next()"    class="btn">
                 <i class="icon-step-forward"></i>
               </button>

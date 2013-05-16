@@ -16,7 +16,7 @@ class ProjectsController < ApplicationController
     #Pagination... but how do I get a count back without looking up the count?
     @projects = Project.paginate(
       :conditions => conditions,
-      :per_page => params[:per_page] ? params[:per_page].to_i : 10,
+      :per_page => params[:per_page] ? params[:per_page].to_i : 100,
       :page     => params[:page]     ? params[:page].to_i     : 0,
       :order    => 'id dsc'
     )

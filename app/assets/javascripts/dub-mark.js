@@ -452,8 +452,12 @@ $.extend(DubMark.ProjectList.prototype, {
      this.arr = [];
      this.active = null;
      this.newProject  = {};
-     this.filterTitle = ''
      this.deferTime   = 500;
+
+     //Search oriented items.
+     this.filterTitle = ''
+     this.page        = 0;
+     this.state       = '';
   
      DubMark.Store.ProjectList[this.sequence.id++] = this;
   },
@@ -464,16 +468,33 @@ $.extend(DubMark.ProjectList.prototype, {
       console.log("Feel the hate", wtf);
     });
   },
-  filterChange: function(){ //Needs to be made case insensitve
+  filterChange: function(){
+    this.page = 0; //Reset the page we are on (pagination)
+    this.search();
+  },
+  next: function(){
+    this.page++;
+    console.log("The page we are on.", this.page);
+    this.search();
+  },
+  prev: function(){
+    this.page--;
+    console.log("The page we are on.", this.page);
+    this.search();
+  },
+  search: function(){
     try{
       var cb = function(){
         if(this.filterTitle != ''){
-          this.arr = this.loader.query({title: this.filterTitle})
+          this.arr = this.loader.query({
+            title: this.filterTitle,
+            state: this.state,
+            page:  this.page
+          })
         }else{
           this.load();
         }
       }.bind(this);
-
       this.deferOp(cb);
     }catch(e){
       console.error("Failed to filter hange.", e)
@@ -498,9 +519,6 @@ $.extend(DubMark.ProjectList.prototype, {
       }
     }.bind(this, cb);
     this.callIt();
-  },
-  search: function(){
-    this.filterChange();
   },
   createDialog: function(){
     console.log("New Project");
@@ -544,12 +562,6 @@ $.extend(DubMark.ProjectList.prototype, {
   },
   refresh: function(){
     this.load();
-  },
-  next: function(){
-    console.log("Next");
-  },
-  prev: function(){
-    console.log("Previous");
   },
   setActive: function(proj){
     console.log("Set Active", proj);
