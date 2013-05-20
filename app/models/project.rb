@@ -7,8 +7,7 @@ class Project
   key :create_date, DateTime
   key :start_date, String
   key :end_date, String
-  key :status, String
+  key :status, Hash
   key :vidUrl, String
   key :vidType, String
-
 end

@@ -8,6 +8,15 @@ DubMark.Store = { //Instances go here for ease of debugging and console dev
 }; 
 DubMark.Modules = {};
 
+DubMark.States = DubMark.States || {
+  New: 'icon-plus',
+  VideoReady: 'icon-facetime-video',
+  Timed: 'icon-time',
+  Translated: 'icon-comment',
+  QA: 'icon-thumbs-up',
+  Completed: 'icon-ok',
+  Published: 'icon-envelope'
+};
 
 //Tweak these config settings before creating an instance so that we know where
 //to make ajax calls.
@@ -520,11 +529,35 @@ $.extend(DubMark.ProjectList.prototype, {
     }.bind(this, cb);
     this.callIt();
   },
+  isComplete: function(key){
+    if(this.active && this.active.status && this.active.status[key]){
+      return 'completed';
+    }
+    return '';
+  },
+  getStateIcon: function(key){
+    var icon =  DubMark.States[key];
+    if(key && this.active){
+      if(this.active.status[key]){
+        return icon;
+      }
+    }
+    return icon;
+  },
+  getStates: function(){
+    var newStates = {};
+    for (key in DubMark.States){
+      newStates[key] = null;
+    }
+    newStates.New = new Date();
+    return newStates;
+  },
   createDialog: function(){
-    console.log("New Project");
     this.newProject = {
       title: '',
-      vidUrl: ''
+      vidUrl: '',
+      state: 'New',
+      status: this.getStates()
     };
     this.getDialog();
     this.enableCreate(); //Ensure if something goes horribly wrong they can try to create
@@ -542,7 +575,6 @@ $.extend(DubMark.ProjectList.prototype, {
      this.closeDialog();
     
     //Make ajax call
-    this.newProject.state        = 'New';
     this.newProject.create_date  = new Date();
 
     this.loader.save(this.newProject, this.validateCreate.bind(this));

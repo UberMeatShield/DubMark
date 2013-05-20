@@ -1,100 +1,112 @@
-    <!-- Probably want to make this entire thing into a template -->
-    <div ng-app='dub' ng-controller="DubMark.ProjectListings" class="listings container-fluid ">
-      <div class="row-fluid">
-        <div class="span5">
-          <div class="navbar navbar-inner">
-          <form class="span13 navbar-form">
-            <span class='brand'>Projects</span>
-              <button title='Create a new project' ng-click="list.createDialog()"    class="btn">
-                <i class="icon-plus-sign"></i>
-              </button>
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              <!-- TODO: Make the UI actually have a proper pagination counter... sadly counts in mongo are actually expensive? -->
-              <button title='Previous' ng-click="list.prev()"    class="btn">
-                <i class="icon-step-backward"></i>
-              </button>
-
-              <button title='Refresh'  ng-click="list.refresh()" class="btn">
-                <i class="icon-refresh"></i>
-              </button>
-
-              <button title='Next'     ng-click="list.next()"    class="btn">
-                <i class="icon-step-forward"></i>
-              </button>
 
 
-              <button title='Search'   ng-click="list.search()"  class="btn pull-right">
-                <i class="icon-search"></i>
-              </button>
-              <input type="text" ng-model="list.filterTitle" ng-change="list.filterChange()"
-                     class="pull-right" placeholder="Filter projects"> </input>
-          </form>
+<!-- Probably want to make this entire thing into a template -->
+<div ng-app='dub' ng-controller="DubMark.ProjectListings" class="listings container-fluid ">
+  <div class="row-fluid">
+    <div class="span5">
+      <div class="navbar navbar-inner">
+      <form class="span13 navbar-form">
+        <span class='brand'>Projects</span>
+          <button title='Create a new project' ng-click="list.createDialog()"    class="btn">
+            <i class="icon-plus-sign"></i>
+          </button>
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          <!-- TODO: Make the UI actually have a proper pagination counter... sadly counts in mongo are actually expensive? -->
+          <button title='Previous' ng-click="list.prev()"    class="btn">
+            <i class="icon-step-backward"></i>
+          </button>
+
+          <button title='Refresh'  ng-click="list.refresh()" class="btn">
+            <i class="icon-refresh"></i>
+          </button>
+
+          <button title='Next'     ng-click="list.next()"    class="btn">
+            <i class="icon-step-forward"></i>
+          </button>
+
+
+          <button title='Search'   ng-click="list.search()"  class="btn pull-right">
+            <i class="icon-search"></i>
+          </button>
+          <input type="text" ng-model="list.filterTitle" ng-change="list.filterChange()"
+                 class="pull-right" placeholder="Filter projects"> </input>
+      </form>
+      </div>
+
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <td>Title</td>
+          <td>Status</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class='{{list.isActive(proj)}}' ng-repeat="proj in list.arr" ng-click="list.setActive(proj)"> 
+          <td>{{proj.title}}</td>
+          <td>{{proj.state}} {{ proj.status[proj.state] }}</td> <!-- Trim the date?" -->
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Information about the currently selected project. -->
+    <div class="span7 project_info">
+      <div class="navbar navbar-inner">
+        <span class='brand'> Project Information: {{list.active.title}}</span>
+        <button ng-disabled="!list.active" class="btn pull-right" title="Open to edit" ng-click="list.openActive()">
+          <i class="icon-edit"></i>
+        </button>
+      </div>
+      <div>
+        <!-- Show details -->
+        <div class="container-fluid">
+          <div class="row-fluid">
+            <div class="span5 image-project">Image        {{list.active.imageUrl}}</div>
+            <div class="span5">Description {{list.active.description}}</div>
           </div>
 
-          <table class="table table-striped">
-            <thead>
-            <tr>
-              <td>Title</td>
-              <td>Status</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class='{{list.isActive(proj)}}' ng-repeat="proj in list.arr" ng-click="list.setActive(proj)"> 
-              <td>{{proj.title}}</td>
-              <td>{{proj.state}}</td>
-            </tr>
-            </tbody>
-          </table>
-
-          <!--
-          <ul class="nav nav-list"> 
-            <li class='{{list.isActive(proj)}}' ng-repeat="proj in list.arr" ng-click="list.setActive(proj)"> 
-            <a>
-              {{proj.title}} 
-              <span> - {{proj.state}} {{proj.date}}</span> 
-            </a>
-            </li>
-          </ul>
-          -->
-        </div>
-
-        <div class="span7 project_info">
-          <div class="navbar navbar-inner">
-            <span class='brand'> Project Information: {{list.active.title}}</span>
-            <button ng-disabled="!list.active" class="btn pull-right" title="Open to edit" ng-click="list.openActive()">
-              <i class="icon-edit"></i>
-            </button>
+          <div class="row-fluid">
+            <div class="span2"> Progress </div>
+            
+            <div class="text-center " ng-repeat="key in ['New', 'Timed', 'Translated', 'QA', 'Completed', 'Published']">
+              <div class="span1" ng-class="list.isComplete(key)">
+                <img ng-class="list.getStateIcon(key)" title="{{key}} {{list.active.status[key]}}"  />
+              </div>
+            </div>
           </div>
-          <div>
-            {{list.active.description}}
-            Image:
-            State:
-            Translator:
-            QA:  
-            Publish Status: 
+          <div class="row-fluid">
+            <div class="span2">Translator   {{list.active.translator}}</div>
+          </div>
+          <div class="row-fluid">
+            <div class="span2">Notes        {{list.active.notes}}</div>
+          </div>
+          <div class="row-fluid">
+            <div class="span2">Link        </div><div class="span4"> {{list.active.link}}</div>
           </div>
         </div>
 
       </div>
+    </div>
+  </div>
 
-      <div class="hidden" id="newProject">
-        <input  ng-model="list.newProject.title"       type=text placeholder="Title"/>
-        <input  ng-model="list.newProject.vidUrl"      type=text placeholder="Video url"/>
-        <button ng-disabled='list.disableCreateButton' class="btn" ng-click="list.createAndOpen()"> Confirm</button>
-      </div>
-    </div> <!-- End main controller section -->
+  <div class="hidden" id="newProject">
+    <input  ng-model="list.newProject.title"       type=text placeholder="Title"/>
+    <input  ng-model="list.newProject.vidUrl"      type=text placeholder="Video url"/>
+    <button ng-disabled='list.disableCreateButton' class="btn" ng-click="list.createAndOpen()"> Confirm</button>
+  </div>
+</div> <!-- End main controller section -->
 
-    <script type="text/javascript">
-      DubMark.Config.base.url = 'http://localhost\\:3000/';
-      //Angular uses : to denote replacement elements... this is dumb
-      //So if you need to specify a port, you have to include the escaped \ in front of any : 
-      DubMark.ProjectListings = function($scope, $resource, Project){
-        var list = new DubMark.ProjectList();
-        list.$scope = $scope;
-        list.loader = Project;
-        $scope.list = list;
-        list.load();
-      };
-    </script>
+<script type="text/javascript">
+  DubMark.Config.base.url = 'http://localhost\\:3000/';
+  //Angular uses : to denote replacement elements... this is dumb
+  //So if you need to specify a port, you have to include the escaped \ in front of any : 
+  DubMark.ProjectListings = function($scope, $resource, Project){
+    var list = new DubMark.ProjectList();
+    list.$scope = $scope;
+    list.loader = Project;
+    $scope.list = list;
+    list.load();
+  };
+</script>

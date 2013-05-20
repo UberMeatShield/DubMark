@@ -15,3 +15,6 @@
 
  *= require_tree .
  */
+.completed{
+  background-color: #00B800;
+}
