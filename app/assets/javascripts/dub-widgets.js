@@ -4,7 +4,6 @@ DubMark.Modules.Dub.directive("status", function() {
     transclude: true,
     scope: true,
     controller: function($scope, $element) {
-      console.log("Scope args", $scope);
       //How do I get the scope of the item hacked in?
       $scope.isComplete = function(key){
         if($scope.proj.status[key]){
@@ -20,7 +19,7 @@ DubMark.Modules.Dub.directive("status", function() {
       '<div class="row-fluid">' +
         '<div class="text-center " ng-repeat=\'key in ["New", "Timed", "Translated", "QA", "Completed",           "Published"]\' >' +
           '<div class="span2" ng-class="isComplete(key)">' +
-          '<img ng-class="getStateIcon(key)" />' +
+          '<img ng-class="getStateIcon(key)" title="{{key}} {{proj.status[key]}}"/>' +
           '</div>' +
         '</div>' +
       '</div>' +
