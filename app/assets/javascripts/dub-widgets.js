@@ -10,6 +10,11 @@ DubMark.Modules.Dub.directive("status", function() {
           return 'completed';
         }
       };
+      $scope.changeState = function(){
+          //Create a dialog (or just get a singleton and point it at this proj)
+          //
+          //DubMark.GetStateDialog($scope.proj); //this?
+      };
       $scope.getStateIcon = function(key){
         return DubMark.States[key];
       };
