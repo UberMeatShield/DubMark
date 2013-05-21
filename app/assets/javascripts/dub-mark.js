@@ -50,41 +50,6 @@ DubMark.Config = {
   }
 };
 
-
-//Note the module name is the same as ng-app="dub"
-var dub = angular.module('dub', ['ngResource']);
-dub.factory('Project', function($resource){
-  var rez = $resource(
-      DubMark.Config.getUrl('projects') + '/:id', 
-      {format: 'json'}, //Fucking docs...
-      { 'get':    {method:'GET'},
-        'save':   {method:'POST'},
-        'query':  {method:'GET', isArray:true},
-        'remove': {method:'DELETE'},
-        'delete': {method:'DELETE'} 
-      }
-  );
-  rez.open = function(id){
-    window.open('projects/' + id + '/edit/');
-  };
-  return rez;
-});
-
-dub.factory('Subtitles', function($resource){
-  var rez = $resource(
-      DubMark.Config.getUrl('subs') + '/:id', 
-      {format: 'json'}, //Fucking docs...
-      { 'get':    {method:'GET'},
-        'save':   {method:'POST'},
-        'query':  {method:'GET', isArray:true},
-        'remove': {method:'DELETE'},
-        'delete': {method:'DELETE'} 
-      }      
-  );
-  return rez;
-});
-DubMark.Modules.Dub = dub;
-
 /**
  *  Manages loads and writes to the subtitle module
  */
@@ -474,7 +439,7 @@ $.extend(DubMark.ProjectList.prototype, {
     //Ajax call to the server, attempt to load the list of projects we have avail
     this.loader = this.loader || new DubMark.MockProjectResource();
     this.arr = this.loader.query(function(wtf){
-      console.log("Feel the hate", wtf);
+      console.log("Project list loaded successfully.");
     });
   },
   filterChange: function(){

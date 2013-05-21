@@ -15,4 +15,7 @@
 //= require bootstrap
 //= require angular
 //= require angular-resource
-//= require_tree .
+
+//= require dub-mark.js
+//= require dub-mark-angular.js
+//= require dub-widgets.js
