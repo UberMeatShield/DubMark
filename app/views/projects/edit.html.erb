@@ -1,4 +1,6 @@
-    <div ng-app='dub' ng-controller="ProjectEntry" id="main" class="main">
+  <div class="banner"><div>
+
+  <div ng-app='dub' ng-controller="ProjectEntry" id="main" class="main">
 
       <!-- Navbar, TODO: add google translate options here? -->
       <div id="topBar" class="navbar navbar-inner">
@@ -8,6 +10,8 @@
           &nbsp;
           &nbsp;
         </form>
+
+        <!-- Allow the user to change the status of the project.  Requires $scope.proj to be a $Resource of Project -->
         <span class="brand"> Status </span>
         <div class="span4" style="margin-top: 5px">
             <status></status>

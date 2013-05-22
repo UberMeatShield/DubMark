@@ -44,7 +44,10 @@
         </tr>
         </thead>
         <tbody>
-        <tr class='{{list.isActive(proj)}}' ng-repeat="proj in list.arr" ng-click="list.setActive(proj)"> 
+          <tr class='{{list.isActive(proj)}}' 
+            ng-repeat="proj in list.arr" 
+            ng-click="list.setActive(proj)" 
+            ng-dblclick="list.openActive()"> 
           <td>{{proj.title}}</td>
           <td>
             <status ng-scope=proj></status>
