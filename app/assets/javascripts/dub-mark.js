@@ -529,8 +529,8 @@ $.extend(DubMark.ProjectList.prototype, {
   },
   getDialog: function(){
    var n = $('#newProject');
-   n.removeClass('hidden');
-   n.dialog({title: 'New Project'});
+       n.removeClass('hidden');
+       n.dialog({title: 'New Project'});
   },
   closeDialog: function(){
     $('#newProject').dialog('close');

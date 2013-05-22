@@ -10,23 +10,51 @@ DubMark.Modules.Dub.directive("status", function() {
           return 'completed';
         }
       };
-      $scope.changeState = function(){
-          //Create a dialog (or just get a singleton and point it at this proj)
-          //
-          //DubMark.GetStateDialog($scope.proj); //this?
+      $scope.changeState = function(key){
+        console.log("Change status for: ", div, key);
+
+        this.statusKey = key;
+        var div = $('#status_change_' + $scope.proj.id); 
+            div.removeClass('hidden');
+
+        var text = !this.proj.status[key] ? 'Done with: ' + key : 'NOT done: ' + key;
+        var dialog = div.dialog({
+          title: text,
+          modal: true,
+          buttons: {
+            'Save': function(){  
+              //Set vs unset
+              if(!this.proj.status[this.statusKey]){ 
+                this.proj.status[this.statusKey] = new Date();
+              }else{
+                this.proj.status[this.statusKey] = null;
+              }
+              this.proj.$save();
+
+              
+              //Close the dialog post save.
+              $(dialog).dialog('close');
+            }.bind(this)
+          }
+        });
       };
+
       $scope.getStateIcon = function(key){
         return DubMark.States[key];
       };
     },
     template: 
     '<div class="container-fluid">' +
+      '<div id="status_change_{{proj.id}}" class="hidden">' + //Hidden container for the popup
+        'Confirm State Change' +
+      '</div>' +
       '<div class="row-fluid">' +
-        '<div class="text-center " ng-repeat=\'key in ["New", "Timed", "Translated", "QA", "Completed",           "Published"]\' >' +
-          '<div class="span2" ng-class="isComplete(key)">' +
-          '<img ng-class="getStateIcon(key)" title="{{key}} {{proj.status[key]}}"/>' +
+          '<div class="span2 text-center"' + 
+           ' ng-class=isComplete(key)' +
+           ' ng-click=changeState(key)' +
+           ' ng-repeat=\'key in ["New", "Timed", "Translated", "QA", "Completed", "Published"]\' >' +
+            '<img ng-class="getStateIcon(key)" title="{{key}} {{proj.status[key]}}"/>' +
           '</div>' +
-        '</div>' +
       '</div>' +
     '</div>',
     replace: true
