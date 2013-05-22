@@ -1,3 +1,9 @@
+/**
+ * Provides a state handler that can be used on a project item to update the status information.
+ *
+ * It requires a .proj to be available in the scope, so either ng-init="proj = $Resource" or something
+ * similar
+ */
 DubMark.Modules.Dub.directive("status", function() {
   return {
     restrict: "E",
@@ -17,7 +23,7 @@ DubMark.Modules.Dub.directive("status", function() {
         var div = $('#status_change_' + $scope.proj.id); 
             div.removeClass('hidden');
 
-        var text = !this.proj.status[key] ? 'Done with: ' + key : 'NOT done: ' + key;
+        var text = !this.proj.status[key] ? 'Set Done: ' + key : 'Set NOT Done: ' + key;
         var dialog = div.dialog({
           title: text,
           modal: true,
@@ -31,7 +37,6 @@ DubMark.Modules.Dub.directive("status", function() {
               }
               this.proj.$save();
 
-              
               //Close the dialog post save.
               $(dialog).dialog('close');
             }.bind(this)

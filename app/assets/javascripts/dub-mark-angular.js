@@ -43,11 +43,18 @@ dub.controller('ProjectListings', function($scope, $resource, Project){
 dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, Subtitles){
   var args = DubMark.Config.PageConfig || {};
 
+  if(!args.id){
+    console.error("Complete and total fail, crash the page yo");
+  }
+
   args.vidUrl  = 'http://localhost:3000/Sample.webm';
   args.vidType = 'video/ogg';
   console.warn("Video URL is being set by default hacky test purposes");
 
-  args.ResourceProject =    Project;
+  //Initialize with the json from the rails call, single instance vs a lib reference
+  args.ResourceProject =    new Project(args); 
+
+  //Subtitles is going to have to build an array of these items so it is the lib
   args.ResourceSubtitles =  Subtitles;
   args.$scope =             $scope;
 
@@ -55,10 +62,10 @@ dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, 
   if(inp){
     args.video = inp.value;
   }
-  var proj = new DubMark.Project(args);
-  $scope.project = proj;  //Don't re-namespace unless you change all the refs in the html
+  $scope.project = new DubMark.Project(args);
+  $scope.proj    = args.ResourceProject;
 
-  proj.load();
-  console.log("Project correct?, Subtitle correct?", Project, Subtitles);
+  $scope.project.load();
+  
 });
 DubMark.Modules.Dub = dub;

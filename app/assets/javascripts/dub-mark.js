@@ -69,6 +69,7 @@ $.extend(DubMark.SubManager.prototype, {
     this.ResourceSub = args.ResourceSubtitles; 
   },
   load: function(args){
+          console.log("Args for the load?", args);
     args = args || {projectId: this.projectId};
     if(this.ResourceSub){
       this.arr = this.ResourceSub.query(args);
@@ -380,7 +381,7 @@ $.extend(DubMark.Project.prototype, {
    */
   load: function(){
     if(this.ResourceProject){
-      this.ResourceProject.get({id: this.id}, this.loadCb.bind(this));
+      this.ResourceProject.$get({id: this.id}, this.loadCb.bind(this));
 
       this.subs.load();
     }

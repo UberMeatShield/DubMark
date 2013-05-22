@@ -3,10 +3,15 @@
       <!-- Navbar, TODO: add google translate options here? -->
       <div id="topBar" class="navbar navbar-inner">
         <form class="navbar-form pull-left">
-          <span class="brand"> Project </span>
-          <input ng-model="project.title"  type="text" /> 
+          <span class="brand"> Title </span>
+          <input class="span4" ng-model="project.title"  type="text" /> 
+          &nbsp;
           &nbsp;
         </form>
+        <span class="brand"> Status </span>
+        <div class="span4" style="margin-top: 5px">
+            <status></status>
+        </div>
       </div>
 
       <!-- Top level container for the rest of the page elements -->
@@ -15,6 +20,7 @@
           <div id="video" class="span7"> 
             <!-- Placeholder for where we are going to insert the video -->
           </div>
+
 
           <!-- For editing the subtitle that you select -->
           <div id="subtitles" class="span5">
@@ -84,12 +90,6 @@
                 </form>
               </div>
 
-            </div>
-
-            <!-- The current text per time, click will select the sub based on video time -->
-            <div class="well" ng-click="project.controls.setCurrentSubByTime()">
-              <div class="nav-header">  Current Text For Video Time</div>
-              Translation: {{project.control.activeText}} 
             </div>
 
             <!-- A listing of all the existing subtitles, can click to select them -->
