@@ -47,8 +47,8 @@ dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, 
     console.error("Complete and total fail, crash the page yo");
   }
 
-  args.vidUrl  = 'http://localhost:3000/Sample.webm';
-  args.vidType = 'video/ogg';
+  //args.vidUrl  = 'http://localhost:3000/Sample.webm';
+  //args.vidType = 'video/ogg';
   console.warn("Video URL is being set by default hacky test purposes");
 
   //Initialize with the json from the rails call, single instance vs a lib reference

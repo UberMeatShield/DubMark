@@ -69,7 +69,7 @@ $.extend(DubMark.SubManager.prototype, {
     this.ResourceSub = args.ResourceSubtitles; 
   },
   load: function(args){
-          console.log("Args for the load?", args);
+    console.log("Args for the load?", args);
     args = args || {projectId: this.projectId};
     if(this.ResourceSub){
       this.arr = this.ResourceSub.query(args);
@@ -84,7 +84,7 @@ $.extend(DubMark.SubManager.prototype, {
       this.deferSave(this.curr);
     }
   },
-  deferSave: function(obj){
+  deferSave: function(obj){ //Note obj is what is bound, NOT this.curr
     if(this.saveIt && obj) return;
     this.saveIt = function(obj){
       try{
@@ -266,6 +266,9 @@ $.extend(DubMark.VideoView.prototype, {
   init: function(id){ 
     this.id   = id;
     this.fail_listen = 0;
+
+    this.vidUrl = null;
+    this.testVidChange = null; //For modification tests pre-save
   },
   createVideo: function(vidUrl, vidType){
     if(vidUrl && this.videoDom){
@@ -293,6 +296,9 @@ $.extend(DubMark.VideoView.prototype, {
   },
   setDomContainer: function(domId){
     this.videoDom = domId;
+  },
+  vidUrlChanged: function(){
+
   },
   listen: function(vid){ //Supposedly didCreateElement works.. but no such luck for me?
     if(this.fail_listen > 20) return;

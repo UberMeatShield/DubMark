@@ -58,9 +58,69 @@ DubMark.Modules.Dub.directive("status", function() {
            ' ng-class=isComplete(key)' +
            ' ng-click=changeState(key)' +
            ' ng-repeat=\'key in ["New", "Timed", "Translated", "QA", "Completed", "Published"]\' >' +
-            '<img ng-class="getStateIcon(key)" title="{{key}} {{proj.status[key]}}"/>' +
+            '<i ng-class="getStateIcon(key)" title="{{key}} {{proj.status[key]}}"/>' +
           '</div>' +
       '</div>' +
+    '</div>',
+    replace: true
+  };
+});
+
+
+DubMark.Modules.Dub.directive('videomanager', function(){
+  return {
+    restrict: "E",
+    transclude: true,
+    scope: true,
+    controller: function($scope, $element) {
+      console.log("VideoManager.", $scope, $element);
+
+      $scope.setVideoUrl = function(){
+        console.log("Set video url.");
+      };
+
+      $scope.changeVideo = function(){
+        console.log("Change video", $scope);
+
+        var div = $('#vid_change_' + $scope.project.id);
+            div.removeClass('hidden');
+
+        var dialog = div.dialog({
+          title: 'Video Url Change',
+          modal: true,
+          buttons: {
+            'Save': function(){
+              try{
+                console.log("Save the video update");
+                var vid = this.project.vid;
+                this.proj.vidUrl  = vid.vidUrl;
+                this.proj.vidType = vid.vidType;
+                this.proj.$save();
+
+                $('#video').empty();
+
+                vid.createVideo(vid.vidUrl, vid.vidType);
+                console.log("Update the vid url.");
+                $(dialog).dialog('close');
+              }catch(e){
+                console.error('Failed to update the video url.', e);
+              }
+            }.bind(this)
+          }
+        });
+      };
+    },
+    template: 
+    '<div class="well span7">' +
+      '<div id="video"></div>' + //Video elements are going to be added in here.
+      '<div id="vid_change_{{project.id}}" class="hidden">' +
+        //INTENTIONAL-> Do not update the ProjectResource directly without a commit / save
+        '<input class="span5" type="text" ng-model=project.vid.vidUrl placeholder="Video Url"/>' +
+        '<input class="span5" type="text" ng-model=project.vid.vidType placeholder="Video Type"/>' +
+      '</div>' +
+      '<button class="btn" ng-click=changeVideo()>' +
+        '<i class="icon-plus" /> Change Video'  + 
+      '</button>' +
     '</div>',
     replace: true
   };
