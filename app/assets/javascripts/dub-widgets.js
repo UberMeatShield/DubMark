@@ -27,6 +27,7 @@ DubMark.Modules.Dub.directive("status", function() {
         var dialog = div.dialog({
           title: text,
           modal: true,
+          minWidth: 500, //Hm, bootstrap width classes seem to fail...
           buttons: {
             'Save': function(){  
               //Set vs unset
@@ -57,7 +58,7 @@ DubMark.Modules.Dub.directive("status", function() {
           '<div class="span2 text-center"' + 
            ' ng-class=isComplete(key)' +
            ' ng-click=changeState(key)' +
-           ' ng-repeat=\'key in ["New", "Timed", "Translated", "QA", "Completed", "Published"]\' >' +
+           ' ng-repeat=\'key in ["VideoReady", "Timed", "Translated", "QA", "Completed", "Published"]\' >' +
             '<i ng-class="getStateIcon(key)" title="{{key}} {{proj.status[key]}}"/>' +
           '</div>' +
       '</div>' +
@@ -88,17 +89,19 @@ DubMark.Modules.Dub.directive('videomanager', function(){
         var dialog = div.dialog({
           title: 'Video Url Change',
           modal: true,
-          minWidth: 500,
+          minWidth: 500, //Hm, bootstrap width classes seem to fail...
           buttons: {
             'Save': function(){
               try{
                 console.log("Save the video update");
                 var vid = this.project.vid;
-                this.proj.vidUrl  = vid.vidUrl;
-                this.proj.vidType = vid.vidType;
+                this.proj.vidUrl            = vid.vidUrl;
+                this.proj.status = this.proj.status || {};
+                this.proj.status.VideoReady = vid.vidUrl ? new Date() : null;
                 this.proj.$save();
 
                 $('#video').empty();
+
 
                 vid.createVideo(vid.vidUrl, vid.vidType);
                 console.log("Update the vid url.");

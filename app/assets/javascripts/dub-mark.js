@@ -543,13 +543,15 @@ $.extend(DubMark.ProjectList.prototype, {
   closeDialog: function(){
     $('#newProject').dialog('close');
   },
-  createAndOpen: function(){
+  createAndOpen: function(){ //Linked from the save button... hmmm
      this.disableCreate();
      this.closeDialog();
     
     //Make ajax call
     this.newProject.create_date  = new Date();
-
+    if(this.newProject.vidUrl){
+      this.newProject.status.VideoReady = new Date();
+    }
     this.loader.save(this.newProject, this.validateCreate.bind(this));
     this.newProject = null;
   },
