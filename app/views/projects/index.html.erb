@@ -4,17 +4,28 @@
 <!-- Probably want to make this entire thing into a template -->
 <div ng-app='dub' ng-controller="ProjectListings" class="listings container-fluid ">
   <div class="row-fluid">
-    <div class="span5">
+    <div class="span6">
       <div class="navbar navbar-inner">
       <form class="span13 navbar-form">
         <span class='brand'>Projects</span>
+
+          <!-- Used in jQuery dialog, could just make this into another angular module?" -->
+          <div class="hidden" id="newProject">
+            <input  ng-model="list.newProject.title" style="width:100%;" type=text placeholder="Title"/>
+            <input  ng-model="list.newProject.vidUrl"style="width:100%;" type=text placeholder="Video url"/>
+            <button ng-disabled='list.disableCreateButton' class="btn" ng-click="list.createAndOpen()"> 
+              Confirm
+            </button>
+          </div>
           <button title='Create a new project' ng-click="list.createDialog()"    class="btn">
             <i class="icon-plus-sign"></i>
           </button>
+
+          <!-- TODO: Make the UI actually have a proper pagination counter... 
+          sadly counts in mongo are actually expensive? -->
           &nbsp;
           &nbsp;
           &nbsp;
-          <!-- TODO: Make the UI actually have a proper pagination counter... sadly counts in mongo are actually expensive? -->
           <button title='Previous' ng-click="list.prev()"    class="btn">
             <i class="icon-step-backward"></i>
           </button>
@@ -41,6 +52,7 @@
         <tr>
           <td>Title</td>
           <td>Status</td>
+          <td>Created</td>
         </tr>
         </thead>
         <tbody>
@@ -52,13 +64,16 @@
           <td>
             <status ng-scope=proj></status>
           </td>
+          <td>
+            <span>{{proj.create_date}}</span>
+          </td>
         </tr>
         </tbody>
       </table>
     </div>
 
     <!-- Information about the currently selected project. -->
-    <div class="span7 project_info">
+    <div class="span6 project_info">
       <div class="navbar navbar-inner">
         <span class='brand'> Project Information: {{list.active.title}}</span>
         <button ng-disabled="!list.active" class="btn pull-right" title="Open to edit" ng-click="list.openActive()">
@@ -88,11 +103,6 @@
     </div>
   </div>
 
-  <div class="hidden" id="newProject">
-    <input  ng-model="list.newProject.title"       type=text placeholder="Title"/>
-    <input  ng-model="list.newProject.vidUrl"      type=text placeholder="Video url"/>
-    <button ng-disabled='list.disableCreateButton' class="btn" ng-click="list.createAndOpen()"> Confirm</button>
-  </div>
 </div> <!-- End main controller section -->
 
 <script type="text/javascript">

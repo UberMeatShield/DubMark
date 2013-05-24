@@ -88,6 +88,7 @@ DubMark.Modules.Dub.directive('videomanager', function(){
         var dialog = div.dialog({
           title: 'Video Url Change',
           modal: true,
+          minWidth: 500,
           buttons: {
             'Save': function(){
               try{
@@ -114,9 +115,7 @@ DubMark.Modules.Dub.directive('videomanager', function(){
     '<div class="well span7">' +
       '<div id="video"></div>' + //Video elements are going to be added in here.
       '<div id="vid_change_{{project.id}}" class="hidden">' +
-        //INTENTIONAL-> Do not update the ProjectResource directly without a commit / save
-        '<input class="span5" type="text" ng-model=project.vid.vidUrl placeholder="Video Url"/>' +
-        '<input class="span5" type="text" ng-model=project.vid.vidType placeholder="Video Type"/>' +
+        '<input style="width:100%;" type="text" ng-model=project.vid.vidUrl placeholder="Video Url"/>' +
       '</div>' +
       '<button class="btn" ng-click=changeVideo()>' +
         '<i class="icon-plus" /> Change Video'  + 

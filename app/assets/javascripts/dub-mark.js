@@ -272,6 +272,7 @@ $.extend(DubMark.VideoView.prototype, {
   },
   createVideo: function(vidUrl, vidType){
     if(vidUrl && this.videoDom){
+      this.vidUrl = vidUrl;
       try{ //Video tags do not play nice with post process operations.
         var v  = $('#' + this.videoDom)
         if(!v) {
@@ -537,7 +538,7 @@ $.extend(DubMark.ProjectList.prototype, {
   getDialog: function(){
    var n = $('#newProject');
        n.removeClass('hidden');
-       n.dialog({title: 'New Project'});
+       n.dialog({title: 'New Project', minWidth: 500});
   },
   closeDialog: function(){
     $('#newProject').dialog('close');
