@@ -17,5 +17,6 @@
 //= require angular-resource
 
 //= require dub-mark.js
+//= require dub-keypress.js
 //= require dub-mark-angular.js
 //= require dub-widgets.js

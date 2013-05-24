@@ -8,6 +8,7 @@ DubMark.Store = { //Instances go here for ease of debugging and console dev
 }; 
 DubMark.Modules = {};
 
+//I want to make this scope properly avail from the directives, but they do not play nice?
 DubMark.States = DubMark.States || {
   New: 'icon-plus',
   VideoReady: 'icon-facetime-video',

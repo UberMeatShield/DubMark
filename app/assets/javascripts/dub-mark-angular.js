@@ -31,6 +31,7 @@ dub.factory('Subtitles', function($resource){
   return rez;
 });
 
+//For the index.html page
 dub.controller('ProjectListings', function($scope, $resource, Project){
   var list = new DubMark.ProjectList();
   list.$scope = $scope;
@@ -39,6 +40,7 @@ dub.controller('ProjectListings', function($scope, $resource, Project){
   list.load();
 });
 
+//This is used on the edit page
 //PageConfig comes from the serialization of the actual json data we already have in the page
 dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, Subtitles){
   var args = DubMark.Config.PageConfig || {};
@@ -52,19 +54,15 @@ dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, 
   console.warn("Video URL is being set by default hacky test purposes");
 
   //Initialize with the json from the rails call, single instance vs a lib reference
-  args.ResourceProject =    new Project(args); 
+  args.ResourceProject   = new Project(args);  //$resource single instance to update vs ability to query
+  args.ResourceSubtitles = Subtitles;          //$resource subtitle endpoint
+  args.$scope =            $scope; //Newb learning
 
-  //Subtitles is going to have to build an array of these items so it is the lib
-  args.ResourceSubtitles =  Subtitles;
-  args.$scope =             $scope;
+  //Point various bits of scope at each other
+  $scope.project  = new DubMark.Project(args);
+  $scope.keypress = new DubMark.KeyPress($scope.project);
 
-  var inp = $("#video_url");
-  if(inp){
-    args.video = inp.value;
-  }
-  $scope.project = new DubMark.Project(args);
-  $scope.proj    = args.ResourceProject;
-
+  $scope.proj     = args.ResourceProject;
   $scope.project.load();
   
 });
