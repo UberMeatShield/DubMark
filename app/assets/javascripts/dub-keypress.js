@@ -91,7 +91,7 @@ $.extend(DubMark.KeyPress.prototype, {
       console.error("Failed to listen to the key up events.", e);
     }
   },
-  sleep: function(w, target){//Stop paying attention to keypress events on the widget
+  sleep: function(target){//Stop paying attention to keypress events on the widget
     try{
       target = target || window.document;
       if(this.listener){
@@ -113,5 +113,8 @@ $.extend(DubMark.KeyPress.prototype, {
       }.bind(this);
       document.body.onclick = this._bodyClick;
     }
+  },
+  toggleListen: function(){
+    this.listener ? this.sleep() : this.listen();
   }
 });
