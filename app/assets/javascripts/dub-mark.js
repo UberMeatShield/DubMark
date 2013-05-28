@@ -361,8 +361,8 @@ $.extend(DubMark.Project.prototype, {
   init: function(args){
     args = args || {};
     this.id    = args.id    || ++this.seq.id;
-    this.title = args.title || 'A Title'; //Make this editable
 
+    this.deferTime = 1500;
     //Resource loaders from Angular module and the angular scope
     this.ResourceProject   = args.ResourceProject;
     this.$scope            = args.$scope;
@@ -394,6 +394,33 @@ $.extend(DubMark.Project.prototype, {
       this.subs.load();
     }
   },
+  update: function(){
+    console.log("Does update?");
+    this.deferOp(function(){
+      console.log("Attempt to save.");
+      this.ResourceProject.$save();
+    }.bind(this));
+  },
+  deferOp: function(cb){
+    this.lastTimeChanged = new Date();
+    if(this.callIt || typeof cb != 'function'){return;}
+
+    this.callIt = function(cb){
+      try{
+        var d = new Date();
+        if((d - this.lastTimeChanged) > this.deferTime){
+          this.callIt = null;
+          this.lastTimeChanged = null;
+          cb();
+        }else{
+          setTimeout(this.callIt.bind(this, cb), this.deferTime+50); 
+        }
+      }catch(e){
+        console.error('Error on the save defer.', e);
+      }
+    }.bind(this, cb);
+    this.callIt();
+  },
   loadCb: function(response){
     console.log("Project Load Callback.", response);
   }
@@ -402,7 +429,7 @@ $.extend(DubMark.Project.prototype, {
 
 
 /**
- *  Todo: check out the angular mock classes
+ *  Todo: check out the angular mock classes instead of custom hack sauce
  */
 DubMark.MockProjectResource = function(){
   this.id = 0;
@@ -465,6 +492,7 @@ $.extend(DubMark.ProjectList.prototype, {
     console.log("The page we are on.", this.page);
     this.search();
   },
+
   search: function(){
     try{
       var cb = function(){
