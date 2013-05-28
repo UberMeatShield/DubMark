@@ -521,28 +521,12 @@ $.extend(DubMark.ProjectList.prototype, {
   getStates: function(){
     var newStates = {};
     for (key in DubMark.States){
-      newStates[key] = null;
+      if(typeof key == 'string'){
+        newStates[key] = null;
+      }
     }
     newStates.New = new Date();
     return newStates;
-  },
-  createDialog: function(){
-    this.newProject = {
-      title: '',
-      vidUrl: '',
-      state: 'New',
-      status: this.getStates()
-    };
-    this.getDialog();
-    this.enableCreate(); //Ensure if something goes horribly wrong they can try to create
-  },
-  getDialog: function(){
-   var n = $('#newProject');
-       n.removeClass('hidden');
-       n.dialog({title: 'New Project', minWidth: 500});
-  },
-  closeDialog: function(){
-    $('#newProject').dialog('close');
   },
   createAndOpen: function(){ //Linked from the save button... hmmm
      this.disableCreate();
@@ -557,7 +541,6 @@ $.extend(DubMark.ProjectList.prototype, {
     this.newProject = null;
   },
   validateCreate: function(response){
-    this.enableCreate(); //Ensure you can try and hit the submit button again.
     if(!response || !response.id){
       console.error("Failed to create.", response);
       return;
@@ -565,8 +548,7 @@ $.extend(DubMark.ProjectList.prototype, {
     this.arr.unshift(response); //Might not need to do this?
     this.setActive(response);
 
-    //Open the thing to edit if it was created correctly.
-    this.loader.open(response.id);
+    //this.loader.open(response.id);
   },
   refresh: function(){
     this.load();

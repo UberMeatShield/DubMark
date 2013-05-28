@@ -10,17 +10,8 @@
         <span class='brand'>Projects</span>
 
           <!-- Used in jQuery dialog, could just make this into another angular module?" -->
-          <div class="hidden" id="newProject">
-            <input  ng-model="list.newProject.title" style="width:100%;" type=text placeholder="Title"/>
-            <input  ng-model="list.newProject.vidUrl"style="width:100%;" type=text placeholder="Video url"/>
-            <button ng-disabled='list.disableCreateButton' class="btn" ng-click="list.createAndOpen()"> 
-              Confirm
-            </button>
-          </div>
-          <button title='Create a new project' ng-click="list.createDialog()"    class="btn">
-            <i class="icon-plus-sign"></i>
-          </button>
-
+          <create></create>
+          
           <!-- TODO: Make the UI actually have a proper pagination counter... 
           sadly counts in mongo are actually expensive? -->
           &nbsp;
@@ -106,5 +97,5 @@
 </div> <!-- End main controller section -->
 
 <script type="text/javascript">
-  DubMark.Config.base.url = 'http://localhost\\:3000/';
+//  DubMark.Config.base.url = 'http://localhost\\:3000/';
 </script>
