@@ -9,7 +9,6 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= require jquery-ui/css/ui-lightness/jquery-ui-1.10.2.custom.css
  *= require bootstrap/css/bootstrap
  *= require bootstrap/css/bootstrap-responsive
 

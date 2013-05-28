@@ -528,18 +528,6 @@ $.extend(DubMark.ProjectList.prototype, {
     newStates.New = new Date();
     return newStates;
   },
-  createAndOpen: function(){ //Linked from the save button... hmmm
-     this.disableCreate();
-     this.closeDialog();
-    
-    //Make ajax call
-    this.newProject.create_date  = new Date();
-    if(this.newProject.vidUrl){
-      this.newProject.status.VideoReady = new Date();
-    }
-    this.loader.save(this.newProject, this.validateCreate.bind(this));
-    this.newProject = null;
-  },
   validateCreate: function(response){
     if(!response || !response.id){
       console.error("Failed to create.", response);
@@ -547,8 +535,6 @@ $.extend(DubMark.ProjectList.prototype, {
     }
     this.arr.unshift(response); //Might not need to do this?
     this.setActive(response);
-
-    //this.loader.open(response.id);
   },
   refresh: function(){
     this.load();

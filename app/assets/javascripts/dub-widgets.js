@@ -3,6 +3,9 @@
  *
  * It requires a .proj to be available in the scope, so either ng-init="proj = $Resource" or something
  * similar
+ * 
+ *  Note: These get pretty complex pretty fast... might want to put them in a not so "Shared" location since
+ * they are still going to require access to the control modules?
  */
 DubMark.Modules.Dub.directive("status", function() {
   return {

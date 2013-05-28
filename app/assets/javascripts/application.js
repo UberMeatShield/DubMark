@@ -11,7 +11,6 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery/js/jquery-1.9.1.js
-//= require jquery/js/jquery-ui-1.10.2.custom.js
 //= require bootstrap
 //= require angular
 //= require angular-resource
