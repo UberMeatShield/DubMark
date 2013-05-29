@@ -16,8 +16,11 @@
         <div class="span4" style="margin-top: 5px">
             <status></status>
         </div>
-      </div>
 
+        <button class="btn " ng-class="project.keys.isEnabledClass()" ng-click="project.keys.toggle()">
+          <i class="icon-filter"></i>
+        </button>
+      </div>
       <!-- Top level container for the rest of the page elements -->
       <div class="container-fluid">
         <div class="row-fluid">

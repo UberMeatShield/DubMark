@@ -1,6 +1,8 @@
 DubMark.KeyPress = function(project){
   this.project = project;
   this.init(); 
+
+  this.enabled = true;
 };
 $.extend(DubMark.KeyPress.prototype, {
   init: function(){

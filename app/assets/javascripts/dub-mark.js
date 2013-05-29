@@ -268,10 +268,13 @@ $.extend(DubMark.VideoView.prototype, {
     this.id   = id;
     this.fail_listen = 0;
 
+    this.vid    = null; //Placeholder for the actual dom.
+    this.loaded = false;
     this.vidUrl = null;
     this.testVidChange = null; //For modification tests pre-save
   },
   createVideo: function(vidUrl, vidType){
+    this.loaded = false;
     if(vidUrl && this.videoDom){
       this.vidUrl = vidUrl;
       try{ //Video tags do not play nice with post process operations.
@@ -299,9 +302,6 @@ $.extend(DubMark.VideoView.prototype, {
   setDomContainer: function(domId){
     this.videoDom = domId;
   },
-  vidUrlChanged: function(){
-
-  },
   listen: function(vid){ //Supposedly didCreateElement works.. but no such luck for me?
     if(this.fail_listen > 20) return;
     if(!vid && this.id){
@@ -309,6 +309,7 @@ $.extend(DubMark.VideoView.prototype, {
     }
     if(vid && vid.length){
       this.vid = vid;
+      this.loaded = this.vid[0].canPlay ? true : false ;
       vid.bind('timeupdate', this.timeupdate.bind(this));
     } else{
       setTimeout(this.listen.bind(this, null), 200);
