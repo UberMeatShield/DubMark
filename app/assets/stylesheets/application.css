@@ -21,3 +21,8 @@
 .stateful{
   border: 1px solid #CCCCCC;
 }
+
+.stateful:hover{
+  border: 1px solid;
+}
+
