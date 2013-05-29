@@ -30,6 +30,7 @@ DubMark.Modules.Dub.directive("status", function() {
         dialog  = $('#status_change_' + $scope.proj.id).modal('show');
       };
       $scope.getStateIcon = function(key){
+        key = key || this.statusKey;
         return DubMark.States[key];
       };
       $scope.save = function(){
@@ -56,7 +57,7 @@ DubMark.Modules.Dub.directive("status", function() {
           '<h3>Change Status</h3>'+
         '</div>'+
         '<div class="modal-body">'+
-           '{{text}}'  +
+          '<i ng-class=getStateIcon()></i> {{text}}'  +
         '</div>'+
         '<div class="modal-footer">'+
           '<a ng-click="save()" href="#" class="btn btn-primary">Save</a>'+
@@ -64,11 +65,11 @@ DubMark.Modules.Dub.directive("status", function() {
         '</div>'+
       '</div>'+
       '<div class="row-fluid">' +
-          '<div class="span2 text-center"' + 
+          '<div class="span2 text-center stateful " title="{{key}}"' + 
            ' ng-class=isComplete(key)' +
            ' ng-click=changeState(key)' +
            ' ng-repeat=\'key in states\' >' +
-            '<i ng-class="getStateIcon(key)" title="{{key}} {{proj.status[key]}}"/>' +
+            '<i ng-class="getStateIcon(key)" {{proj.status[key]}}"/>' +
           '</div>' +
       '</div>' +
     '</div>',

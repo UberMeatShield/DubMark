@@ -17,3 +17,7 @@
 .completed{
   background-color: #00B800;
 }
+
+.stateful{
+  border: 1px solid #CCCCCC;
+}

@@ -16,7 +16,7 @@ DubMark.States = DubMark.States || {
   Translated: 'icon-comment',
   QA: 'icon-thumbs-up',
   Completed: 'icon-ok',
-  Published: 'icon-envelope'
+  Published: 'icon-share'
 };
 
 //Tweak these config settings before creating an instance so that we know where
