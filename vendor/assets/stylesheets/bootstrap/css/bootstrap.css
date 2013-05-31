@@ -2310,6 +2310,12 @@ table th[class*="span"],
   background-image: url("../img/glyphicons-halflings-white.png");
 }
 
+.keyboard-wireless{
+  width: 14px;
+  height: 14px;
+  background-image: url("../img/glyphicons_268_keyboard_wireless.png");
+}
+
 .icon-glass {
   background-position: 0      0;
 }

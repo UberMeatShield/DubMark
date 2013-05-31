@@ -1,8 +1,7 @@
 DubMark.KeyPress = function(project){
   this.project = project;
+  this.enabled = 'Off';
   this.init(); 
-
-  this.enabled = true;
 };
 $.extend(DubMark.KeyPress.prototype, {
   init: function(){
@@ -17,6 +16,9 @@ $.extend(DubMark.KeyPress.prototype, {
     },
     shiftKey: {
     },
+  },
+  isEnabled: function(){
+    return this.listener ? 'active' : ''; 
   },
   getSetCallStack: function(keyCode, op){//Get or empty init the calls stack for key presses
     if(typeof keyCode == 'undefined') return; 
@@ -83,6 +85,7 @@ $.extend(DubMark.KeyPress.prototype, {
     }
   },
   listen: function(target){ 
+    this.enabled = 'On';
     try{
       target = target || window.document;
       if(!this.listener){
@@ -94,6 +97,7 @@ $.extend(DubMark.KeyPress.prototype, {
     }
   },
   sleep: function(target){//Stop paying attention to keypress events on the widget
+    this.enabled = 'Off';
     try{
       target = target || window.document;
       if(this.listener){
@@ -116,7 +120,7 @@ $.extend(DubMark.KeyPress.prototype, {
       document.body.onclick = this._bodyClick;
     }
   },
-  toggleListen: function(){
-    this.listener ? this.sleep() : this.listen();
+  toggle: function(){
+    this.listener ? this.sleep()  : this.listen();
   }
 });
