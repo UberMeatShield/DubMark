@@ -7,8 +7,8 @@ gem 'rails', '3.2.13'
 
 gem 'sqlite3'
 
-gem 'mongoid'
 gem 'mongo_mapper'
+gem 'mongoid'
 gem 'bson_ext'
 
 # Gems used only for assets and not required

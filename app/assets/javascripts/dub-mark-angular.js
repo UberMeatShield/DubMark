@@ -33,18 +33,29 @@ dub.factory('Subtitles', function($resource){
 
 //For the index.html page
 dub.controller('ProjectListings', function($scope, $resource, Project){
-  var list = new DubMark.ProjectList();
-  list.$scope = $scope;
-  list.loader = Project;
+  var args = DubMark.Config.PageConfig || {};
+
+  if(args.data){
+    var arr = [];
+    var data = args.data;
+    for(var i=0; i< data.length; ++i){
+      arr.push(new Project(data[i]));
+    }
+    args.data = arr;
+  }
+
+  var list = new DubMark.ProjectList(args);
+      list.ResourceProject = Project; //For creating new instances
+      list.$scope = $scope;
+
   $scope.list = list;
-  list.load();
+  //list.load();
 });
 
 //This is used on the edit page
 //PageConfig comes from the serialization of the actual json data we already have in the page
 dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, Subtitles){
   var args = DubMark.Config.PageConfig || {};
-
   if(!args.id){
     console.error("Complete and total fail, crash the page yo");
   }

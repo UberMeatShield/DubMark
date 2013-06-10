@@ -22,6 +22,7 @@ DubMark.States = DubMark.States || {
 //Tweak these config settings before creating an instance so that we know where
 //to make ajax calls.
 DubMark.Config = {
+  DEBUG: true, //For eventual console log debugging.
   base: {
     url: '' //Assume same server url
   },
@@ -460,9 +461,8 @@ DubMark.ProjectList = function(args){
 $.extend(DubMark.ProjectList.prototype, {
   sequence: {id: 0},
   init: function(args){
-     this.arr = [];
+     this.arr = args && args.data ? args.data : [];
      this.active = null;
-     this.newProject  = {};
      this.deferTime   = 500;
 
      //Search oriented items.
@@ -474,8 +474,8 @@ $.extend(DubMark.ProjectList.prototype, {
   },
   load: function(){
     //Ajax call to the server, attempt to load the list of projects we have avail
-    this.loader = this.loader || new DubMark.MockProjectResource();
-    this.arr = this.loader.query(function(wtf){
+    this.ResourceProject = this.ResourceProject || new DubMark.MockProjectResource();
+    this.arr = this.ResourceProject.query(function(wtf){
       console.log("Project list loaded successfully.");
     });
   },
@@ -493,12 +493,11 @@ $.extend(DubMark.ProjectList.prototype, {
     console.log("The page we are on.", this.page);
     this.search();
   },
-
   search: function(){
     try{
       var cb = function(){
         if(this.filterTitle != ''){
-          this.arr = this.loader.query({
+          this.arr = this.ResourceProject.query({
             title: this.filterTitle,
             state: this.state,
             page:  this.page
@@ -584,7 +583,7 @@ $.extend(DubMark.ProjectList.prototype, {
   },
   openActive: function(){
      if(this.active && this.active.id){
-       this.loader.open(this.active.id);
+       this.ResourceProject.open(this.active.id);
      }
   },
   isActive: function(proj){
