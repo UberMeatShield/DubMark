@@ -5,89 +5,115 @@ DubMark.KeyPress = function(actionInstance){
   this.init(); 
 };
 
+/** 
+ * op - is the operation key, like shift etc
+ * keyString - the string representation of the keycode
+ * func - the function name on the actionInstance to run when the key is pressed
+ */
+DubMark.DefaultKeys = [
+   {op: 'noOp', keyString: "j", func: 'newSub'},
+   {op: 'noOp', keyString: "k",  func: 'endSub'},
+   {op: 'noOp', keyString: "l",  func: 'pauseAndEndSub'},
+   {op: 'noOp', keyString: "s",  func: 'setStart'},
+   {op: 'noOp', keyString: "e",  func: 'setEnd'},
+   {op: 'noOp', keyString: " ",  func: 'togglePlay'},
+
+   {op: 'ctrlKey', keyString: "s",  func: 'changeSub'},
+   {op: 'ctrlKey', keyString: "j",  func: 'removeSub'},
+
+   {op: 'altKey', keyString: " ",  func: 'pauseVideo'},
+
+   {op: 'shiftKey', keyString: " ",  func: 'playVideo'},
+   {op: 'shiftKey', keyString: "s",  func: 'jumpStart'},
+   {op: 'shiftKey', keyString: "e",  func: 'jumpEnd'}
+];
 
 $.extend(DubMark.KeyPress.prototype, {
   init: function(){
-    if(this.project){
+    this.setupCodes();
+
+    if(this.actions){
       this.listen();
     }
   },
   setupCodes: function(cfg){
-    if(cfg && cfg.UserKeyCfg){
-      var map = typeof cfg.UserKeyCfg == 'string' ? JSON.parse(cfg.UserKeyCfg) : cfg.UserKeyCfg;
-      if(typeof map != 'object'){
-        console.warn("User config present, but not a valid object.");
-        return;
+    var map = cfg && typeof cfg.UserKeyCfg == 'string' ? JSON.parse(cfg.UserKeyCfg) : DubMark.DefaultKeys;
+
+    $.each(map, function(key, val){
+      if(!val || !val.keyString || !val.func){return;}
+
+      if(typeof this.actions[val.func] == 'function'){
+        this.addEvt(
+          val.keyString, 
+          this.actions[val.func].bind(this.actions), 
+          val.op || 'noOp'
+        );
       }
-      $.each(map, function(key, val){
-        if(this.CODES[key]){
-          console.log("TODO: Implement the user selection of keys.");            
-        }
-      }.bind(this));
-    }
+    }.bind(this));
   },
-  CODES: { 
-    noOp: { //No control key etc
-    },
-    ctrlKey:{
-    },
-    altKey:{
-    },
-    shiftKey: {
-    }
+  CODES: {  //Holds the actual functions that will be run per key
+    noOp: {},
+    ctrlKey:{},
+    altKey:{},
+    shiftKey: {}
   },
   isEnabled: function(){
     return this.listener ? 'active' : ''; 
   },
-  getSetCallStack: function(keyCode, op){//Get or empty init the calls stack for key presses
+  getSetCallStack: function(keyString, op){//Get or empty init the calls stack for key presses
     op = op || 'noOp';
-    if(typeof keyCode == 'undefined') return; 
+    if(typeof keyString == 'undefined') return; 
     var addTo = this.CODES;
     if(op){ //ctrlKey, etc.  Things you can detect on an event (only ctrl support right now)
       addTo = (this.CODES[op] = (this.CODES[op] || {}));
     }
-    if(!addTo[keyCode] && getSet){
-      addTo[keyCode] = [];
+    if(!addTo[keyString]){
+     addTo[keyString] = [];
     }
     return addTo;
   },
-  getCallStack: function(keyCode, op){ //Get the keypress stack for a code and operaion(ie ctrl)
+  getCallStack: function(keyString, op){ //Get the keypress stack for a code and operaion(ie ctrl)
     op = op || 'noOp';
-    if(typeof keyCode == 'undefined') return; 
+    if(typeof keyString == 'undefined') return; 
     var addTo = this.CODES;
     if(op && addTo[op]){ //ctrlKey, etc.  Things you can detect on an event (only ctrl support right now)
       addTo = addTo[op];
     }
-    return addTo[keyCode];
+    console.log("Get callstack", addTo, keyString, op, addTo[keyString]);
+    return addTo[keyString];
   },
-  addEvt: function(keyCode, func, op/* optional: ie ctrlKey */){ //Add a function to the keypress evts
-    var add = this.getSetCallStack(keyCode, op, true);
+  addEvt: function(keyString, func, op/* optional: ie ctrlKey */){ //Add a function to the keypress evts
+    var add = this.getSetCallStack(keyString, op, true);
     if(typeof func == 'function' && add) {
-      add[keyCode].push(func);
+      add[keyString].push(func);
     } else{
-      console.error('Invalid function or keyCode provided (keyCode, func, op)', keyCode, func, op);
+      console.error('Invalid function or keyString provided (keyString, func, op)', keyString, func, op);
     }
   },
-  replaceEvts: function(keyCode, func, op){//Replace ALL events for a keycode and optional op+keyCode
-    var rep = this.getSetCallStack(keyCode, op, true);
+  replaceEvts: function(keyString, func, op){//Replace ALL events for a keycode and optional op+keyString
+    var rep = this.getSetCallStack(keyString, op, true);
     if(rep && typeof func == 'function'){
-      rep[keyCode] = [func];
+      rep[keyString] = [func];
     }else{
-      console.error('Could not replace the events with (keyCode, func, op)', keyCode, func, op);
+      console.error('Could not replace the events with (keyString, func, op)', keyString, func, op);
     }
   },
-  removeEvts: function(keyCode, op){//Remove all events for a keycode and optionally op+keyCode
-    var rm = this.getCallStack(keyCode, op);
+  removeEvts: function(keyString, op){//Remove all events for a keycode and optionally op+keyString
+    var rm = this.getCallStack(keyString, op);
     if(rm){
-      rm[keyCode] = null;
+      rm[keyString] = null;
     }
   },
-  runEvents: function(evt, keyCode, op){//Run all the events associated with a key, op
-    var run = this.getCallStack(keyCode, op);
+  getKeyString: function(keyCode){
+    return String.fromCharCode(keyCode).toLowerCase();
+  },
+  runEvents: function(evt, keyString, op){//Run all the events associated with a key, op
+    var run = this.getCallStack(keyString, op);
+    console.log("Attempting to run", keyString, run, op);
     for (var i in run){
       var func = run[i];
       if(typeof func == 'function'){
-        func(keyCode, evt);
+        func(keyString, evt);
       }
     }
     //stop event?
@@ -101,7 +127,8 @@ $.extend(DubMark.KeyPress.prototype, {
           op = evt.shiftKey ? 'shiftKey' : op;
           op = evt.altKey   ? 'altKey'   : op;
           op = op || 'noOp';
-      this.runEvents(evt, evt.keyCode, op);
+      var keyString = this.getKeyString(evt.keyCode);
+      this.runEvents(evt, keyString, op);
     }catch(e){
       console.error("Failed to handle a key event (evt, e)", e);
     }
