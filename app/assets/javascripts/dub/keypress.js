@@ -1,9 +1,3 @@
-DubMark.KeyPress = function(actionInstance){
-  this.actions = actionInstance;
-  this.enabled = 'Off'; //Binding for a label in the UI
-
-  this.init(); 
-};
 
 /** 
  * op - is the operation key, like shift etc
@@ -28,13 +22,18 @@ DubMark.DefaultKeys = [
    {op: 'shiftKey', keyString: "e",  func: 'jumpEnd'}
 ];
 
+
+DubMark.KeyPress = function(actionInstance){
+  this.actions = actionInstance;
+  this.init(); 
+  this.listen();
+};
 $.extend(DubMark.KeyPress.prototype, {
   init: function(){
     this.setupCodes();
 
-    if(this.actions){
-      this.listen();
-    }
+    this.listener = this.keyup.bind(this);
+    window.document.addEventListener('keyup', this.listener, false);
   },
   setupCodes: function(cfg){
     var map = cfg && typeof cfg.UserKeyCfg == 'string' ? JSON.parse(cfg.UserKeyCfg) : DubMark.DefaultKeys;
@@ -59,7 +58,7 @@ $.extend(DubMark.KeyPress.prototype, {
     shiftKey: {}
   },
   isEnabled: function(){
-    return this.listener ? 'active' : ''; 
+    return this.enabled == 'On' ? 'active' : ''; 
   },
   getSetCallStack: function(keyString, op){//Get or empty init the calls stack for key presses
     op = op || 'noOp';
@@ -116,7 +115,6 @@ $.extend(DubMark.KeyPress.prototype, {
   },
   runEvents: function(evt, keyString, op){//Run all the events associated with a key, op
     var run = this.getCallStack(keyString, op);
-    console.log("Attempting to run", keyString, run, op);
     for (var i in run){
       var func = run[i];
       if(typeof func == 'function'){
@@ -128,12 +126,14 @@ $.extend(DubMark.KeyPress.prototype, {
   keyup: function(evt){ 
     try{
       evt = evt || window.event;
-
-      //Stop listening for events on an esc key, this is annoying to trigger the angular change event?
       if(evt.keyCode == 27){
         angular.element('#hotkeys').trigger('click');
         return;
       }
+      if(this.enabled != 'On'){
+        return;
+      }
+      //Stop listening for events on an esc key, this is annoying to trigger the angular change event?
       var op = evt.ctrlKey  ? 'ctrlKey'  : null; //Make this smarter
           op = evt.shiftKey ? 'shiftKey' : op;
           op = evt.altKey   ? 'altKey'   : op;
@@ -147,28 +147,9 @@ $.extend(DubMark.KeyPress.prototype, {
   },
   listen: function(target){ 
     this.enabled = 'On';
-    try{
-      target = target && target.addEventListener ? target : window.document;
-      if(!this.listener){
-        this.listener = this.keyup.bind(this);
-        target.addEventListener('keyup', this.listener, false);
-      }
-    }catch(e){
-      console.error("Failed to listen to the key up events.", e);
-    }
   },
   sleep: function(target){//Stop paying attention to keypress events on the widget
     this.enabled = 'Off';
-    try{
-      target = target && target.removeEventListener ? target : window.document;
-      if(this.listener){
-          target.removeEventListener('keyup', this.listener, false);
-      }
-      this.listener = null;
-
-    }catch(e){
-      console.error("Failed to detach to the key up events.", e);
-    }
   },
   bindUnfocus: function(){//This seems a bit hacky..
     if(!this._bodyClick){
@@ -182,6 +163,6 @@ $.extend(DubMark.KeyPress.prototype, {
     }
   },
   toggle: function(){
-    this.listener ? this.sleep()  : this.listen();
+    this.enabled == 'On' ? this.sleep()  : this.listen();
   }
 });
