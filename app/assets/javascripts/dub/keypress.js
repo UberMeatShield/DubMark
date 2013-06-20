@@ -1,26 +1,46 @@
-DubMark.KeyPress = function(project){
-  this.project = project;
-  this.enabled = 'Off';
+DubMark.KeyPress = function(actionInstance){
+  this.actions = actionInstance;
+
+  this.enabled = 'Off'; //Binding for a label in the UI
   this.init(); 
 };
+
+
 $.extend(DubMark.KeyPress.prototype, {
   init: function(){
     if(this.project){
       this.listen();
     }
   },
+  setupCodes: function(cfg){
+    if(cfg && cfg.UserKeyCfg){
+      var map = typeof cfg.UserKeyCfg == 'string' ? JSON.parse(cfg.UserKeyCfg) : cfg.UserKeyCfg;
+      if(typeof map != 'object'){
+        console.warn("User config present, but not a valid object.");
+        return;
+      }
+      $.each(map, function(key, val){
+        if(this.CODES[key]){
+          console.log("TODO: Implement the user selection of keys.");            
+        }
+      }.bind(this));
+    }
+  },
   CODES: { 
+    noOp: { //No control key etc
+    },
     ctrlKey:{
     },
     altKey:{
     },
     shiftKey: {
-    },
+    }
   },
   isEnabled: function(){
     return this.listener ? 'active' : ''; 
   },
   getSetCallStack: function(keyCode, op){//Get or empty init the calls stack for key presses
+    op = op || 'noOp';
     if(typeof keyCode == 'undefined') return; 
     var addTo = this.CODES;
     if(op){ //ctrlKey, etc.  Things you can detect on an event (only ctrl support right now)
@@ -32,6 +52,7 @@ $.extend(DubMark.KeyPress.prototype, {
     return addTo;
   },
   getCallStack: function(keyCode, op){ //Get the keypress stack for a code and operaion(ie ctrl)
+    op = op || 'noOp';
     if(typeof keyCode == 'undefined') return; 
     var addTo = this.CODES;
     if(op && addTo[op]){ //ctrlKey, etc.  Things you can detect on an event (only ctrl support right now)
@@ -79,6 +100,7 @@ $.extend(DubMark.KeyPress.prototype, {
       var op = evt.ctrlKey  ? 'ctrlKey'  : null; //Make this smarter
           op = evt.shiftKey ? 'shiftKey' : op;
           op = evt.altKey   ? 'altKey'   : op;
+          op = op || 'noOp';
       this.runEvents(evt, evt.keyCode, op);
     }catch(e){
       console.error("Failed to handle a key event (evt, e)", e);

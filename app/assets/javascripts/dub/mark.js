@@ -208,6 +208,7 @@ $.extend(DubMark.Controls.prototype, {
     return this.subs.curr;
   },
   pauseAndEndSub: function(){
+    if(!this.vid){return;}
     var t = this.vid.getTime() || 0;
     this.subs.endSub(null, t);
     this.vid.pause();
@@ -220,11 +221,13 @@ $.extend(DubMark.Controls.prototype, {
     }
   },
   newSub: function(){ //Start a sub with the current video time
+    if(!this.vid){return;}
     var t = this.vid.getTime() || 0;
     this.subs.endSub(null, t); //Close open sub
     this.subs.newSub(null, t); //Create a new sub.
   },
   endSub: function(){ //End the current sub with the current video time
+    if(!this.vid){return;}
     var t = this.vid.getTime() || 0;
     this.subs.endSub(null, t); //Close open sub
   },
@@ -328,10 +331,11 @@ $.extend(DubMark.VideoView.prototype, {
     }
   },
   play: function(){
+    if(!this.vid){return 0};
     this.vid.get(0).play();
-    //return this.getTime();
   },
   pause: function(){ //Pause the video
+    if(!this.vid){return 0};
     this.vid.get(0).pause();
     return this.getTime();
   },
@@ -341,6 +345,7 @@ $.extend(DubMark.VideoView.prototype, {
     }
   },
   getTime: function(){ //Time the video is currently at
+    if(!this.vid){return 0};
     var t = this.vid.get(0).currentTime;
     return t;
   },
@@ -350,6 +355,60 @@ $.extend(DubMark.VideoView.prototype, {
 });
 
 
+DubMark.Actions = function(project, itl){
+  this.project = project;
+};
+$.extend(DubMark.Actions.prototype, {
+  init: function(){
+  },
+  setProject: function(proj){
+    this.project = proj;
+  },
+  newSub: function(){
+    this.project.controls.newSub();
+  },
+  endSub: function(){
+    this.project.controls.endSub()
+  },
+  pauseAndEndSub: function(){
+    this.project.controls.pauseAndEndSub()
+  },
+  splitSub: function(){
+    this.project.controls.splitSub()
+  },
+  removeSub: function(){
+    this.project.controls.removeSub()
+  },
+  setStart: function(){
+    this.project.controls.setStart()
+  },
+  setEnd: function(){
+    this.project.controls.setEnd()
+  },
+  jumpStart: function(){
+    this.project.controls.jumpStart()
+  },
+  jumpEnd: function(){
+    this.project.controls.jumpEnd()
+  },
+  changeSub: function(){
+    this.project.subs.changeSub();
+  },
+  playVideo: function(){
+    this.project.vid.play()
+  },
+  pauseVideo: function(){ 
+    this.project.vid.pause()
+  },
+/*
+    //impl TODO
+    this.project.subs.focusSource()      //Edit Source
+    this.project.subs.focusTranslation() //Edit Translation
+    this.project.subs.nextSub
+    this.project.subs.prevSub
+    this.project.keypress.hotkeyToggle
+*/
+});
 
 
 /**

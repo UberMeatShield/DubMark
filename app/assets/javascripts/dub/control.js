@@ -67,7 +67,8 @@ dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, 
 
   //Point various bits of scope at each other
   $scope.project  = new DubMark.Project(args);
-  $scope.keypress = new DubMark.KeyPress($scope.project);
+  $scope.action   = new DubMark.Actions($scope.project);
+  $scope.keypress = new DubMark.KeyPress($scope.action);
 
   $scope.proj     = args.ResourceProject;
   $scope.project.load();

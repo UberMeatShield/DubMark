@@ -37,24 +37,24 @@
             <div class="container-fluid well">
               <div id="subcontrols" class="navbar">
                 <span class="brand">Editing</span>
-                <button ng-click="project.controls.newSub()" 
+                <button ng-click="action.newSub()" 
                        title="Create a new subtitle" id="new" class="btn" >
                   <i class="icon-plus"></i>
                 </button>
-                <button  ng-click="project.controls.endSub()"
+                <button  ng-click="action.endSub()"
                   title="End the current subtitle" id="end" class="btn">
                   <i class="icon-ok"></i>
                 </button>
-                <button ng-click="project.controls.pauseAndEndSub()" 
+                <button ng-click="action.pauseAndEndSub()" 
                   title="End subtitle and Pause" class="btn" >
                   <i class="icon-ok"></i>
                   <i class="icon-pause"></i>
                 </button>
-                <button ng-click="project.controls.splitSub()" 
+                <button ng-click="action.splitSub()" 
                   title="Split the currently selected sub into two" class="btn" >
                   <i class="icon-resize-full"></i>
                 </button>
-                <button  ng-click="project.controls.removeSub()"
+                <button  ng-click="action.removeSub()"
                   title="Remove the currently selected sub" class="btn">
                   <i class="icon-trash"></i>
                 </button>
@@ -67,31 +67,32 @@
 
               <!-- Editing a set of subtitles -->
               <div class="row-fluid">
-                <input ng-change="project.subs.changeSub()" 
+                <input ng-change="action.changeSub()" 
                        ng-model="project.subs.curr.source" type="text" class="span11" placeholder="Source" /> 
               </div>
               <div class="row-fluid">
-                <input ng-change="project.subs.changeSub()" 
+                <input ng-change="action.changeSub()" 
                        ng-model="project.subs.curr.trans" type="text" class="span11" placeholder="Translation" /> 
               </div>
               <div class="row-fluid">
                 <form class="navbar-form pull-left">
-                  <button title="Jump to Sub Start." ng-click="project.controls.jumpStart()" type="button" class="btn">    
+                  <button ng-click="action.jumpStart()" 
+                     title="Jump to Sub Start." type="button" class="btn">    
                     <i class="icon-fast-backward"></i>
                   </button>
-                  <button ng-click="project.controls.setStart()"
+                  <button ng-click="action.setStart()"
                           title="Set Sub to Video Time."  type="button" class="btn" >
                     <i class="icon-time"></i>
                   </button>
-                  <input ng-change="project.subs.changeSub()" 
+                  <input ng-change="action.changeSub()" 
                          ng-model="project.subs.curr.sTime"   type="text"  class="span2"  placeholder="Start" /> 
-                  <input ng-change="project.subs.changeSub()" 
+                  <input ng-change="action.changeSub()" 
                          ng-model="project.subs.curr.eTime"   type="text" placeholder="End" class="span2" /> 
-                  <button ng-click="project.controls.setEnd()" 
+                  <button ng-click="action.setEnd()" 
                           title="Set subtitle end to current video time." type="button" class="btn">
                     <i class="icon-time"></i>
                   </button>
-                  <button  ng-click="project.controls.jumpEnd()" 
+                  <button  ng-click="action.jumpEnd()" 
                     title="Jump video to end time for subtitle" class="btn">
                     <i class="icon-fast-forward"></i>
                   </button>
