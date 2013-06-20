@@ -1,7 +1,7 @@
 DubMark.KeyPress = function(actionInstance){
   this.actions = actionInstance;
-
   this.enabled = 'Off'; //Binding for a label in the UI
+
   this.init(); 
 };
 
@@ -50,6 +50,7 @@ $.extend(DubMark.KeyPress.prototype, {
         );
       }
     }.bind(this));
+
   },
   CODES: {  //Holds the actual functions that will be run per key
     noOp: {},
@@ -105,7 +106,13 @@ $.extend(DubMark.KeyPress.prototype, {
     }
   },
   getKeyString: function(keyCode){
-    return String.fromCharCode(keyCode).toLowerCase();
+    var str = String.fromCharCode(keyCode);
+    if(!str){
+      str = keyCode;
+    }else{
+      str = str.toLowerCase();
+    }
+    return str;
   },
   runEvents: function(evt, keyString, op){//Run all the events associated with a key, op
     var run = this.getCallStack(keyString, op);
@@ -121,12 +128,17 @@ $.extend(DubMark.KeyPress.prototype, {
   keyup: function(evt){ 
     try{
       evt = evt || window.event;
-      console.log("Keyup Event: ", evt);
 
+      //Stop listening for events on an esc key, this is annoying to trigger the angular change event?
+      if(evt.keyCode == 27){
+        angular.element('#hotkeys').trigger('click');
+        return;
+      }
       var op = evt.ctrlKey  ? 'ctrlKey'  : null; //Make this smarter
           op = evt.shiftKey ? 'shiftKey' : op;
           op = evt.altKey   ? 'altKey'   : op;
           op = op || 'noOp';
+
       var keyString = this.getKeyString(evt.keyCode);
       this.runEvents(evt, keyString, op);
     }catch(e){
@@ -136,7 +148,7 @@ $.extend(DubMark.KeyPress.prototype, {
   listen: function(target){ 
     this.enabled = 'On';
     try{
-      target = target || window.document;
+      target = target && target.addEventListener ? target : window.document;
       if(!this.listener){
         this.listener = this.keyup.bind(this);
         target.addEventListener('keyup', this.listener, false);
@@ -148,7 +160,7 @@ $.extend(DubMark.KeyPress.prototype, {
   sleep: function(target){//Stop paying attention to keypress events on the widget
     this.enabled = 'Off';
     try{
-      target = target || window.document;
+      target = target && target.removeEventListener ? target : window.document;
       if(this.listener){
           target.removeEventListener('keyup', this.listener, false);
       }

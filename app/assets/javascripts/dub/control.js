@@ -72,5 +72,7 @@ dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, 
 
   $scope.proj     = args.ResourceProject;
   $scope.project.load();
+
 });
+
 DubMark.Modules.Dub = dub;

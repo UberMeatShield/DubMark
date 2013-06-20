@@ -19,9 +19,11 @@
 
         &nbsp;
         &nbsp;
-        <button ng-click="keypress.toggle()" class="btn btn-primary" ng-class=keypress.isEnabled()> 
-          Hotkeys {{keypress.enabled}}
-        </button>
+        <input type="button" id='hotkeys' 
+          ng-click="keypress.toggle()" class="btn btn-primary" 
+          ng-class=keypress.isEnabled()
+          value="Hotkeys {{keypress.enabled}}"> 
+        </input>
       </div>
       <!-- Top level container for the rest of the page elements -->
       <div class="container-fluid">
