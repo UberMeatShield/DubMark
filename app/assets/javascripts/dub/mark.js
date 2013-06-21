@@ -86,6 +86,36 @@ $.extend(DubMark.SubManager.prototype, {
       this.deferSave(this.curr);
     }
   },
+  nextSub: function(){
+    if(!this.curr){
+      this.setActive(this.arr[0], true);
+    }else{ 
+      for(var i=0; i< this.arr.length; ++i){
+        var inst = this.arr[i];
+        if(inst.id == this.curr.id){
+          if(i+1 < this.arr.length){
+            this.setActive(this.arr[i+1], true);
+            return;
+          }
+        }
+      }
+    }
+  },
+  prevSub: function(){
+    if(!this.curr){
+      this.setActive(this.arr[this.arr.length-1], true);
+    }else{ 
+      for(var i=this.arr.length; i >= 0; --i){
+        var inst = this.arr[i];
+        if(inst && inst.id == this.curr.id){
+          if(i-1 >= 0){
+            this.setActive(this.arr[i-1], true);
+            return;
+          }
+        }
+      }
+    }
+  },
   deferSave: function(obj){ //Note obj is what is bound, NOT this.curr
     if(this.saveIt && obj) return;
     this.saveIt = function(obj){
@@ -125,7 +155,13 @@ $.extend(DubMark.SubManager.prototype, {
       this.arr.unshift(this.curr);
     }
   },
-  setActive: function(sub){
+  setActive: function(sub, clickDom){
+    console.log("Click set active.", sub);
+    if(typeof clickDom == 'boolean' && sub && sub.id){
+      var el = angular.element('#sub_' + sub.id);
+      console.log("Click this element.", el, sub, clickDom);
+      el.trigger('click');
+    }
     this.curr = sub;
     return this.curr;
   },
@@ -422,11 +458,12 @@ $.extend(DubMark.Actions.prototype, {
       angular.element('#translation').blur();
     }
   },
-  /*
-    this.project.subs.nextSub
-    this.project.subs.prevSub
-    this.project.keypress.hotkeyToggle
-  */
+  nextSub: function(){
+    this.project.subs.nextSub();
+  },
+  prevSub: function(){
+    this.project.subs.prevSub();
+  }
 });
 
 

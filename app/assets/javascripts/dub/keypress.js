@@ -12,12 +12,17 @@ DubMark.DefaultKeys = [
    {op: 'noOp', keyString: "e",  func: 'setEnd'},
    {op: 'noOp', keyString: " ",  func: 'togglePlay'},
 
+   {op: 'noOp', keyString: "t",  func: 'focusTranslation'},
+   {op: 'noOp', keyString: "f",  func: 'focusSource'},
+
+   //TODO also support arrow keys
+   {op: 'noOp',    keyString: "n",  func: 'nextSub'},
+   {op: 'noOp',    keyString: "h",  func: 'prevSub'},
    {op: 'ctrlKey', keyString: "s",  func: 'changeSub'},
    {op: 'ctrlKey', keyString: "j",  func: 'removeSub'},
 
-   {op: 'altKey', keyString: " ",  func: 'pauseVideo'},
+   {op: 'noOp', keyString: "p",  func: 'toggleVideo'},
 
-   {op: 'shiftKey', keyString: " ",  func: 'playVideo'},
    {op: 'shiftKey', keyString: "s",  func: 'jumpStart'},
    {op: 'shiftKey', keyString: "e",  func: 'jumpEnd'}
 ];
