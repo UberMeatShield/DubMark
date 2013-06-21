@@ -70,6 +70,10 @@ dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, 
   $scope.action   = new DubMark.Actions($scope.project);
   $scope.keypress = new DubMark.KeyPress($scope.action);
 
+
+  $scope.Lang     = DubMark.i18n.getInstance(); //TODO, needs to set stuff... Bleah
+  $scope.i18n     = DubMark.i18n.Lang; //Shorthand for in the app using angular bindings
+
   $scope.proj     = args.ResourceProject;
   $scope.project.load();
 

@@ -16,6 +16,7 @@
 //= require angular-resource
 
 //= require dub/mark.js
+//= require dub/i18n.js
 //= require dub/list.js
 //= require dub/keypress.js
 //= require dub/control.js
