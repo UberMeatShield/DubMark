@@ -366,6 +366,15 @@ $.extend(DubMark.VideoView.prototype, {
       this.vid.get(0).load();
     }
   },
+  toggleVideo: function(){
+    if(!this.vid){return 0};
+    var vidDom = this.vid.get(0);
+    if(vidDom.paused){
+      this.play();
+    }else{
+      this.pause();
+    }
+  },
   play: function(){
     if(!this.vid){return 0};
     this.vid.get(0).play();
@@ -430,6 +439,10 @@ $.extend(DubMark.Actions.prototype, {
   changeSub: function(){
     this.project.subs.changeSub();
   },
+  toggleVideo: function(){
+    //test?
+    this.project.vid.toggleVideo(); //play vs pause
+  },
   playVideo: function(){
     this.project.vid.play()
   },
@@ -447,15 +460,15 @@ $.extend(DubMark.Actions.prototype, {
   keypressOff: function(){
     var el = angular.element('#hotkeys');
     if(el.hasClass('active')){
-      this.keyPressToggle();
+      this.keypressToggle();
     }
   },
   keypressToggle: function(){
     var el = angular.element('#hotkeys');
         el.trigger('click');
+
     if(el.hasClass('active')){
-      angular.element('#source').blur();
-      angular.element('#translation').blur();
+      document.activeElement.blur();
     }
   },
   nextSub: function(){

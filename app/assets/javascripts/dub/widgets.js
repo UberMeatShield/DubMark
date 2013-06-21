@@ -93,6 +93,10 @@ DubMark.Modules.Dub.directive('videomanager', function(){
       $scope.changeVideo = function(){
         console.log("Change video", $scope);
         dialog = $('#vid_change_' + $scope.project.id).modal('show');
+
+        setTimeout(function(){
+          this.action.keypressOff()
+        }.bind(this), 100);
       };
       $scope.save = function(){
           try{ //Tempting to move more of this logic into the vid & project itself?
@@ -105,6 +109,7 @@ DubMark.Modules.Dub.directive('videomanager', function(){
             $('#video').empty();
 
             vid.createVideo(vid.vidUrl, vid.vidType);
+            
           }catch(e){
             console.error('Failed to update the video url.', e);
           }

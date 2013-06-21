@@ -5,7 +5,9 @@
       <div id="topBar" class="navbar navbar-inner">
         <form class="navbar-form pull-left">
           <span class="brand"> Title </span>
-          <input  ng-model="project.ResourceProject.title" ng-change="project.update()"  class="span4" type="text" /> 
+          <input  ng-model="project.ResourceProject.title" 
+            ng-focus="keypress.sleep()"
+            ng-change="project.update()"  class="span4" type="text" /> 
           &nbsp;
           &nbsp;
         </form>
@@ -91,8 +93,10 @@
                     <i class="icon-time"></i>
                   </button>
                   <input ng-change="action.changeSub()" 
+                         ng-focus="keypress.sleep()"
                          ng-model="project.subs.curr.sTime"   type="text"  class="span2"  placeholder="Start" /> 
                   <input ng-change="action.changeSub()" 
+                         ng-focus="keypress.sleep()"
                          ng-model="project.subs.curr.eTime"   type="text" placeholder="End" class="span2" /> 
                   <button ng-click="action.setEnd()" 
                           title="Set subtitle end to current video time." type="button" class="btn">
