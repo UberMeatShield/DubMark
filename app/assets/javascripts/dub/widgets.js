@@ -233,4 +233,27 @@ DubMark.Modules.Dub.directive("create", function() {
   };
 });
 
-
+/**
+ *  TODO: Remove / deprecate once this is in the core angular impl
+ */
+DubMark.Modules.Dub.directive('ngFocus', ['$parse', function($parse) {
+  return function(scope, element, attr) {
+    var fn = $parse(attr['ngFocus']);
+    element.bind('focus', function(event) {
+      scope.$apply(function() {
+        fn(scope, {$event:event});
+      });
+    });
+  }
+}]);
+ 
+DubMark.Modules.Dub.directive('ngBlur', ['$parse', function($parse) {
+  return function(scope, element, attr) {
+    var fn = $parse(attr['ngBlur']);
+    element.bind('blur', function(event) {
+      scope.$apply(function() {
+        fn(scope, {$event:event});
+      });
+    });
+  }
+}]);

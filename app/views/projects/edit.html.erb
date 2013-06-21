@@ -1,7 +1,6 @@
   <div class="banner"><div>
 
   <div ng-app='dub' ng-controller="ProjectEntry" id="main" class="main">
-
       <!-- Navbar, TODO: add google translate options here? -->
       <div id="topBar" class="navbar navbar-inner">
         <form class="navbar-form pull-left">
@@ -18,7 +17,7 @@
         </div>
 
         &nbsp;
-        &nbsp;
+        &nbsp; <!-- TODO convert to widget? -->
         <input type="button" id='hotkeys' 
           ng-click="keypress.toggle()" class="btn btn-primary" 
           ng-class=keypress.isEnabled()
@@ -69,13 +68,18 @@
 
               <!-- Editing a set of subtitles -->
               <div class="row-fluid">
-                <input ng-change="action.changeSub()" 
-                       ng-model="project.subs.curr.source" type="text" class="span11" placeholder="Source" /> 
+                <input id="source"
+                  ng-focus="keypress.sleep()"
+                  ng-change="action.changeSub()" 
+                  ng-model="project.subs.curr.source" type="text" class="span11" placeholder="Source" /> 
               </div>
               <div class="row-fluid">
-                <input ng-change="action.changeSub()" 
-                       ng-model="project.subs.curr.trans" type="text" class="span11" placeholder="Translation" /> 
+                <input id="translation"
+                  ng-focus="keypress.sleep()"
+                  ng-change="action.changeSub()" 
+                  ng-model="project.subs.curr.trans" type="text" class="span11" placeholder="Translation" /> 
               </div>
+
               <div class="row-fluid">
                 <form class="navbar-form pull-left">
                   <button ng-click="action.jumpStart()" 
@@ -117,6 +121,8 @@
                 </li>
               </ul>
             </div>
+
+
           </div> <!-- End subtitles sub container -->
 
         </div><!-- End Span container -->

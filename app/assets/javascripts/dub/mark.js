@@ -400,14 +400,33 @@ $.extend(DubMark.Actions.prototype, {
   pauseVideo: function(){ 
     this.project.vid.pause()
   },
-/*
-    //impl TODO
-    this.project.subs.focusSource()      //Edit Source
-    this.project.subs.focusTranslation() //Edit Translation
+  focusSource: function(){
+    angular.element('#source').trigger('focus');                  
+    this.keypressOff();
+  },
+  focusTranslation: function(){
+    angular.element('#translation').trigger('focus');                  
+    this.keypressOff();
+  },
+  keypressOff: function(){
+    var el = angular.element('#hotkeys');
+    if(el.hasClass('active')){
+      this.keyPressToggle();
+    }
+  },
+  keypressToggle: function(){
+    var el = angular.element('#hotkeys');
+        el.trigger('click');
+    if(el.hasClass('active')){
+      angular.element('#source').blur();
+      angular.element('#translation').blur();
+    }
+  },
+  /*
     this.project.subs.nextSub
     this.project.subs.prevSub
     this.project.keypress.hotkeyToggle
-*/
+  */
 });
 
 

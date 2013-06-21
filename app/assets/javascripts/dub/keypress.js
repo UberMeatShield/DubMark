@@ -127,7 +127,7 @@ $.extend(DubMark.KeyPress.prototype, {
     try{
       evt = evt || window.event;
       if(evt.keyCode == 27){
-        angular.element('#hotkeys').trigger('click');
+        this.actions.keypressToggle();
         return;
       }
       if(this.enabled != 'On'){
