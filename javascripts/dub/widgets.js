@@ -23,11 +23,15 @@ DubMark.Modules.Dub.directive("status", function() {
         }
       };
       $scope.changeState = function(key){
-        console.log("status.changeState for: ", this, key);
-        $scope.statusKey = key;
-        $scope.text      = !this.proj.status[key] ? key + ' Done!' : key + ' NOT Done'; //Updates the template
+        try{
+          console.log("status.changeState for: ", this, key);
+          $scope.statusKey = key;
+          $scope.text      = !this.proj.status[key] ? key + ' Done!' : key + ' NOT Done'; //Updates the template
 
-        dialog  = $('#status_change_' + $scope.proj.id).modal('show');
+          dialog  = $('#status_change_' + $scope.proj.id).modal('show');
+        }catch(e){
+          console.error("Could not change the state for this project.", this.proj);
+        }
       };
       $scope.getStateIcon = function(key){
         key = key || this.statusKey;
