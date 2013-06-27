@@ -43,7 +43,6 @@ dub.controller('ProjectListings', function($scope, $resource, Project){
     }
     args.data = arr;
   }
-
   var list = new DubMark.ProjectList(args);
       list.ResourceProject = Project; //For creating new instances
       list.$scope = $scope;
