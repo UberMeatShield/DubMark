@@ -2,6 +2,7 @@
 <html ng-app='dub'>
   <meta charset="UTF-8"/>
   <head>
+    <link href='stylesheets/dub.css' rel="stylesheet" type='text/css'></style>
     <link href='stylesheets/bootstrap/css/bootstrap.css' rel="stylesheet" type='text/css'></style>
     <link href='stylesheets/bootstrap/css/bootstrap-responsive.css' rel="stylesheet" type='text/css'></style>
   </head>
@@ -118,14 +119,20 @@
     <script src="javascripts/dub/i18n.js"></script>
     <script src="javascripts/dub/list.js"></script>
     <script src="javascripts/dub/keypress.js"></script>
-    <script src="javascripts/dub/control.js"></script>
+    <script src="javascripts/dub/mock.js"></script>
     <script src="javascripts/dub/widgets.js"></script>
 
     <script type="text/javascript">
       //Could just do this with mock objects?
       DubMark.Config.PageConfig = {
-        data: [
-        ]
+        data: [{
+          title: 'A video',
+          id: 1,
+          status: {}
+          },{
+            title: 'A completed video',
+            id: 2
+          }]
       };
     </script>
 

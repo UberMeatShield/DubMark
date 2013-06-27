@@ -1,7 +1,7 @@
 //Note the module name is the same as ng-app="dub"
 var dub = angular.module('dub', ['ngResource']);
 
-DubMark.MockResource = function(){ //No resource mock?
+DubMark.MockResource = function(args){ //No resource mock?
   this.init();
 };
 $.extend(DubMark.MockResource.prototype, {
@@ -95,18 +95,21 @@ dub.factory('Subtitles', function(){
 //For the index.html page
 dub.controller('ProjectListings', function($scope, $resource, Project){
   var args = DubMark.Config.PageConfig || {};
-
   if(args.data){
     var arr = [];
     var data = args.data;
     for(var i=0; i< data.length; ++i){
-      arr.push(new Project(data[i]));
+      var proj = new Project(data[i]);
+      if(!data[i].status){
+        proj.status = proj.getStates(); 
+      }
+      arr.push(proj);
     }
     args.data = arr;
   }
 
   var list = new DubMark.ProjectList(args);
-      list.ResourceProject = Project; //For creating new instances
+      list.ResourceProject = new Project(); //For creating new instances (MOCK)
       list.$scope = $scope;
 
   $scope.list = list;
@@ -117,7 +120,6 @@ dub.controller('ProjectListings', function($scope, $resource, Project){
 //PageConfig comes from the serialization of the actual json data we already have in the page
 dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, Subtitles){
   var args = DubMark.Config.PageConfig || {};
-
   //Initialize with the json from the rails call, single instance vs a lib reference
   args.id = 1;
   args.vidUrl = 'Sample.webm';
@@ -129,7 +131,6 @@ dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, 
   $scope.project  = new DubMark.Project(args);
   $scope.action   = new DubMark.Actions($scope.project);
   $scope.keypress = new DubMark.KeyPress($scope.action);
-
 
   $scope.Lang     = DubMark.i18n.getInstance(); //TODO, needs to set stuff... Bleah
   $scope.i18n     = DubMark.i18n.Lang; //Shorthand for in the app using angular bindings
