@@ -120,6 +120,7 @@ dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, 
 
   //Initialize with the json from the rails call, single instance vs a lib reference
   args.id = 1;
+  args.vidUrl = 'Sample.webm';
   args.ResourceProject   = new Project(args);  //$resource single instance to update vs ability to query
   args.ResourceSubtitles = new Subtitles();          //$resource subtitle endpoint
   args.$scope =            $scope; //Newb learning
