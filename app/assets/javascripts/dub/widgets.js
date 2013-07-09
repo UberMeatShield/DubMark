@@ -175,7 +175,7 @@ DubMark.Modules.Dub.directive("create", function() {
         this.list.validateCreate(response);
         //Do more stuff
         if(doOpen){
-          this.list.loader.open(response.id);
+          this.list.ResourceProject.open(response.id);
         }
       };
 
@@ -185,10 +185,8 @@ DubMark.Modules.Dub.directive("create", function() {
       };
 
       $scope.save = function(doOpen){
-        console.log("Save called.", doOpen);
         this.isEnabled = false;
-
-        this.list.loader.save(
+        this.list.ResourceProject.save(
           this.getArguments(), 
           this.validateCreated.bind(this, doOpen)
         );

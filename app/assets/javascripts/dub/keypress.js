@@ -4,27 +4,25 @@
  * keyString - the string representation of the keycode
  * func - the function name on the actionInstance to run when the key is pressed
  */
-DubMark.DefaultKeys = [
-   {op: 'noOp', keyString: "j", func: 'newSub'},
-   {op: 'noOp', keyString: "k",  func: 'endSub'},
-   {op: 'noOp', keyString: "l",  func: 'pauseAndEndSub'},
-   {op: 'noOp', keyString: "s",  func: 'setStart'},
-   {op: 'noOp', keyString: "e",  func: 'setEnd'},
-   {op: 'noOp', keyString: " ",  func: 'togglePlay'},
+DubMark.DefaultKeys = [ 
+   {op: 'noOp', keyString: "j",  func: 'newSub'        , title: gT('NewSub')},
+   {op: 'noOp', keyString: "k",  func: 'endSub'        , title: gT('EndSub')},
+   {op: 'noOp', keyString: "l",  func: 'pauseAndEndSub', title: gT('PauseAndEndSub')},
+   {op: 'noOp', keyString: "s",  func: 'setStart'      , title: gT('SetStart')},
+   {op: 'noOp', keyString: "e",  func: 'setEnd'        , title: gT('SetEnd')},
+   {op: 'noOp', keyString: " ",  func: 'togglePlay', title: gT('ToggleVideo')},
 
-   {op: 'noOp', keyString: "t",  func: 'focusTranslation'},
-   {op: 'noOp', keyString: "f",  func: 'focusSource'},
+   {op: 'noOp', keyString: "t",  func: 'focusTranslation', title: gT('FocusTranslation')},
+   {op: 'noOp', keyString: "f",  func: 'focusSource', title: gT('FocusSource')},
 
    //TODO also support arrow keys
-   {op: 'noOp',    keyString: "n",  func: 'nextSub'},
-   {op: 'noOp',    keyString: "h",  func: 'prevSub'},
-   {op: 'ctrlKey', keyString: "s",  func: 'changeSub'},
-   {op: 'ctrlKey', keyString: "j",  func: 'removeSub'},
+   {op: 'noOp',    keyString: "n",  func: 'nextSub', title: gT('NextSub')},
+   {op: 'noOp',    keyString: "h",  func: 'prevSub', title: gT('PrevSub')},
+   {op: 'noOp',     keyString: "p",  func: 'toggleVideo', title: gT('ToggleVideo')},
 
-   {op: 'noOp', keyString: "p",  func: 'toggleVideo'},
-
-   {op: 'shiftKey', keyString: "s",  func: 'jumpStart'},
-   {op: 'shiftKey', keyString: "e",  func: 'jumpEnd'}
+   {op: 'ctrlKey', keyString: "j",  func: 'removeSub', title: gT('RemoveSub')},
+   {op: 'shiftKey', keyString: "s",  func: 'jumpStart', title: gT('JumpSubStart')},
+   {op: 'shiftKey', keyString: "e",  func: 'jumpEnd', title: gT('JumpSubEnd')}
 ];
 
 

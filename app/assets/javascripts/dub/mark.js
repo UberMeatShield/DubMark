@@ -40,8 +40,10 @@ DubMark.Config = {
     var url = C[name] ? C[name].url : name;
     if(url){
       if(url.match('http')){
-        return url;
+         console.log("URL", url);
+         return url;
       }else if(C.base.url){ //Use reletive paths unless we are told otherwise
+        console.log("URL", C.base.url + url);
         return C.base.url + url;
       }else{
         console.warn('No DubMark.Base.url set was set, guessing that (', name, ') is simply the correct path.');

@@ -20,11 +20,14 @@ $.extend(DubMark.ProjectList.prototype, {
      DubMark.Store.ProjectList[this.sequence.id++] = this;
   },
   load: function(){
-    //Ajax call to the server, attempt to load the list of projects we have avail
-    this.ResourceProject = this.ResourceProject || new DubMark.MockProjectResource();
-    this.arr = this.ResourceProject.query(function(wtf){
-      console.log("Project list loaded successfully.");
-    });
+    try{
+      //Ajax call to the server, attempt to load the list of projects we have avail
+      this.arr = this.ResourceProject.query(function(wtf){
+        console.log("Project list loaded successfully.");
+      });
+    }catch(e){
+        console.error('Failed to actually load?', e);
+    }
   },
   filterChange: function(){
     this.page = 0; //Reset the page we are on (pagination)
