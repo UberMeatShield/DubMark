@@ -106,7 +106,7 @@ DubMark.Modules.Dub.directive('videomanager', function(){
           try{ //Tempting to move more of this logic into the vid & project itself?
             console.log("Save the video update");
             var vid = this.project.vid; //Reference to VideoView instance
-            this.proj.vidUrl            = vid.vidUrl;
+            this.proj.vidUrl = vid.vidUrl;
             this.proj.status = this.proj.status || {};
             this.proj.status.VideoReady = vid.vidUrl ? new Date() : null;
             this.proj.$save();
@@ -175,7 +175,7 @@ DubMark.Modules.Dub.directive("create", function() {
         this.list.validateCreate(response);
         //Do more stuff
         if(doOpen){
-          this.list.loader.open(response.id);
+          this.list.ResourceProject.open(response.id);
         }
       };
 
@@ -188,7 +188,7 @@ DubMark.Modules.Dub.directive("create", function() {
         console.log("Save called.", doOpen);
         this.isEnabled = false;
 
-        this.list.loader.save(
+        this.list.ResourceProject.save(
           this.getArguments(), 
           this.validateCreated.bind(this, doOpen)
         );

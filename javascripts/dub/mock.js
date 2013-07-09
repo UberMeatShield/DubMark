@@ -3,16 +3,17 @@ var dub = angular.module('dub', ['ngResource']);
 
 DubMark.MockResource = function(args){ //No resource mock?
   this.init();
+  this.title = 'Mock Resource';
 };
 $.extend(DubMark.MockResource.prototype, {
   sequence: {id: 0},
-  $get: function(func){
-    typeof func == 'function' ? func() : null;
-    return this;
-  },
   init: function(){
     this.id = this.sequence.id++; 
     this.status = this.getStates();
+  },
+  $get: function(func){
+    typeof func == 'function' ? func() : null;
+    return this;
   },
   getStates: function(){
     var newStates = {};
@@ -35,7 +36,7 @@ $.extend(DubMark.MockResource.prototype, {
     return this;
   },
   $query: function(func){
-    return [{}];
+    return new (DubMark[this.MOCK]);
   },
   $remove: function(func){
     delete this;
@@ -43,7 +44,9 @@ $.extend(DubMark.MockResource.prototype, {
   get: function(args){
     return {};
   },
-  query: function() { return [{title: 'Mock', id: 'mock'}] },
+  query: function() { 
+    return [new (DubMark[this.MOCK])];
+  },
   save: function(args, cb) {
     console.log("save: ", args, cb);
     this.id = this.sequence.id++; 
@@ -74,9 +77,9 @@ $.extend(DubMark.MockResource.prototype, {
 
 DubMark.MockProjectResource = function(){
   this.init();
+  this.MOCK = 'MockProjectResource';
 };
 $.extend(DubMark.MockProjectResource.prototype, DubMark.MockResource.prototype);
-
 dub.factory('Project', function(){
   var project = DubMark.MockProjectResource;
   return project;
@@ -84,6 +87,7 @@ dub.factory('Project', function(){
 
 DubMark.MockSubsResource = function(){
   this.init();
+  this.MOCK = 'MockSubsResource';
 };
 $.extend(DubMark.MockSubsResource.prototype, DubMark.MockResource.prototype);
 dub.factory('Subtitles', function(){
