@@ -6,10 +6,10 @@ class ProjectsController < ApplicationController
     @projects = nil
 
     conditions = {} #Better filter methods?  This seems dumb
-    if params[:title]
+    if params[:title] and !params[:title].empty?
       conditions[:title] = { "$regex" => params[:title], "$options" => "-i" } 
     end
-    if params[:state]
+    if params[:state] and !params[:state].empty?
       conditions[:state] = { "$regex" => params[:state], "$options" => "-i" } 
     end
 
