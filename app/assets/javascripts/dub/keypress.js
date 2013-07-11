@@ -130,6 +130,7 @@ $.extend(DubMark.KeyPress.prototype, {
     try{
       evt = evt || window.event;
       if(evt.keyCode == 27){
+        console.log("Keypress toggle.");
         this.actions.keypressToggle();
         return;
       }

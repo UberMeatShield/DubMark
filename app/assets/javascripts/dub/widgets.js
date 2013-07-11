@@ -1,4 +1,29 @@
 /**
+ * Keypress handler widget, for configuration of your keyhandler.
+ */
+DubMark.Modules.Dub.directive("keyhandler", function() {
+  return {
+    restrict: "E",
+    transclude: true,
+    scope: true,
+    controller: function($scope, $element) {
+      //How do I get the scope of the item hacked in?
+    },
+    template:
+     '<div class="span2 pull-right"> ' +
+      '<input type="button" id="hotkeys" ' + 
+         'ng-click="keypress.toggle()" class="btn btn-primary" ' +
+         'ng-class=keypress.isEnabled() ' +
+         'title="{{gT(\'ToggleHotKeys\')}}" ' + 
+         'value="{{gT(\'Hotkeys\')}} {{keypress.enabled}}"> ' +
+      '</input> ' +
+     '<div>',
+    replace: true
+  };
+});
+
+
+/**
  * Provides a state handler that can be used on a project item to update the status information.
  *
  * It requires a .proj to be available in the scope, so either ng-init="proj = $Resource" or something
@@ -15,7 +40,7 @@ DubMark.Modules.Dub.directive("status", function() {
     controller: function($scope, $element) {
       //How do I get the scope of the item hacked in?
       var dialog = null;
-      $scope.states = ["VideoReady", "Timed", "Translated", "QA", "Published"];
+      $scope.states = DubMark.StatesOrder;
 
       $scope.isComplete = function(key){
         if($scope.proj.status[key]){

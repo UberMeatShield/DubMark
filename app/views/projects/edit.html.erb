@@ -4,7 +4,7 @@
       <!-- Navbar, TODO: add google translate options here? -->
       <div id="topBar" class="navbar navbar-inner">
         <form class="navbar-form pull-left">
-          <span class="brand"> Title </span>
+          <span class="brand"> {{gT('Title')}} </span>
           <input  ng-model="project.ResourceProject.title" 
             ng-focus="keypress.sleep()"
             ng-change="project.update()"  class="span4" type="text" /> 
@@ -13,18 +13,23 @@
         </form>
 
         <!-- Allow the user to change the status of the project.  Requires $scope.proj to be a $Resource of Project -->
-        <span class="brand"> Status </span>
+        <span class="brand"> {{gT('Status')}} </span>
         <div class="span4" style="margin-top: 5px">
             <status></status>
         </div>
 
         &nbsp;
         &nbsp; <!-- TODO convert to widget? -->
+        <keyhandler></keyhandler>
+
+        <!--
         <input type="button" id='hotkeys' 
           ng-click="keypress.toggle()" class="btn btn-primary" 
           ng-class=keypress.isEnabled()
           value="Hotkeys {{keypress.enabled}}"> 
         </input>
+        -->
+
       </div>
       <!-- Top level container for the rest of the page elements -->
       <div class="container-fluid">
@@ -39,7 +44,7 @@
             <!-- Editing container -->
             <div class="container-fluid well">
               <div id="subcontrols" class="navbar">
-                <span class="brand">Editing</span>
+                <span class="brand">{{gT('Editing')}}</span>
                 <button ng-click="action.newSub()" 
                   title="{{i18n.NewSub}}" id="new" class="btn" >
                   <i class="icon-plus"></i>
@@ -62,7 +67,7 @@
                   <i class="icon-trash"></i>
                 </button>
                 <div class="pull-right">
-                <span class="brand">&nbsp;Video</span>
+                <span class="brand">&nbsp;{{gT('Video')}}</span>
                 <button ng-click="project.vid.play()" class="btn" ><i class="icon-play"></i></button>
                 <button ng-click="project.vid.pause()" class="btn"><i class="icon-pause"></i></button>
                 </div>
@@ -94,10 +99,10 @@
                   </button>
                   <input ng-change="action.changeSub()" 
                          ng-focus="keypress.sleep()"
-                         ng-model="project.subs.curr.sTime"   type="text"  class="span2"  placeholder="Start" /> 
+                         ng-model="project.subs.curr.sTime" type="text" class="span2" placeholder="{{gT('Start')}}" /> 
                   <input ng-change="action.changeSub()" 
                          ng-focus="keypress.sleep()"
-                         ng-model="project.subs.curr.eTime"   type="text" placeholder="End" class="span2" /> 
+                         ng-model="project.subs.curr.eTime"   type="text" placeholder="{{gT('End')}}" class="span2" /> 
                   <button ng-click="action.setEnd()" 
                           title="Set subtitle end to current video time." type="button" class="btn">
                     <i class="icon-time"></i>
@@ -114,7 +119,7 @@
             <!-- A listing of all the existing subtitles, can click to select them -->
             <div id="subtitle" class="well">
               <ul class="nav nav-list">
-                <li class="nav-header">Subtitles</li>
+                <li class="nav-header">{{gT('Subtitles')}}</li>
                 <li class="{{project.controls.isActive(sub)}}" ng-repeat="sub in project.subs.arr"> <!-- Click selection should make current -->
                 <a id="sub_{{sub.id}}"  ng-click="project.controls.setCurrent(sub);"> <!-- apply class active if active -->
                   [{{sub.sTime}} - {{sub.eTime}}]</br>

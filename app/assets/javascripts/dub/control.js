@@ -34,6 +34,7 @@ dub.factory('Subtitles', function($resource){
 //For the index.html page
 dub.controller('ProjectListings', function($scope, $resource, Project){
   var args = DubMark.Config.PageConfig || {};
+  $scope.gT       = window.gT; //get Text, for making i18n easier
 
   if(args.data){
     var arr = [];
@@ -55,6 +56,7 @@ dub.controller('ProjectListings', function($scope, $resource, Project){
 //PageConfig comes from the serialization of the actual json data we already have in the page
 dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, Subtitles){
   var args = DubMark.Config.PageConfig || {};
+  $scope.gT       = window.gT; //get Text, for making i18n easier
   if(!args.id){
     console.error("Complete and total fail, crash the page yo");
   }

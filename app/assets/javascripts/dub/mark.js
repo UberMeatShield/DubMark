@@ -18,6 +18,7 @@ DubMark.States = DubMark.States || {
   Completed: 'icon-ok',
   Published: 'icon-share'
 };
+DubMark.StatesOrder = ["VideoReady", "Timed", "Translated", "QA", "Published"];
 
 //Tweak these config settings before creating an instance so that we know where
 //to make ajax calls.

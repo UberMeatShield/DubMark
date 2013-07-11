@@ -20,9 +20,9 @@ DubMark.i18n.ENU = {
   StopVideo: 'Stop this video', //Do I even use this?
   StartVideo: 'Start the video',
   PauseVideo: 'Pause the video',
-  ToggleHotkeys: 'Toggle the hotkeys on and off, esc'
+  ToggleHotKeys: 'Toggle the hotkeys on and off (esc)'
 };
-DubMark.i18n.Lang = DubMark.i18n_DEFAULTS || DubMark.i18n.ENU;
+DubMark.i18n.Lang = DubMark.i18n.DEFAULT_LANG || DubMark.i18n.ENU;
 
 /**
  *  Make it so you can specify what to init by known languages?
@@ -34,7 +34,7 @@ DubMark.i18n.getInstance = function(lang){
   return DubMark.i18n.Instance;
 }
 DubMark.i18n.getLabel = function(key){
-  DubMark.i18n.getInstance().getKey(key);
+  return DubMark.i18n.getInstance().getKey(key);
 };
 gT = function(key){
   return DubMark.i18n.getLabel(key);
@@ -52,15 +52,16 @@ $.extend(DubMark.i18n.Language.prototype, {
     this.setStrings(lang);
   },
   setKey: function(key, string){ //Why bother with a function right?  Because they don't need to know :)?
-    this.key = string;
+    this[key] = string;
   },
   getKey: function(key){
     return this[key] || key;
   },
   setStrings: function(lang){
-    console.log("What are we iterating on?", lang);
     $.each(lang, function(k, v){
-      this[k] = v;
-    }, this);
+      if(typeof k == 'string' && typeof this[k] != 'function' ){
+          this.setKey(k, v);
+      }
+    }.bind(this));
   }
 });
