@@ -8,15 +8,51 @@ DubMark.Modules.Dub.directive("keyhandler", function() {
     scope: true,
     controller: function($scope, $element) {
       //How do I get the scope of the item hacked in?
+      $scope.gT      = window.gT;
+      $scope.Actions = 
+
+      $scope.save = function(){
+        console.log("Save called.");
+        dialog  = $('#Configuration').modal('hide');
+      };
+      $scope.close = function(){
+        console.log("Close called");
+        dialog  = $('#Configuration').modal('hide');
+      };
+      $scope.popup = function(){
+        console.log("Popup");
+        dialog  = $('#Configuration').modal('show');
+        console.log("Dialog?");
+      };
+      $scope.clickSetting = function(set){
+          console.log("click which setting?", set);
+      };
+      $scope.assignKey = function(key, op){
+          console.log("key, op", key, op);
+      };
     },
     template:
      '<div class="span2 pull-right"> ' +
-      '<input type="button" id="hotkeys" ' + 
-         'ng-click="keypress.toggle()" class="btn btn-primary" ' +
-         'ng-class=keypress.isEnabled() ' +
-         'title="{{gT(\'ToggleHotKeys\')}}" ' + 
-         'value="{{gT(\'Hotkeys\')}} {{keypress.enabled}}"> ' +
-      '</input> ' +
+       '<div id="Configuration" tabindex="-1" class="modal hide" role="dialog" aria-labelledby="myModalLabel"  aria-hidden="true">' +
+        '<div class="modal-header">' +
+           '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
+           '<h3>{{gT("Hotkeys")}}</h3>' +
+        '</div>' +
+        '<div class="modal-body">' +
+            'Key configuration' +
+         '</div>' +
+        '<div class="modal-footer">'+
+          '<a ng-click=save() href="#" class="btn btn-primary">Save</a>'+
+          '<a ng-click=close() href="#" class="btn">Close</a>'+
+        '</div>'+
+       '</div>'+
+       '<input type="button" id="hotkeys" ' + 
+          'ng-click="keypress.toggle()" class="btn btn-primary" ' +
+          'ng-class=keypress.isEnabled() ' +
+          'title="{{gT(\'ToggleHotKeys\')}}" ' + 
+          'value="{{gT(\'Hotkeys\')}} {{keypress.enabled}}"> ' +
+       '</input> ' +
+       '<button class="btn" ng-click=popup() title="{{gT("Configure")}}"><i class="icon-cog"></i></button>' +
      '<div>',
     replace: true
   };

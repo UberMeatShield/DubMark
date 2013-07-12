@@ -22,7 +22,7 @@ DubMark.i18n.ENU = {
   PauseVideo: 'Pause the video',
   ToggleHotKeys: 'Toggle the hotkeys on and off (esc)'
 };
-DubMark.i18n.Lang = DubMark.i18n.DEFAULT_LANG || DubMark.i18n.ENU;
+DubMark.i18n.Lang = DubMark.i18n.Lang || DubMark.i18n.ENU;
 
 /**
  *  Make it so you can specify what to init by known languages?

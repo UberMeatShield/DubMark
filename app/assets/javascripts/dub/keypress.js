@@ -32,15 +32,15 @@ DubMark.KeyPress = function(actionInstance){
   this.listen();
 };
 $.extend(DubMark.KeyPress.prototype, {
-  init: function(){
-    this.setupCodes();
-
+  init: function(cfg){
+    this.cfg      = DubMark.DefaultKeys; 
     this.listener = this.keyup.bind(this);
+    this.setupCodes(this.cfg);
+
     window.document.addEventListener('keyup', this.listener, false);
   },
   setupCodes: function(cfg){
-    var map = cfg && typeof cfg.UserKeyCfg == 'string' ? JSON.parse(cfg.UserKeyCfg) : DubMark.DefaultKeys;
-
+    var map = cfg && typeof cfg.UserKeyCfg == 'string' ? JSON.parse(cfg.UserKeyCfg) : cfg;
     $.each(map, function(key, val){
       if(!val || !val.keyString || !val.func){return;}
 
@@ -53,6 +53,7 @@ $.extend(DubMark.KeyPress.prototype, {
       }
     }.bind(this));
 
+    this.cfg = map;
   },
   CODES: {  //Holds the actual functions that will be run per key
     noOp: {},
