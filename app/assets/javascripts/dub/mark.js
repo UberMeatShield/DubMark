@@ -82,11 +82,15 @@ $.extend(DubMark.SubManager.prototype, {
       console.warn("No Resource Sub defined in this SubManager", this);
     }
   },
-  changeSub: function(){
+  changeSub: function(immediate){
     //Defer the save till no modification is done for 2 seconds
     if(this.curr && jQuery.isFunction(this.curr.$save)){
       this.lastTimeChanged = new Date();
-      this.deferSave(this.curr);
+      if(immediate && this.curr){
+        this.curr.$save();
+      }else{
+        this.deferSave(this.curr);
+      }
     }
   },
   nextSub: function(){
@@ -288,18 +292,18 @@ $.extend(DubMark.Controls.prototype, {
       this.vid.setTime(sub.eTime);
     }
   },
-  setStart: function(){
+  setStart: function(immediate){
     var sub = this.subs.curr;
     if(sub){//Hmm.. this doesn't trigger the on change event?
       sub.sTime = this.vid.getTime().toFixed(1);
-      this.subs.changeSub(); 
+      this.subs.changeSub(true);
     }
   },
   setEnd: function(){
     var sub = this.subs.curr;
     if(sub){ //A set end doesn't change the set end but does update the UI correctly, odd
       sub.eTime = this.vid.getTime().toFixed(1);
-      this.subs.changeSub(); 
+      this.subs.changeSub(true);
     }
   }
 });
