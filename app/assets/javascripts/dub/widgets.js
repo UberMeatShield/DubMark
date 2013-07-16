@@ -10,6 +10,7 @@ DubMark.Modules.Dub.directive("keyhandler", function() {
       //How do I get the scope of the item hacked in?
       $scope.gT      = window.gT;
       $scope.keys    = $scope.keypress.getKeyConfig();
+      $scope.active  = false;
 
       console.log("KeyHandler?", $scope, $scope.wtf);
       $scope.save = function(){
@@ -24,12 +25,20 @@ DubMark.Modules.Dub.directive("keyhandler", function() {
         console.log("Popup");
         dialog  = $('#Configuration').modal('show');
         console.log("Dialog?");
+        $scope.keypress.sleep();
       };
       $scope.clickSetting = function(set){
           console.log("click which setting?", set);
+          this.active = true;
       };
       $scope.assignKey = function(key, op){
           console.log("key, op", key, op);
+          //Add focus
+          
+          //Add keypress event or just hack in a window event listener
+      };
+      $scope.isActive = function(){
+          return this.active ? "active" : '';
       };
     },
     template:
@@ -42,8 +51,8 @@ DubMark.Modules.Dub.directive("keyhandler", function() {
         '<div class="modal-body">' +
             '<div class="container-fluid">' + 
               '<div class="row-fluid" ng-repeat="cfg in keys">' +
-                '<div class="span4"> {{cfg.keyString}} </div>' +
-                '<div class="">{{cfg.title}}</div>' + 
+                '<div class="span7">{{cfg.title}}</div>' + 
+                '<div class="span4 well" ng-class=isActive() ng-click=clickSetting(cfg)> {{cfg.keyString}}</div>' +
               '</div>' +
             '</div>' +
          '</div>' +
