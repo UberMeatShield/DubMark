@@ -10,19 +10,19 @@ DubMark.DefaultKeys = [
    {op: 'noOp', keyString: "l",  func: 'pauseAndEndSub', title: gT('PauseAndEndSub')},
    {op: 'noOp', keyString: "s",  func: 'setStart'      , title: gT('SetStart')},
    {op: 'noOp', keyString: "e",  func: 'setEnd'        , title: gT('SetEnd')},
-   {op: 'noOp', keyString: " ",  func: 'togglePlay', title: gT('ToggleVideo')},
+   {op: 'noOp', keyString: " ",  func: 'togglePlay'    , title: gT('ToggleVideo')},
 
    {op: 'noOp', keyString: "t",  func: 'focusTranslation', title: gT('FocusTranslation')},
-   {op: 'noOp', keyString: "f",  func: 'focusSource', title: gT('FocusSource')},
+   {op: 'noOp', keyString: "f",  func: 'focusSource'     , title: gT('FocusSource')},
 
    //TODO also support arrow keys
-   {op: 'noOp',    keyString: "n",  func: 'nextSub', title: gT('NextSub')},
-   {op: 'noOp',    keyString: "h",  func: 'prevSub', title: gT('PrevSub')},
+   {op: 'noOp',    keyString: "n",  func: 'nextSub'     , title: gT('NextSub')},
+   {op: 'noOp',    keyString: "h",  func: 'prevSub'     , title: gT('PrevSub')},
    {op: 'noOp',     keyString: "p",  func: 'toggleVideo', title: gT('ToggleVideo')},
 
-   {op: 'ctrlKey', keyString: "j",  func: 'removeSub', title: gT('RemoveSub')},
+   {op: 'ctrlKey', keyString: "j",  func: 'removeSub' , title: gT('RemoveSub')},
    {op: 'shiftKey', keyString: "s",  func: 'jumpStart', title: gT('JumpSubStart')},
-   {op: 'shiftKey', keyString: "e",  func: 'jumpEnd', title: gT('JumpSubEnd')}
+   {op: 'shiftKey', keyString: "e",  func: 'jumpEnd'  , title: gT('JumpSubEnd')}
 ];
 
 
@@ -39,7 +39,7 @@ $.extend(DubMark.KeyPress.prototype, {
 
     window.document.addEventListener('keyup', this.listener, false);
   },
-  setupCodes: function(cfg){
+  setupCodes: function(cfg){//No user type yet, but in the future I can certainly see saving this type
     var map = cfg && typeof cfg.UserKeyCfg == 'string' ? JSON.parse(cfg.UserKeyCfg) : cfg;
     $.each(map, function(key, val){
       if(!val || !val.keyString || !val.func){return;}
@@ -60,6 +60,9 @@ $.extend(DubMark.KeyPress.prototype, {
     ctrlKey:{},
     altKey:{},
     shiftKey: {}
+  },
+  getKeyConfig: function(){
+    return this.cfg;
   },
   isEnabled: function(){
     return this.enabled == 'On' ? 'active' : ''; 

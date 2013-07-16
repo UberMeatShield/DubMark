@@ -9,8 +9,9 @@ DubMark.Modules.Dub.directive("keyhandler", function() {
     controller: function($scope, $element) {
       //How do I get the scope of the item hacked in?
       $scope.gT      = window.gT;
-      $scope.Actions = 
+      $scope.keys    = $scope.keypress.getKeyConfig();
 
+      console.log("KeyHandler?", $scope, $scope.wtf);
       $scope.save = function(){
         console.log("Save called.");
         dialog  = $('#Configuration').modal('hide');
@@ -32,20 +33,26 @@ DubMark.Modules.Dub.directive("keyhandler", function() {
       };
     },
     template:
-     '<div class="span2 pull-right"> ' +
+     '<div class="pull-right"> ' +
        '<div id="Configuration" tabindex="-1" class="modal hide" role="dialog" aria-labelledby="myModalLabel"  aria-hidden="true">' +
         '<div class="modal-header">' +
            '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
            '<h3>{{gT("Hotkeys")}}</h3>' +
         '</div>' +
         '<div class="modal-body">' +
-            'Key configuration' +
+            '<div class="container-fluid">' + 
+              '<div class="row-fluid" ng-repeat="cfg in keys">' +
+                '<div class="span4"> {{cfg.keyString}} </div>' +
+                '<div class="">{{cfg.title}}</div>' + 
+              '</div>' +
+            '</div>' +
          '</div>' +
         '<div class="modal-footer">'+
           '<a ng-click=save() href="#" class="btn btn-primary">Save</a>'+
           '<a ng-click=close() href="#" class="btn">Close</a>'+
         '</div>'+
        '</div>'+
+       '<div class="span2">' + 
        '<input type="button" id="hotkeys" ' + 
           'ng-click="keypress.toggle()" class="btn btn-primary" ' +
           'ng-class=keypress.isEnabled() ' +
@@ -53,6 +60,7 @@ DubMark.Modules.Dub.directive("keyhandler", function() {
           'value="{{gT(\'Hotkeys\')}} {{keypress.enabled}}"> ' +
        '</input> ' +
        '<button class="btn" ng-click=popup() title="{{gT("Configure")}}"><i class="icon-cog"></i></button>' +
+       '</div>' +
      '<div>',
     replace: true
   };
