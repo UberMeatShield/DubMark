@@ -16,6 +16,11 @@ DubMark.Modules.Dub.directive("keyhandler", function() {
       $scope.save = function(){
         console.log("Save called.");
         dialog  = $('#Configuration').modal('hide');
+
+        //Little scary
+        $scope.keypress.setupCodes(
+          $scope.keypress.getKeyConfig()
+        );
       };
       $scope.close = function(){
         console.log("Close called");
@@ -29,12 +34,10 @@ DubMark.Modules.Dub.directive("keyhandler", function() {
       };
       $scope.clickSetting = function(set){
           console.log("click which setting?", set);
-          this.active = true;
       };
       $scope.assignKey = function(key, op){
           console.log("key, op", key, op);
           //Add focus
-          
           //Add keypress event or just hack in a window event listener
       };
       $scope.isActive = function(){
@@ -50,9 +53,9 @@ DubMark.Modules.Dub.directive("keyhandler", function() {
         '</div>' +
         '<div class="modal-body">' +
             '<div class="container-fluid">' + 
-              '<div class="row-fluid" ng-repeat="cfg in keys">' +
+              '<div id={{cfg.func}} class="row-fluid" ng-repeat="cfg in keys">' +
                 '<div class="span7">{{cfg.title}}</div>' + 
-                '<div class="span4 well" ng-class=isActive() ng-click=clickSetting(cfg)> {{cfg.keyString}}</div>' +
+                '<input type="text" class="span4" ng-model=cfg.keyString />' +
               '</div>' +
             '</div>' +
          '</div>' +

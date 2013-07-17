@@ -40,6 +40,9 @@ $.extend(DubMark.KeyPress.prototype, {
     window.document.addEventListener('keyup', this.listener, false);
   },
   setupCodes: function(cfg){//No user type yet, but in the future I can certainly see saving this type
+    //Remove all 
+    this.resetAllCodes();
+
     var map = cfg && typeof cfg.UserKeyCfg == 'string' ? JSON.parse(cfg.UserKeyCfg) : cfg;
     $.each(map, function(key, val){
       if(!val || !val.keyString || !val.func){return;}
@@ -55,11 +58,14 @@ $.extend(DubMark.KeyPress.prototype, {
 
     this.cfg = map;
   },
-  CODES: {  //Holds the actual functions that will be run per key
-    noOp: {},
-    ctrlKey:{},
-    altKey:{},
-    shiftKey: {}
+  CODES: {},
+  resetAllCodes: function(){
+    this.CODES = {
+      noOp: {},
+      ctrlKey:{},
+      altKey:{},
+      shiftKey: {}
+    };
   },
   getKeyConfig: function(){
     return this.cfg;
