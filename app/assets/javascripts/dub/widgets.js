@@ -16,15 +16,16 @@ DubMark.Modules.Dub.directive("keyhandler", function() {
       $scope.save = function(){
         console.log("Save called.");
         dialog  = $('#Configuration').modal('hide');
-
         //Little scary
         $scope.keypress.setupCodes(
           $scope.keypress.getKeyConfig()
         );
+        $scope.keypress.listen();
       };
       $scope.close = function(){
         console.log("Close called");
         dialog  = $('#Configuration').modal('hide');
+        $scope.keypress.listen();
       };
       $scope.popup = function(){
         console.log("Popup");
@@ -60,8 +61,8 @@ DubMark.Modules.Dub.directive("keyhandler", function() {
             '</div>' +
          '</div>' +
         '<div class="modal-footer">'+
-          '<a ng-click=save() href="#" class="btn btn-primary">Save</a>'+
-          '<a ng-click=close() href="#" class="btn">Close</a>'+
+          '<a ng-click=save() href="#" class="btn btn-primary">{{gT("Update")}}</a>'+
+          '<a ng-click=close() href="#" class="btn">{{gT("Close")}}</a>'+
         '</div>'+
        '</div>'+
        '<div class="span2">' + 

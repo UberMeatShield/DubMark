@@ -10,7 +10,6 @@ DubMark.DefaultKeys = [
    {op: 'noOp', keyString: "l",  func: 'pauseAndEndSub', title: gT('PauseAndEndSub')},
    {op: 'noOp', keyString: "s",  func: 'setStart'      , title: gT('SetStart')},
    {op: 'noOp', keyString: "e",  func: 'setEnd'        , title: gT('SetEnd')},
-   {op: 'noOp', keyString: " ",  func: 'togglePlay'    , title: gT('ToggleVideo')},
 
    {op: 'noOp', keyString: "t",  func: 'focusTranslation', title: gT('FocusTranslation')},
    {op: 'noOp', keyString: "f",  func: 'focusSource'     , title: gT('FocusSource')},
