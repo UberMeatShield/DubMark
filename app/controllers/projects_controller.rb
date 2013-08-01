@@ -69,6 +69,19 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def format
+    @subs = nil;
+    if(params[:id])
+      @subs = Sub.all(:conditions => {:projectId => params[:id]})
+    else
+      throw "Error, you must provide a projectId"
+    end
+    
+    print "YO\n"
+    print "YO"
+    return
+  end
+
   # PUT /projects/1
   # PUT /projects/1.json
   def update

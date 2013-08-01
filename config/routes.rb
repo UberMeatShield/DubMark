@@ -1,6 +1,8 @@
 Dub::Application.routes.draw do
   get "welcome/index"
 
+  match 'projects/:id/format' => 'projects#format'
+
   resources :subs
   resources :projects
 
