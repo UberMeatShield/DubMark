@@ -76,10 +76,31 @@ class ProjectsController < ApplicationController
     else
       throw "Error, you must provide a projectId"
     end
-    
-    print "YO\n"
-    print "YO"
-    return
+     
+    format = 'webvtt'
+    if(!params[:format] or (params[:format] == 'webvtt'))
+      @output = format_web_vtt(@subs)
+    end
+  end
+
+  def format_ass(subs)
+    return ''
+  end
+
+  def format_web_vtt(subs)
+    output = ''
+    @subs.each{ |sub|
+      trans = sub['trans'] ? sub['trans'].to_s : nil
+      if(trans != nil)
+        output += vtt(sub.sTime.to_d) + " --> " + vtt(sub.eTime.to_d) + "\n"
+        output += trans + "\n\n"
+      end
+    }
+    return output
+  end
+
+  def vtt(s)
+    return Time.at(s).utc.strftime("%H:%M:%S.%L") 
   end
 
   # PUT /projects/1

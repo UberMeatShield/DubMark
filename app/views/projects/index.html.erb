@@ -97,7 +97,8 @@
 </div> <!-- End main controller section -->
 
 <script type="text/javascript">
-  DubMark.Config.base.url = 'http://10.100.116.252\\:3000/';
+  DubMark.Config.base.url = 'http://localhost\\:3000/';
+  //DubMark.Config.base.url = 'http://10.100.116.252\\:3000/';
   DubMark.Config.PageConfig = {
     data: JSON.parse(decodeURIComponent('<%= @projects.to_json.html_safe() =%>'))
   };
