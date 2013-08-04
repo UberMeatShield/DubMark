@@ -319,6 +319,10 @@ $.extend(DubMark.VideoView.prototype, {
     this.loaded = false;
     this.vidUrl = null;
     this.testVidChange = null; //For modification tests pre-save
+  } ,
+  reset: function(){
+    $('#video').empty();
+    this.createVideo(this.vidUrl, this.vidType);
   },
   createVideo: function(vidUrl, vidType){
     this.loaded = false;

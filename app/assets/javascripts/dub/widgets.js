@@ -192,15 +192,20 @@ DubMark.Modules.Dub.directive('videomanager', function(){
             this.proj.status = this.proj.status || {};
             this.proj.status.VideoReady = vid.vidUrl ? new Date() : null;
             this.proj.$save();
-            $('#video').empty();
 
+            vid.reset();
+            /*
+            $('#video').empty();
             vid.createVideo(vid.vidUrl, vid.vidType);
-            
+            */
           }catch(e){
             console.error('Failed to update the video url.', e);
           }
         dialog.modal('hide');
       };
+      $scope.reset = function(){
+          this.project.vid.reset();
+      },
       $scope.close = function(){
         dialog.modal('hide');
       };
@@ -224,6 +229,9 @@ DubMark.Modules.Dub.directive('videomanager', function(){
       '</div>' +
       '<button class="btn" ng-click=changeVideo()>' +
         '<i class="icon-plus" /> Change Video'  + 
+      '</button>' +
+      '<button class="btn" ng-click=reset()>' +
+        '<i class="icon-refresh" /> Reset Subs'  + 
       '</button>' +
     '</div>',
     replace: true
