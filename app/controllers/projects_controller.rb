@@ -76,10 +76,15 @@ class ProjectsController < ApplicationController
     else
       throw "Error, you must provide a projectId"
     end
+    @subs = @subs.sort_by{|k| k['sTime'].to_d}
      
     format = 'webvtt'
     if(!params[:format] or (params[:format] == 'webvtt'))
       @output = format_web_vtt(@subs)
+      if(!params[:debug])
+         send_data "#{@output}", :filename => 'subs.vtt'
+         return
+      end
     end
   end
 
@@ -88,7 +93,7 @@ class ProjectsController < ApplicationController
   end
 
   def format_web_vtt(subs)
-    output = ''
+    output = "WEBVTT\n\n"
     @subs.each{ |sub|
       trans = sub['trans'] ? sub['trans'].to_s : nil
       if(trans != nil)

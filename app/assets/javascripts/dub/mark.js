@@ -335,6 +335,12 @@ $.extend(DubMark.VideoView.prototype, {
           $('<source>',  {
             type: vidType || 'video/ogg',  //Guess source type
             src: vidUrl
+          }),
+          $('<track>', {
+            kind: 'subtitles',
+            label: 'Web VTT test',
+            src: '../../' + this.id + '/format',
+            srclng: 'en' //Lang controls for translation target required.
           })
         );
         v.append(vid);
