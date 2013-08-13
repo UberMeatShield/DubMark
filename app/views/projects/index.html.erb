@@ -63,34 +63,42 @@
       </table>
     </div>
 
-    <!-- Information about the currently selected project. -->
+    <!-- Information about the currently selected project. (make into a widget)-->
     <div class="span6 project_info">
       <div class="navbar navbar-inner">
         <span class='brand'> Project Information: {{list.active.title}}</span>
-        <button ng-disabled="!list.active" class="btn pull-right" title="Open to edit" ng-click="list.openActive()">
-          <i class="icon-edit"></i>
+        <button  class="btn pull-right" title="Open to edit" 
+          ng-disabled="!list.active"
+          ng-click="list.openActive()"
+         >
+        <i class="icon-edit"></i>
         </button>
       </div>
       <div class="container-fluid">
+        <input class="span6" type='text' placeholder="{{gT('Project')}}" title="{{gT('Project title')}}"
+          ng-model=list.active.title
+          ng-change="list.changeProject()"
+        >
         <div class="span5 image-project pull-right">
           Image {{list.active.imageUrl}}
         </div>
         <div class="row-fluid">
-          <input class="span6" type='text' placeholder="Translator" 
+          <input class="span6" type='text' placeholder="{{gT('Translator')}}" title="{{gT('Translator')}}"
             ng-model=list.active.translator 
             ng-change="list.changeProject()"
           />
         </div>
         <div class="row-fluid">
-          <input  class="span6" type='text' placeholder="Published to link" 
+          <input  class="span6" type='text' placeholder="{{gT('Published link')}}" title="{{gT('Published link')}}"
             ng-model=list.active.link 
             ng-change="list.changeProject()"
           />
         </div>
         <div class="row-fluid">
-          <textarea class="span6" type='text' placeholder="Notes"
+          <textarea class="span6" type='text' placeholder="{{gT('Notes')}}" title="{{gT('Notes')}}"
+            ng-model=list.active.notes
             ng-change="list.changeProject()"
-            ng-model=list.active.notes>
+          >
           </textarea>
         </div>
       </div>

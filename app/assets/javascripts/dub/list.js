@@ -1,11 +1,10 @@
 /**
- *  Loading support for getting paginated lists and loading a new project
+ *  Loading support for getting paginated lists and loading basic project information
  */
 DubMark.ProjectList = function(args){
   this.init(args);
 };
-
-$.extend(DubMark.ProjectList.prototype, {
+$.extend(DubMark.ProjectList.prototype, DubMark.NoSpamming, {
   sequence: {id: 0},
   init: function(args){
      this.arr = args && args.data ? args.data : [];
@@ -27,6 +26,14 @@ $.extend(DubMark.ProjectList.prototype, {
       });
     }catch(e){
         console.error('Failed to actually load?', e);
+    }
+  },
+  changeProject: function(){ //Active project was updated, ensure that we save that to the db
+    var proj = this.active;
+    if(proj && jQuery.isFunction(proj.$save)){
+      this.deferOp(function(proj){
+        proj.$save();
+      }.bind(this, proj));
     }
   },
   filterChange: function(){
