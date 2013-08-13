@@ -71,26 +71,30 @@
           <i class="icon-edit"></i>
         </button>
       </div>
-      <div>
-        <!-- Show details -->
-        <div class="container-fluid">
-          <div class="row-fluid">
-            <div class="span5 image-project">Image        {{list.active.imageUrl}}</div>
-            <div class="span5">Description {{list.active.description}}</div>
-          </div>
-
-          <div class="row-fluid">
-            <div class="span2">Translator   {{list.active.translator}}</div>
-          </div>
-          <div class="row-fluid">
-            <div class="span2">Notes        {{list.active.notes}}</div>
-          </div>
-          <div class="row-fluid">
-            <div class="span2">Link        </div><div class="span4"> {{list.active.link}}</div>
-          </div>
+      <div class="container-fluid">
+        <div class="span5 image-project pull-right">
+          Image {{list.active.imageUrl}}
         </div>
-
+        <div class="row-fluid">
+          <input class="span6" type='text' placeholder="Translator" 
+            ng-model=list.active.translator 
+            ng-change="list.changeProject()"
+          />
+        </div>
+        <div class="row-fluid">
+          <input  class="span6" type='text' placeholder="Published to link" 
+            ng-model=list.active.link 
+            ng-change="list.changeProject()"
+          />
+        </div>
+        <div class="row-fluid">
+          <textarea class="span6" type='text' placeholder="Notes"
+            ng-change="list.changeProject()"
+            ng-model=list.active.notes>
+          </textarea>
+        </div>
       </div>
+
     </div>
   </div>
 
