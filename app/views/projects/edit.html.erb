@@ -18,18 +18,8 @@
             <status></status>
         </div>
 
-        &nbsp;
-        &nbsp; <!-- TODO convert to widget? -->
-        <keyhandler></keyhandler>
-
-        <!--
-        <input type="button" id='hotkeys' 
-          ng-click="keypress.toggle()" class="btn btn-primary" 
-          ng-class=keypress.isEnabled()
-          value="Hotkeys {{keypress.enabled}}"> 
-        </input>
-        -->
-
+        &nbsp; 
+        <keyhandler></keyhandler> <!-- Key handling widget -->
       </div>
       <!-- Top level container for the rest of the page elements -->
       <div class="container-fluid">
@@ -75,40 +65,59 @@
 
               <!-- Editing a set of subtitles -->
               <div class="row-fluid">
-                <input id="source"
+                <input id="source" type="text" class="span11" placeholder="Source" 
                   ng-focus="keypress.sleep()"
                   ng-change="action.changeSub()" 
-                  ng-model="project.subs.curr.source" type="text" class="span11" placeholder="Source" /> 
+                  ng-model="project.subs.curr.source" 
+                  ng-disabled="!project.subs.curr"
+                /> 
               </div>
               <div class="row-fluid">
-                <input id="translation"
+                <input id="translation" type="text" class="span11" placeholder="Translation" 
                   ng-focus="keypress.sleep()"
                   ng-change="action.changeSub()" 
-                  ng-model="project.subs.curr.trans" type="text" class="span11" placeholder="Translation" /> 
+                  ng-model="project.subs.curr.trans" 
+                  ng-disabled="!project.subs.curr"
+                /> 
               </div>
 
+              <!-- Editing controls for a subtitle that is currently active -->
               <div class="row-fluid">
                 <form class="navbar-form pull-left">
-                  <button ng-click="action.jumpStart()" 
-                     title="Jump to Sub Start." type="button" class="btn">    
+                  <button  title="Jump to Sub Start." type="button" class="btn"
+                    ng-click="action.jumpStart()" 
+                    ng-disabled="!project.subs.curr"
+                  >    
                     <i class="icon-fast-backward"></i>
                   </button>
-                  <button ng-click="action.setStart()"
-                          title="Set Sub to Video Time."  type="button" class="btn" >
+                  <button title="Set Sub to Video Time."  type="button" class="btn" 
+                    ng-click="action.setStart()"
+                    ng-disabled="!project.subs.curr"
+                  >
                     <i class="icon-time"></i>
                   </button>
-                  <input ng-change="action.changeSub()" 
-                         ng-focus="keypress.sleep()"
-                         ng-model="project.subs.curr.sTime" type="text" class="span2" placeholder="{{gT('Start')}}" /> 
-                  <input ng-change="action.changeSub()" 
-                         ng-focus="keypress.sleep()"
-                         ng-model="project.subs.curr.eTime"   type="text" placeholder="{{gT('End')}}" class="span2" /> 
-                  <button ng-click="action.setEnd()" 
-                          title="Set subtitle end to current video time." type="button" class="btn">
+                  <input type="text" class="span2" placeholder="{{gT('Start')}}"
+                    ng-change="action.changeSub()" 
+                    ng-focus="keypress.sleep()"
+                    ng-model="project.subs.curr.sTime" 
+                    ng-disabled="!project.subs.curr"
+                  /> 
+                  <input type="text" placeholder="{{gT('End')}}" class="span2" 
+                    ng-change="action.changeSub()" 
+                    ng-focus="keypress.sleep()"
+                    ng-model="project.subs.curr.eTime"   
+                    ng-disabled="!project.subs.curr"
+                  /> 
+                  <button title="Set subtitle end to current video time." type="button" class="btn"
+                    ng-click="action.setEnd()" 
+                    ng-disabled="!project.subs.curr"
+                  >
                     <i class="icon-time"></i>
                   </button>
-                  <button  ng-click="action.jumpEnd()" 
-                    title="Jump video to end time for subtitle" class="btn">
+                  <button  title="Jump video to end time for subtitle" class="btn"
+                    ng-click="action.jumpEnd()" 
+                    ng-disabled="!project.subs.curr"
+                  >
                     <i class="icon-fast-forward"></i>
                   </button>
                 </form>
