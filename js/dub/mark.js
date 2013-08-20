@@ -18,6 +18,7 @@ DubMark.States = DubMark.States || {
   Completed: 'icon-ok',
   Published: 'icon-share'
 };
+DubMark.StatesOrder = ["VideoReady", "Timed", "Translated", "QA", "Published"];
 
 //Tweak these config settings before creating an instance so that we know where
 //to make ajax calls.
@@ -40,8 +41,10 @@ DubMark.Config = {
     var url = C[name] ? C[name].url : name;
     if(url){
       if(url.match('http')){
-        return url;
+         console.log("URL", url);
+         return url;
       }else if(C.base.url){ //Use reletive paths unless we are told otherwise
+        console.log("URL", C.base.url + url);
         return C.base.url + url;
       }else{
         console.warn('No DubMark.Base.url set was set, guessing that (', name, ') is simply the correct path.');
@@ -52,11 +55,34 @@ DubMark.Config = {
   }
 };
 
+
+DubMark.NoSpamming = function(){};
+DubMark.NoSpamming.prototype.deferOp = function(cb){
+    this.lastTimeChanged = new Date();
+    if(this.callIt || typeof cb != 'function'){return;}
+
+    this.callIt = function(cb){
+      try{
+        var d = new Date();
+        if((d - this.lastTimeChanged) > this.deferTime){
+          this.callIt = null;
+          this.lastTimeChanged = null;
+          cb();
+        }else{
+          setTimeout(this.callIt.bind(this, cb), this.deferTime+50); 
+        }
+      }catch(e){
+        console.error('Error on the save defer.', e);
+      }
+    }.bind(this, cb);
+    this.callIt();
+};
+
 /**
  *  Manages loads and writes to the subtitle module
  */
 DubMark.SubManager = function(args){ this.init(args);};
-$.extend(DubMark.SubManager.prototype, {
+$.extend(DubMark.SubManager.prototype, DubMark.NoSpamming.prototype, {
   sub: {
     id: 0
   },
@@ -71,7 +97,6 @@ $.extend(DubMark.SubManager.prototype, {
     this.ResourceSub = args.ResourceSubtitles; 
   },
   load: function(args){
-    console.log("Args for the load?", args);
     args = args || {projectId: this.projectId};
     if(this.ResourceSub){
       this.arr = this.ResourceSub.query(args);
@@ -79,11 +104,17 @@ $.extend(DubMark.SubManager.prototype, {
       console.warn("No Resource Sub defined in this SubManager", this);
     }
   },
-  changeSub: function(){
+  changeSub: function(immediate){
     //Defer the save till no modification is done for 2 seconds
-    if(this.curr && jQuery.isFunction(this.curr.$save)){
-      this.lastTimeChanged = new Date();
-      this.deferSave(this.curr);
+    var mod = this.curr;
+    if(mod && jQuery.isFunction(mod.$save)){
+      if(immediate && mod){
+        mod.$save();
+      }else{
+        this.deferOp(function(mod){
+          mod.$save();
+        }.bind(this, mod));
+      }
     }
   },
   nextSub: function(){
@@ -115,23 +146,6 @@ $.extend(DubMark.SubManager.prototype, {
         }
       }
     }
-  },
-  deferSave: function(obj){ //Note obj is what is bound, NOT this.curr
-    if(this.saveIt && obj) return;
-    this.saveIt = function(obj){
-      try{
-        var d = new Date();
-        if((d - this.lastTimeChanged) > this.deferTime){
-          this.saveIt = null;
-          obj.$save();
-        }else{
-          setTimeout(this.saveIt.bind(this, obj), this.deferTime+50); 
-        }
-      }catch(e){
-        console.error('Error on the save defer.', e);
-      }
-    }.bind(this, obj);
-    this.saveIt();
   },
   newSub: function(source, sTime, eTime, trans, index){
     sTime = (!isNaN(sTime) && sTime != null ? parseFloat(sTime) : 0.0).toFixed(1);
@@ -285,18 +299,18 @@ $.extend(DubMark.Controls.prototype, {
       this.vid.setTime(sub.eTime);
     }
   },
-  setStart: function(){
+  setStart: function(immediate){
     var sub = this.subs.curr;
     if(sub){//Hmm.. this doesn't trigger the on change event?
       sub.sTime = this.vid.getTime().toFixed(1);
-      this.subs.changeSub(); 
+      this.subs.changeSub(true);
     }
   },
   setEnd: function(){
     var sub = this.subs.curr;
     if(sub){ //A set end doesn't change the set end but does update the UI correctly, odd
       sub.eTime = this.vid.getTime().toFixed(1);
-      this.subs.changeSub(); 
+      this.subs.changeSub(true);
     }
   }
 });
@@ -312,6 +326,10 @@ $.extend(DubMark.VideoView.prototype, {
     this.loaded = false;
     this.vidUrl = null;
     this.testVidChange = null; //For modification tests pre-save
+  } ,
+  reset: function(){
+    $('#video').empty();
+    this.createVideo(this.vidUrl, this.vidType);
   },
   createVideo: function(vidUrl, vidType){
     this.loaded = false;
@@ -328,6 +346,12 @@ $.extend(DubMark.VideoView.prototype, {
           $('<source>',  {
             type: vidType || 'video/ogg',  //Guess source type
             src: vidUrl
+          }),
+          $('<track>', {
+            kind: 'subtitles',
+            label: 'Web VTT test',
+            src: '../../' + this.id + '/format',
+            srclng: 'en' //Lang controls for translation target required.
           })
         );
         v.append(vid);
@@ -484,7 +508,7 @@ $.extend(DubMark.Actions.prototype, {
  *  The main project entry point.
  */
 DubMark.Project = function(args){this.init(args);};
-$.extend(DubMark.Project.prototype, {
+$.extend(DubMark.Project.prototype, DubMark.NoSpamming.prototype, {
   seq: {
     id: 0
   },
@@ -527,55 +551,10 @@ $.extend(DubMark.Project.prototype, {
   update: function(){
     console.log("Does update?");
     this.deferOp(function(){
-      console.log("Attempt to save.");
       this.ResourceProject.$save();
     }.bind(this));
   },
-  deferOp: function(cb){
-    this.lastTimeChanged = new Date();
-    if(this.callIt || typeof cb != 'function'){return;}
-
-    this.callIt = function(cb){
-      try{
-        var d = new Date();
-        if((d - this.lastTimeChanged) > this.deferTime){
-          this.callIt = null;
-          this.lastTimeChanged = null;
-          cb();
-        }else{
-          setTimeout(this.callIt.bind(this, cb), this.deferTime+50); 
-        }
-      }catch(e){
-        console.error('Error on the save defer.', e);
-      }
-    }.bind(this, cb);
-    this.callIt();
-  },
   loadCb: function(response){
     console.log("Project Load Callback.", response);
-  }
-});
-
-
-
-/**
- *  Todo: check out the angular mock classes instead of custom hack sauce
- */
-DubMark.MockProjectResource = function(){
-  this.id = 0;
-};
-$.extend(DubMark.MockProjectResource.prototype, {
-  query: function() { return [{title: 'Mock', id: 'mock'}] },
-  save: function(args, cb) { 
-    console.log("Save", args, cb);
-    if(typeof cb == 'function'){ 
-      args.id = ++this.id;
-      args.title = args.title + ' MOCK';
-      cb(args);
-    }
-    return args;
-  },
-  open: function(id){
-    window.open('edit.html?id=' + id);
   }
 });

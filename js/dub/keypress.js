@@ -4,27 +4,24 @@
  * keyString - the string representation of the keycode
  * func - the function name on the actionInstance to run when the key is pressed
  */
-DubMark.DefaultKeys = [
-   {op: 'noOp', keyString: "j", func: 'newSub'},
-   {op: 'noOp', keyString: "k",  func: 'endSub'},
-   {op: 'noOp', keyString: "l",  func: 'pauseAndEndSub'},
-   {op: 'noOp', keyString: "s",  func: 'setStart'},
-   {op: 'noOp', keyString: "e",  func: 'setEnd'},
-   {op: 'noOp', keyString: " ",  func: 'togglePlay'},
+DubMark.DefaultKeys = [ 
+   {op: 'noOp', keyString: "j",  func: 'newSub'        , title: gT('NewSub')},
+   {op: 'noOp', keyString: "k",  func: 'endSub'        , title: gT('EndSub')},
+   {op: 'noOp', keyString: "l",  func: 'pauseAndEndSub', title: gT('PauseAndEndSub')},
+   {op: 'noOp', keyString: "s",  func: 'setStart'      , title: gT('SetStart')},
+   {op: 'noOp', keyString: "e",  func: 'setEnd'        , title: gT('SetEnd')},
 
-   {op: 'noOp', keyString: "t",  func: 'focusTranslation'},
-   {op: 'noOp', keyString: "f",  func: 'focusSource'},
+   {op: 'noOp', keyString: "t",  func: 'focusTranslation', title: gT('FocusTranslation')},
+   {op: 'noOp', keyString: "f",  func: 'focusSource'     , title: gT('FocusSource')},
 
    //TODO also support arrow keys
-   {op: 'noOp',    keyString: "n",  func: 'nextSub'},
-   {op: 'noOp',    keyString: "h",  func: 'prevSub'},
-   {op: 'ctrlKey', keyString: "s",  func: 'changeSub'},
-   {op: 'ctrlKey', keyString: "j",  func: 'removeSub'},
+   {op: 'noOp',    keyString: "n",  func: 'nextSub'     , title: gT('NextSub')},
+   {op: 'noOp',    keyString: "h",  func: 'prevSub'     , title: gT('PrevSub')},
+   {op: 'noOp',     keyString: "p",  func: 'toggleVideo', title: gT('ToggleVideo')},
 
-   {op: 'noOp', keyString: "p",  func: 'toggleVideo'},
-
-   {op: 'shiftKey', keyString: "s",  func: 'jumpStart'},
-   {op: 'shiftKey', keyString: "e",  func: 'jumpEnd'}
+   {op: 'ctrlKey', keyString: "j",  func: 'removeSub' , title: gT('RemoveSub')},
+   {op: 'shiftKey', keyString: "s",  func: 'jumpStart', title: gT('JumpSubStart')},
+   {op: 'shiftKey', keyString: "e",  func: 'jumpEnd'  , title: gT('JumpSubEnd')}
 ];
 
 
@@ -34,15 +31,18 @@ DubMark.KeyPress = function(actionInstance){
   this.listen();
 };
 $.extend(DubMark.KeyPress.prototype, {
-  init: function(){
-    this.setupCodes();
-
+  init: function(cfg){
+    this.cfg      = DubMark.DefaultKeys; 
     this.listener = this.keyup.bind(this);
+    this.setupCodes(this.cfg);
+
     window.document.addEventListener('keyup', this.listener, false);
   },
-  setupCodes: function(cfg){
-    var map = cfg && typeof cfg.UserKeyCfg == 'string' ? JSON.parse(cfg.UserKeyCfg) : DubMark.DefaultKeys;
+  setupCodes: function(cfg){//No user type yet, but in the future I can certainly see saving this type
+    //Remove all 
+    this.resetAllCodes();
 
+    var map = cfg && typeof cfg.UserKeyCfg == 'string' ? JSON.parse(cfg.UserKeyCfg) : cfg;
     $.each(map, function(key, val){
       if(!val || !val.keyString || !val.func){return;}
 
@@ -55,12 +55,19 @@ $.extend(DubMark.KeyPress.prototype, {
       }
     }.bind(this));
 
+    this.cfg = map;
   },
-  CODES: {  //Holds the actual functions that will be run per key
-    noOp: {},
-    ctrlKey:{},
-    altKey:{},
-    shiftKey: {}
+  CODES: {},
+  resetAllCodes: function(){
+    this.CODES = {
+      noOp: {},
+      ctrlKey:{},
+      altKey:{},
+      shiftKey: {}
+    };
+  },
+  getKeyConfig: function(){
+    return this.cfg;
   },
   isEnabled: function(){
     return this.enabled == 'On' ? 'active' : ''; 
@@ -132,6 +139,7 @@ $.extend(DubMark.KeyPress.prototype, {
     try{
       evt = evt || window.event;
       if(evt.keyCode == 27){
+        console.log("Keypress toggle.");
         this.actions.keypressToggle();
         return;
       }

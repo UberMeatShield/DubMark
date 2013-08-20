@@ -1,4 +1,86 @@
 /**
+ * Keypress handler widget, for configuration of your keyhandler.
+ */
+DubMark.Modules.Dub.directive("keyhandler", function() {
+  return {
+    restrict: "E",
+    transclude: true,
+    scope: true,
+    controller: function($scope, $element) {
+      //How do I get the scope of the item hacked in?
+      $scope.gT      = window.gT;
+      $scope.keys    = $scope.keypress.getKeyConfig();
+      $scope.active  = false;
+
+      console.log("KeyHandler?", $scope, $scope.wtf);
+      $scope.save = function(){
+        console.log("Save called.");
+        dialog  = $('#Configuration').modal('hide');
+        //Little scary
+        $scope.keypress.setupCodes(
+          $scope.keypress.getKeyConfig()
+        );
+        $scope.keypress.listen();
+      };
+      $scope.close = function(){
+        console.log("Close called");
+        dialog  = $('#Configuration').modal('hide');
+        $scope.keypress.listen();
+      };
+      $scope.popup = function(){
+        console.log("Popup");
+        dialog  = $('#Configuration').modal('show');
+        console.log("Dialog?");
+        $scope.keypress.sleep();
+      };
+      $scope.clickSetting = function(set){
+          console.log("click which setting?", set);
+      };
+      $scope.assignKey = function(key, op){
+          console.log("key, op", key, op);
+          //Add focus
+          //Add keypress event or just hack in a window event listener
+      };
+      $scope.isActive = function(){
+          return this.active ? "active" : '';
+      };
+    },
+    template:
+     '<div class="pull-right"> ' +
+       '<div id="Configuration" tabindex="-1" class="modal hide" role="dialog" aria-labelledby="myModalLabel"  aria-hidden="true">' +
+        '<div class="modal-header">' +
+           '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
+           '<h3>{{gT("Hotkeys")}}</h3>' +
+        '</div>' +
+        '<div class="modal-body">' +
+            '<div class="container-fluid">' + 
+              '<div id={{cfg.func}} class="row-fluid" ng-repeat="cfg in keys">' +
+                '<div class="span7">{{cfg.title}}</div>' + 
+                '<input type="text" class="span4" ng-model=cfg.keyString />' +
+              '</div>' +
+            '</div>' +
+         '</div>' +
+        '<div class="modal-footer">'+
+          '<a ng-click=save() href="#" class="btn btn-primary">{{gT("Update")}}</a>'+
+          '<a ng-click=close() href="#" class="btn">{{gT("Close")}}</a>'+
+        '</div>'+
+       '</div>'+
+       '<div class="span2">' + 
+       '<input type="button" id="hotkeys" ' + 
+          'ng-click="keypress.toggle()" class="btn btn-primary" ' +
+          'ng-class=keypress.isEnabled() ' +
+          'title="{{gT(\'ToggleHotKeys\')}}" ' + 
+          'value="{{gT(\'Hotkeys\')}} {{keypress.enabled}}"> ' +
+       '</input> ' +
+       '<button class="btn" ng-click=popup() title="{{gT("Configure")}}"><i class="icon-cog"></i></button>' +
+       '</div>' +
+     '<div>',
+    replace: true
+  };
+});
+
+
+/**
  * Provides a state handler that can be used on a project item to update the status information.
  *
  * It requires a .proj to be available in the scope, so either ng-init="proj = $Resource" or something
@@ -15,7 +97,7 @@ DubMark.Modules.Dub.directive("status", function() {
     controller: function($scope, $element) {
       //How do I get the scope of the item hacked in?
       var dialog = null;
-      $scope.states = ["VideoReady", "Timed", "Translated", "QA", "Published"];
+      $scope.states = DubMark.StatesOrder;
 
       $scope.isComplete = function(key){
         if($scope.proj.status[key]){
@@ -106,19 +188,24 @@ DubMark.Modules.Dub.directive('videomanager', function(){
           try{ //Tempting to move more of this logic into the vid & project itself?
             console.log("Save the video update");
             var vid = this.project.vid; //Reference to VideoView instance
-            this.proj.vidUrl = vid.vidUrl;
+            this.proj.vidUrl            = vid.vidUrl;
             this.proj.status = this.proj.status || {};
             this.proj.status.VideoReady = vid.vidUrl ? new Date() : null;
             this.proj.$save();
-            $('#video').empty();
 
+            vid.reset();
+            /*
+            $('#video').empty();
             vid.createVideo(vid.vidUrl, vid.vidType);
-            
+            */
           }catch(e){
             console.error('Failed to update the video url.', e);
           }
         dialog.modal('hide');
       };
+      $scope.reset = function(){
+          this.project.vid.reset();
+      },
       $scope.close = function(){
         dialog.modal('hide');
       };
@@ -142,6 +229,9 @@ DubMark.Modules.Dub.directive('videomanager', function(){
       '</div>' +
       '<button class="btn" ng-click=changeVideo()>' +
         '<i class="icon-plus" /> Change Video'  + 
+      '</button>' +
+      '<button class="btn" ng-click=reset()>' +
+        '<i class="icon-refresh" /> Reset Subs'  + 
       '</button>' +
     '</div>',
     replace: true
@@ -185,9 +275,7 @@ DubMark.Modules.Dub.directive("create", function() {
       };
 
       $scope.save = function(doOpen){
-        console.log("Save called.", doOpen);
         this.isEnabled = false;
-
         this.list.ResourceProject.save(
           this.getArguments(), 
           this.validateCreated.bind(this, doOpen)

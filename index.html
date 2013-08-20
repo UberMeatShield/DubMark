@@ -12,100 +12,118 @@
     </h3>
     <br/>
     <div class="banner"></div>
-    <!-- Probably want to make this entire thing into a template -->
-    <div ng-app='dub' ng-controller="ProjectListings" class="listings container-fluid ">
-      <div class="row-fluid">
-        <div class="span6">
-          <div class="navbar navbar-inner">
-          <form class="span13 navbar-form">
-            <span class='brand'>Projects</span>
-
-              <!-- Used in jQuery dialog, could just make this into another angular module?" -->
-              <create></create>
-              
-              <!-- TODO: Make the UI actually have a proper pagination counter... 
-              sadly counts in mongo are actually expensive? -->
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              <button title='Previous' ng-click="list.prev()"    class="btn">
-                <i class="icon-step-backward"></i>
-              </button>
-
-              <button title='Refresh'  ng-click="list.refresh()" class="btn">
-                <i class="icon-refresh"></i>
-              </button>
-
-              <button title='Next'     ng-click="list.next()"    class="btn">
-                <i class="icon-step-forward"></i>
-              </button>
 
 
-              <button title='Search'   ng-click="list.search()"  class="btn pull-right">
-                <i class="icon-search"></i>
-              </button>
-              <input type="text" ng-model="list.filterTitle" ng-change="list.filterChange()"
-                     class="pull-right" placeholder="Filter projects"> </input>
-          </form>
-          </div>
+<!-- Probably want to make this entire thing into a template -->
+<div ng-app='dub' ng-controller="ProjectListings" class="listings container-fluid ">
+  <div class="row-fluid">
+    <div class="span6">
+      <div class="navbar navbar-inner">
+      <form class="span13 navbar-form">
+        <span class='brand'>Projects</span>
 
-          <table class="table table-striped">
-            <thead>
-            <tr>
-              <td>Title</td>
-              <td>Status</td>
-              <td>Created</td>
-            </tr>
-            </thead>
-            <tbody>
-              <tr class='{{list.isActive(proj)}}' 
-                ng-repeat="proj in list.arr" 
-                ng-click="list.setActive(proj)" 
-                ng-dblclick="list.openActive()"> 
-              <td>{{proj.title}}</td>
-              <td>
-                <status ng-scope=proj></status>
-              </td>
-              <td>
-                <span>{{proj.create_date}}</span>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+          <!-- Used in jQuery dialog, could just make this into another angular module?" -->
+          <create></create>
+          
+          <!-- TODO: Make the UI actually have a proper pagination counter... 
+          sadly counts in mongo are actually expensive? -->
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          <button title='Previous' ng-click="list.prev()"    class="btn">
+            <i class="icon-step-backward"></i>
+          </button>
+
+          <button title='Refresh'  ng-click="list.refresh()" class="btn">
+            <i class="icon-refresh"></i>
+          </button>
+
+          <button title='Next'     ng-click="list.next()"    class="btn">
+            <i class="icon-step-forward"></i>
+          </button>
+
+
+          <button title='Search'   ng-click="list.search()"  class="btn pull-right">
+            <i class="icon-search"></i>
+          </button>
+          <input type="text" ng-model="list.filterTitle" ng-change="list.filterChange()"
+                 class="pull-right" placeholder="Filter projects"> </input>
+      </form>
+      </div>
+
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <td>Title</td>
+          <td>Status</td>
+          <td>Created</td>
+        </tr>
+        </thead>
+        <tbody>
+          <tr class='{{list.isActive(proj)}}' 
+            ng-repeat="proj in list.arr" 
+            ng-click="list.setActive(proj)" 
+            ng-dblclick="list.openActive()"> 
+          <td>{{proj.title}}</td>
+          <td>
+            <status ng-scope=proj></status>
+          </td>
+          <td>
+            <span>{{proj.create_date}}</span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Information about the currently selected project. (make into a widget)-->
+    <div class="span6 project_info">
+      <div class="navbar navbar-inner">
+        <span class='brand'> Project Information: {{list.active.title}}</span>
+        <button  class="btn pull-right" title="Open to edit" 
+          ng-disabled="!list.active"
+          ng-click="list.openActive()"
+         >
+        <i class="icon-edit"></i>
+        </button>
+      </div>
+      <div class="container-fluid">
+        <input class="span6" type='text' placeholder="{{gT('Project')}}" title="{{gT('Project title')}}"
+          ng-disabled="!list.active"
+          ng-model=list.active.title
+          ng-change="list.changeProject()"
+        >
+        <div class="span5 image-project pull-right">
+          Image {{list.active.imageUrl}}
         </div>
-
-        <!-- Information about the currently selected project. -->
-        <div class="span6 project_info">
-          <div class="navbar navbar-inner">
-            <span class='brand'> Project Information: {{list.active.title}}</span>
-            <button ng-disabled="!list.active" class="btn pull-right" title="Open to edit" ng-click="list.openActive()">
-              <i class="icon-edit"></i>
-            </button>
-          </div>
-          <div>
-            <!-- Show details -->
-            <div class="container-fluid">
-              <div class="row-fluid">
-                <div class="span5 image-project">Image        {{list.active.imageUrl}}</div>
-                <div class="span5">Description {{list.active.description}}</div>
-              </div>
-
-              <div class="row-fluid">
-                <div class="span2">Translator   {{list.active.translator}}</div>
-              </div>
-              <div class="row-fluid">
-                <div class="span2">Notes        {{list.active.notes}}</div>
-              </div>
-              <div class="row-fluid">
-                <div class="span2">Link        </div><div class="span4"> {{list.active.link}}</div>
-              </div>
-            </div>
-
-          </div>
+        <div class="row-fluid">
+          <input class="span6" type='text' placeholder="{{gT('Translator')}}" title="{{gT('Translator')}}"
+            ng-disabled="!list.active"
+            ng-model=list.active.translator 
+            ng-change="list.changeProject()"
+          />
+        </div>
+        <div class="row-fluid">
+          <input  class="span6" type='text' placeholder="{{gT('Published link')}}" title="{{gT('Published link')}}"
+            ng-disabled="!list.active"
+            ng-model=list.active.link 
+            ng-change="list.changeProject()"
+          />
+        </div>
+        <div class="row-fluid">
+          <textarea class="span6" type='text' placeholder="{{gT('Notes')}}" title="{{gT('Notes')}}"
+            ng-disabled="!list.active"
+            ng-model=list.active.notes
+            ng-change="list.changeProject()"
+          >
+          </textarea>
         </div>
       </div>
 
-    </div> <!-- End main controller section -->
+    </div>
+  </div>
+</div> <!-- End main controller section -->
+
 
 
     <!-- All the script includes -->
@@ -126,7 +144,7 @@
       //Could just do this with mock objects?
       DubMark.Config.PageConfig = {
         data: [{
-          title: 'A video',
+          title: 'Mock Example.',
           id: 1,
           status: {}
           },{
@@ -135,7 +153,7 @@
           }]
       };
     </script>
-
   </body>
 </html>
+
 
