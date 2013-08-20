@@ -125,6 +125,8 @@ dub.controller('ProjectListings', function($scope, $resource, Project){
       list.ResourceProject = new Project(); //For creating new instances (hacky mock)
       list.$scope = $scope;
 
+  //Hmmm.. better way to do this loading?
+  $scope.gT = window.gT;
   $scope.list = list;
   //list.load();
 });
@@ -144,6 +146,8 @@ dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, 
   args.$scope =            $scope; //Newb learning
 
 
+  //Hmmm.. better way to do this loading?
+  $scope.gT = window.gT;
 
   //Point various bits of scope at each other
   $scope.project  = new DubMark.Project(args);
