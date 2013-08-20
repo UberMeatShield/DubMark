@@ -11,17 +11,17 @@ DubMark.DefaultKeys = [
    {op: 'noOp', keyString: "s",  func: 'setStart'      , title: gT('SetStart')},
    {op: 'noOp', keyString: "e",  func: 'setEnd'        , title: gT('SetEnd')},
 
-   {op: 'noOp', keyString: "t",  func: 'focusTranslation', title: gT('FocusTranslation')},
-   {op: 'noOp', keyString: "f",  func: 'focusSource'     , title: gT('FocusSource')},
+   {op: 'noOp', keyString: "f",  func: 'focusTranslation', title: gT('FocusTranslation')},
+   {op: 'noOp', keyString: "e",  func: 'focusSource'     , title: gT('FocusSource')},
 
    //TODO also support arrow keys
-   {op: 'noOp',    keyString: "n",  func: 'nextSub'     , title: gT('NextSub')},
-   {op: 'noOp',    keyString: "h",  func: 'prevSub'     , title: gT('PrevSub')},
+   {op: 'noOp',    keyString: "w",  func: 'nextSub'     , title: gT('NextSub')},
+   {op: 'noOp',    keyString: "s",  func: 'prevSub'     , title: gT('PrevSub')},
    {op: 'noOp',     keyString: "p",  func: 'toggleVideo', title: gT('ToggleVideo')},
 
-   {op: 'ctrlKey', keyString: "j",  func: 'removeSub' , title: gT('RemoveSub')},
-   {op: 'shiftKey', keyString: "s",  func: 'jumpStart', title: gT('JumpSubStart')},
-   {op: 'shiftKey', keyString: "e",  func: 'jumpEnd'  , title: gT('JumpSubEnd')}
+   {op: 'noOp', keyString: "r",   func: 'removeSub' , title: gT('RemoveSub')},
+   {op: 'noOp', keyString: "a",  func: 'jumpStart', title: gT('JumpSubStart')},
+   {op: 'noOp', keyString: "d",  func: 'jumpEnd'  , title: gT('JumpSubEnd')}
 ];
 
 

@@ -490,7 +490,6 @@ $.extend(DubMark.Actions.prototype, {
   keypressToggle: function(){
     var el = angular.element('#hotkeys');
         el.trigger('click');
-
     if(el.hasClass('active')){
       document.activeElement.blur();
     }
