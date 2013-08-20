@@ -1,8 +1,14 @@
-//Note the module name is the same as ng-app="dub"
+/* Note the module name is the same as ng-app="dub"
+ *
+ *  This is a mock object test so that gh-pages will all work without actual mongo or rails support.
+ *
+ *  TODO:  Events still a little buggy, need to actually get a MockResource of angular to trigger all
+ *  the right things.
+*/
 var dub = angular.module('dub', ['ngResource']);
 
-DubMark.MockResource = function(){ //No resource mock?
-  this.init();
+DubMark.MockResource = function(args){ //No resource mock?
+  this.init(args);
 };
 $.extend(DubMark.MockResource.prototype, {
   sequence: {id: 0},
@@ -10,9 +16,15 @@ $.extend(DubMark.MockResource.prototype, {
     typeof func == 'function' ? func() : null;
     return this;
   },
-  init: function(){
+  init: function(args){
     this.id = this.sequence.id++; 
     this.status = this.getStates();
+
+    if(args){
+      $.each(args, function(k, v){
+        this.set(k, v);
+      }.bind(this));
+    }
   },
   getStates: function(){
     var newStates = {};
@@ -72,8 +84,8 @@ $.extend(DubMark.MockResource.prototype, {
 
 
 
-DubMark.MockProjectResource = function(){
-  this.init();
+DubMark.MockProjectResource = function(args){
+  this.init(args);
 };
 $.extend(DubMark.MockProjectResource.prototype, DubMark.MockResource.prototype);
 
@@ -100,13 +112,17 @@ dub.controller('ProjectListings', function($scope, $resource, Project){
     var arr = [];
     var data = args.data;
     for(var i=0; i< data.length; ++i){
-      arr.push(new Project(data[i]));
+      console.log("What is the proejct?", data[i]);
+      var datum = data[i];
+          datum.id = i;
+      arr.push(new Project(datum));
     }
-    args.data = arr;
+    args.data = arr; //Merge this data into actual objects with a title
   }
 
+  console.log("What is in resource project?", args, Project);
   var list = new DubMark.ProjectList(args);
-      list.ResourceProject = Project; //For creating new instances
+      list.ResourceProject = new Project(); //For creating new instances (hacky mock)
       list.$scope = $scope;
 
   $scope.list = list;
@@ -116,14 +132,18 @@ dub.controller('ProjectListings', function($scope, $resource, Project){
 //This is used on the edit page
 //PageConfig comes from the serialization of the actual json data we already have in the page
 dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, Subtitles){
-  var args = DubMark.Config.PageConfig || {};
+  var args = {
+    id: 1,
+    title: 'A Mock Project',
+    vidUrl: 'Sample.webm'
+  };
 
   //Initialize with the json from the rails call, single instance vs a lib reference
-  args.id = 1;
-  args.vidUrl = 'Sample.webm';
   args.ResourceProject   = new Project(args);  //$resource single instance to update vs ability to query
   args.ResourceSubtitles = new Subtitles();          //$resource subtitle endpoint
   args.$scope =            $scope; //Newb learning
+
+
 
   //Point various bits of scope at each other
   $scope.project  = new DubMark.Project(args);
