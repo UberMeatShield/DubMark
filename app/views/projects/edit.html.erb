@@ -3,23 +3,26 @@
   <div ng-app='dub' ng-controller="ProjectEntry" id="main" class="main">
       <!-- Navbar, TODO: add google translate options here? -->
       <div id="topBar" class="navbar navbar-inner">
-        <form class="navbar-form pull-left">
-          <span class="brand"> {{gT('Title')}} </span>
-          <input  ng-model="project.ResourceProject.title" 
-            ng-focus="keypress.sleep()"
-            ng-change="project.update()"  class="span4" type="text" /> 
-          &nbsp;
-          &nbsp;
-        </form>
 
-        <!-- Allow the user to change the status of the project.  Requires $scope.proj to be a $Resource of Project -->
-        <span class="brand"> {{gT('Status')}} </span>
-        <div class="span4" style="margin-top: 5px">
-            <status></status>
+        <!-- Title information -->
+        <div class="span5">
+          <span class="brand">{{gT('Title')}}</span>
+          <input class="span4" type="text" style="margin-top: 5px"
+              ng-model="project.ResourceProject.title" 
+              ng-focus="keypress.sleep()"
+              ng-change="project.update()"  
+              placeholder="{{gT('No Name?')}}"
+          /> 
         </div>
 
-        &nbsp; 
-        <keyhandler></keyhandler> <!-- Key handling widget -->
+        <!-- Status information -->
+        <div class="span6">
+          <span class="brand">{{gT('Status')}}</span>
+          <div style="margin-top: 5px"><status></status></div>
+        </div>
+
+        <!-- Key handling widget -->
+        <keyhandler></keyhandler> 
       </div>
       <!-- Top level container for the rest of the page elements -->
       <div class="container-fluid">
