@@ -222,7 +222,7 @@ $.extend(DubMark.SubManager.prototype, DubMark.NoSpamming.prototype, {
       for(var i=0; i<this.arr.length; ++i){
         if(id == this.arr[i].id){
           var sub = this.arr.splice(i, 1);
-          this.curr = null;
+          this.curr = this.arr[i] || this.arr[i-1];
           return sub;
         }
       }
@@ -282,7 +282,11 @@ $.extend(DubMark.Controls.prototype, {
     this.subs.endSub(null, t); //Close open sub
   },
   removeSub: function(){
-    this.subs.removeSub();
+    var sub = this.subs.removeSub();
+    if(sub && sub.length == 1){
+      var s = sub[0];
+      s && s.$delete ? s.$delete({id: s.id}) : null;
+    }
   },
   jumpStart: function(){
     var sub = this.subs.curr;
