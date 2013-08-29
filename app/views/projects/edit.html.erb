@@ -39,15 +39,15 @@
               <div id="subcontrols" class="navbar">
                 <span class="brand">{{gT('Editing')}}</span>
                 <button ng-click="action.newSub()" 
-                  title="{{i18n.NewSub}}" id="new" class="btn" >
+                  title="{{gT(i18n.NewSub)}}" id="new" class="btn" >
                   <i class="icon-plus"></i>
                 </button>
                 <button  ng-click="action.endSub()"
-                  title="End the current subtitle" id="end" class="btn">
+                  title="{{gT('End the current subtitle')}}" id="end" class="btn">
                   <i class="icon-ok"></i>
                 </button>
                 <button ng-click="action.pauseAndEndSub()" 
-                  title="End subtitle and Pause" class="btn" >
+                  title="{{gT('End and Pause')}}" class="btn" >
                   <i class="icon-ok"></i>
                   <i class="icon-pause"></i>
                 </button>
