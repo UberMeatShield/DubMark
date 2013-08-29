@@ -3,24 +3,23 @@
   <div ng-app='dub' ng-controller="ProjectEntry" id="main" class="main">
       <!-- Navbar, TODO: add google translate options here? -->
       <div id="topBar" class="navbar navbar-inner">
-
         <!-- Title information -->
-        <div class="span5">
+        <div class="span4">
           <span class="brand">{{gT('Title')}}</span>
-          <input class="span4" type="text" style="margin-top: 5px"
+          <input class="span3 m5" type="text"
               ng-model="project.ResourceProject.title" 
               ng-focus="keypress.sleep()"
               ng-change="project.update()"  
               placeholder="{{gT('No Name?')}}"
           /> 
         </div>
-
         <!-- Status information -->
         <div class="span6">
           <span class="brand">{{gT('Status')}}</span>
-          <div style="margin-top: 5px"><status></status></div>
+          <div class="span4 m5">
+            <status></status>
+          </div>
         </div>
-
         <!-- Key handling widget -->
         <keyhandler></keyhandler> 
       </div>
@@ -59,11 +58,6 @@
                   title="Remove the currently selected sub" class="btn">
                   <i class="icon-trash"></i>
                 </button>
-                <div class="pull-right">
-                <span class="brand">&nbsp;{{gT('Video')}}</span>
-                <button ng-click="project.vid.play()" class="btn" ><i class="icon-play"></i></button>
-                <button ng-click="project.vid.pause()" class="btn"><i class="icon-pause"></i></button>
-                </div>
               </div>
 
               <!-- Editing a set of subtitles -->
@@ -87,37 +81,37 @@
               <!-- Editing controls for a subtitle that is currently active -->
               <div class="row-fluid">
                 <form class="navbar-form pull-left">
-                  <button  title="Jump to Sub Start." type="button" class="btn"
+                  <button  title="Jump to Sub Start." type="button" class="btn m5"
                     ng-click="action.jumpStart()" 
                     ng-disabled="!project.subs.curr"
                   >    
                     <i class="icon-fast-backward"></i>
                   </button>
-                  <button title="Set Sub to Video Time."  type="button" class="btn" 
+                  <button title="Set Sub to Video Time."  type="button" class="btn m5" 
                     ng-click="action.setStart()"
                     ng-disabled="!project.subs.curr"
                   >
                     <i class="icon-time"></i>
                   </button>
-                  <input type="text" class="span2" placeholder="{{gT('Start')}}"
+                  <input type="time" class="span3" placeholder="{{gT('Start')}}"
                     ng-change="action.changeSub()" 
                     ng-focus="keypress.sleep()"
                     ng-model="project.subs.curr.sTime" 
                     ng-disabled="!project.subs.curr"
                   /> 
-                  <input type="text" placeholder="{{gT('End')}}" class="span2" 
+                  <input type="time" class="span3" placeholder="{{gT('End')}}" 
                     ng-change="action.changeSub()" 
                     ng-focus="keypress.sleep()"
                     ng-model="project.subs.curr.eTime"   
                     ng-disabled="!project.subs.curr"
                   /> 
-                  <button title="Set subtitle end to current video time." type="button" class="btn"
+                  <button title="{{gT('Set subtitle end to current video time.')}}" type="button" class="btn m5"
                     ng-click="action.setEnd()" 
                     ng-disabled="!project.subs.curr"
                   >
                     <i class="icon-time"></i>
                   </button>
-                  <button  title="Jump video to end time for subtitle" class="btn"
+                  <button  title="{{gT('Jump video to end time for subtitle')}}" class="btn m5"
                     ng-click="action.jumpEnd()" 
                     ng-disabled="!project.subs.curr"
                   >

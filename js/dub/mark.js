@@ -303,17 +303,31 @@ $.extend(DubMark.Controls.prototype, {
       this.vid.setTime(sub.eTime);
     }
   },
+  secTime: function(s){
+    var sec_num = s;
+    var hours   = Math.floor(sec_num / 3600);
+    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    var seconds = (sec_num - (hours * 3600) - (minutes * 60)).toFixed(2);
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    var time    = hours+':'+minutes+':'+seconds;
+    return time;
+  },
   setStart: function(immediate){
     var sub = this.subs.curr;
     if(sub){//Hmm.. this doesn't trigger the on change event?
-      sub.sTime = this.vid.getTime().toFixed(1);
+      
+      
+      sub.sTime = this.secTime(this.vid.getTime());
       this.subs.changeSub(true);
     }
   },
   setEnd: function(){
     var sub = this.subs.curr;
     if(sub){ //A set end doesn't change the set end but does update the UI correctly, odd
-      sub.eTime = this.vid.getTime().toFixed(1);
+      sub.eTime = this.secTime(this.vid.getTime());
       this.subs.changeSub(true);
     }
   }
