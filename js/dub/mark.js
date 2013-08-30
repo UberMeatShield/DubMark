@@ -1,7 +1,36 @@
 //Make this provide the ngResource as args to a controller, lets us define and create certain resource
 
 //Angular seriously handles some strange ass magic.
-DubMark = {};
+DubMark = {
+  timeSec: function(s){ //Coudl include moment js, but seems a little overkill
+     if(typeof s != 'string'){
+       return 0;
+     }
+     var cmp = s.match(/(\d{2}):(\d{2}):(\d{2})\.(\d+)/);
+     console.log("What is in timeSec?", s, cmp);
+     if(!cmp){return 0;}
+     return (parseFloat(cmp[1])*3600) + 
+       (parseFloat(cmp[2])*60) + 
+        parseFloat(cmp[3]) + 
+        (parseFloat(cmp[4]) * 1.0 / 1000.0);
+  },
+  secTime: function(s){ //Seconds to a timestring that works in webVTT or SSA
+    s = !isNaN(s) && s != null ? s : (this.vid ? this.vid.getTime() : 0);
+    if(isNaN(s) || s == null){
+      return '00:00:00.000';
+    }
+    var sec_num = s;
+    var hours   = Math.floor(sec_num / 3600);
+    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    var seconds = (sec_num - (hours * 3600) - (minutes * 60)).toFixed(3);
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    var time    = hours+':'+minutes+':'+seconds;
+    return time;
+  }
+};
 DubMark.Store = { //Instances go here for ease of debugging and console dev
   Project: {},
   ProjectList: {}
@@ -60,7 +89,6 @@ DubMark.NoSpamming = function(){};
 DubMark.NoSpamming.prototype.deferOp = function(cb){
     this.lastTimeChanged = new Date();
     if(this.callIt || typeof cb != 'function'){return;}
-
     this.callIt = function(cb){
       try{
         var d = new Date();
@@ -148,18 +176,15 @@ $.extend(DubMark.SubManager.prototype, DubMark.NoSpamming.prototype, {
     }
   },
   newSub: function(source, sTime, eTime, trans, index){
-    sTime = (!isNaN(sTime) && sTime != null ? parseFloat(sTime) : 0.0).toFixed(1);
-    eTime = (!isNaN(eTime) && eTime != null ? parseFloat(eTime) : 0.0).toFixed(1);
-    if(eTime == 0.0){
-      eTime = sTime;
-    }
+    sTime = DubMark.secTime(sTime); //provides defaults
+    eTime = DubMark.secTime(eTime); 
 
     this.setActive(
       this.ResourceSub.save({
         projectId: this.projectId,
         source: source,
         sTime: sTime,
-        eTime: eTime,
+        eTime: eTime, 
         trans: trans
       })
     );
@@ -170,7 +195,6 @@ $.extend(DubMark.SubManager.prototype, DubMark.NoSpamming.prototype, {
     }
   },
   setActive: function(sub, clickDom){
-    console.log("Click set active.", sub);
     if(typeof clickDom == 'boolean' && sub && sub.id){
       var el = angular.element('#sub_' + sub.id);
       console.log("Click this element.", el, sub, clickDom);
@@ -187,15 +211,13 @@ $.extend(DubMark.SubManager.prototype, DubMark.NoSpamming.prototype, {
   splitSub: function(sub){
     sub = sub || this.curr;
     if(sub && sub.id){
-      var sTime = sub.sTime;
-      var eTime = sub.eTime;
-      sTime = (!isNaN(sTime) && sTime != null ? parseFloat(sTime) : 0.0).toFixed(1);
-      eTime = (!isNaN(eTime) && eTime != null ? parseFloat(eTime) : 0.0).toFixed(1);
-      
+      var sTime = DubMark.timeSec(sub.sTime);
+      var eTime = DubMark.timeSec(sub.eTime);
+		
       //Freaking javascript string mods...
       var mid = ((parseFloat(eTime) + parseFloat(sTime))/2.0);
-          mid   = (!isNaN(mid) && mid != null ? parseFloat(mid) : 0.0).toFixed(1);
-      sub.eTime = mid;
+      sub.eTime = DubMark.secTime(mid);
+
       var index = this.getIndex(sub);
       this.newSub(sub.source, mid, eTime, sub.trans, index);
     }
@@ -210,10 +232,9 @@ $.extend(DubMark.SubManager.prototype, DubMark.NoSpamming.prototype, {
     }
   },
   endSub: function(sub, eTime){
-    console.log("END THE SUB", sub, eTime);
     sub = sub || this.curr;
     if(sub){
-      sub.eTime = (!isNaN(eTime) && eTime != null ? parseFloat(eTime) : 0.0).toFixed(1);
+      sub.eTime = DubMark.secTime(eTime);
    }
   },
   removeSub: function(id){
@@ -297,37 +318,26 @@ $.extend(DubMark.Controls.prototype, {
   splitSub: function(){
     this.subs.splitSub();
   },
-  jumpEnd: function(){
+  jumpEnd: function(){ //jump to the end of a sub
     var sub = this.subs.curr;
     if(sub){
       this.vid.setTime(sub.eTime);
     }
   },
-  secTime: function(s){
-    var sec_num = s;
-    var hours   = Math.floor(sec_num / 3600);
-    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-    var seconds = (sec_num - (hours * 3600) - (minutes * 60)).toFixed(2);
-
-    if (hours   < 10) {hours   = "0"+hours;}
-    if (minutes < 10) {minutes = "0"+minutes;}
-    if (seconds < 10) {seconds = "0"+seconds;}
-    var time    = hours+':'+minutes+':'+seconds;
-    return time;
+  parsedTime: function(){ //parse the time
+    return DubMark.secTime(this.vid.getTime());
   },
-  setStart: function(immediate){
+  setStart: function(){
     var sub = this.subs.curr;
     if(sub){//Hmm.. this doesn't trigger the on change event?
-      
-      
-      sub.sTime = this.secTime(this.vid.getTime());
-      this.subs.changeSub(true);
+      sub.sTime = this.parsedTime();
+      this.subs.changeSub();
     }
   },
   setEnd: function(){
     var sub = this.subs.curr;
     if(sub){ //A set end doesn't change the set end but does update the UI correctly, odd
-      sub.eTime = this.secTime(this.vid.getTime());
+      sub.eTime = this.parsedTime();
       this.subs.changeSub(true);
     }
   }

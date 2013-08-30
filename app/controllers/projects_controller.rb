@@ -97,15 +97,11 @@ class ProjectsController < ApplicationController
     @subs.each{ |sub|
       trans = sub['trans'] ? sub['trans'].to_s : nil
       if(trans != nil)
-        output += vtt(sub.sTime.to_d) + " --> " + vtt(sub.eTime.to_d) + "\n"
+        output += sub.sTime + " --> " + sub.eTime + "\n"
         output += trans + "\n\n"
       end
     }
     return output
-  end
-
-  def vtt(s)
-    return Time.at(s).utc.strftime("%H:%M:%S.%L") 
   end
 
   # PUT /projects/1
