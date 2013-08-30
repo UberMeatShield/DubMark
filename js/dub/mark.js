@@ -1,6 +1,10 @@
-//Make this provide the ngResource as args to a controller, lets us define and create certain resource
-
-//Angular seriously handles some strange ass magic.
+/**
+ *  A lot of this came before I understood angular controls and encapsulation.   I could port it
+ *  all into the angular app controller, but that actually does seem to make it a little awkward
+ *  to do debugging / coding in firebug.
+ *
+ *  Not entirely sure about the Angular class inheritence structure either...
+ */
 DubMark = {
   timeSec: function(s){ //Coudl include moment js, but seems a little overkill
      if(typeof s != 'string'){
@@ -35,7 +39,7 @@ DubMark.Store = { //Instances go here for ease of debugging and console dev
   Project: {},
   ProjectList: {}
 }; 
-DubMark.Modules = {};
+DubMark.Modules = {}; //This is used to provide references to the angular defined bits.
 
 //I want to make this scope properly avail from the directives, but they do not play nice?
 DubMark.States = DubMark.States || {
@@ -48,6 +52,7 @@ DubMark.States = DubMark.States || {
   Published: 'icon-share'
 };
 DubMark.StatesOrder = ["VideoReady", "Timed", "Translated", "QA", "Published"];
+
 
 //Tweak these config settings before creating an instance so that we know where
 //to make ajax calls.
