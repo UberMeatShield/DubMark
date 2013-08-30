@@ -1,9 +1,11 @@
 //Note the module name is the same as ng-app="dub"
 var dub = angular.module('dub', ['ngResource']);
+
+//Project should probably be renamed somehow...
 dub.factory('Project', function($resource){
   var rez = $resource(
       DubMark.Config.getUrl('projects') + '/:id', 
-      {format: 'json'}, //Fucking docs...
+      {format: 'json'}, 
       { 'get':    {method:'GET'},
         'save':   {method:'POST'},
         'query':  {method:'GET', isArray:true},
@@ -17,10 +19,11 @@ dub.factory('Project', function($resource){
   return rez;
 });
 
+//Single subtitle object, may also need to include specific styles...
 dub.factory('Subtitles', function($resource){
   var rez = $resource(
       DubMark.Config.getUrl('subs') + '/:id', 
-      {format: 'json'}, //Fucking docs...
+      {format: 'json'}, 
       { 'get':    {method:'GET'},
         'save':   {method:'POST'},
         'query':  {method:'GET', isArray:true},
@@ -30,6 +33,23 @@ dub.factory('Subtitles', function($resource){
   );
   return rez;
 });
+
+//Global assigned styles, 'Default' is used by SSA type subs.
+dub.factory('Stylin', function($resource){
+  var rez = $resource(
+      DubMark.Config.getUrl('stylin') + '/:id', 
+      {format: 'json'}, 
+      { 'get':    {method:'GET'},
+        'save':   {method:'POST'},
+        'query':  {method:'GET', isArray:true},
+        'remove': {method:'DELETE'},
+        'delete': {method:'DELETE'} 
+      }      
+  );
+  return rez;
+});
+
+
 
 //For the index.html page
 dub.controller('ProjectListings', function($scope, $resource, Project){

@@ -1,4 +1,7 @@
 Dub::Application.routes.draw do
+  resources :stylins
+
+
   get "welcome/index"
 
   match 'projects/:id/format' => 'projects#format'
