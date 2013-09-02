@@ -1,0 +1,21 @@
+<h1>Listing stylins</h1>
+
+<table>
+  <tr>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @stylins.each do |stylin| %>
+  <tr>
+    <td><%= link_to 'Show', stylin %></td>
+    <td><%= link_to 'Edit', edit_stylin_path(stylin) %></td>
+    <td><%= link_to 'Destroy', stylin, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Stylin', new_stylin_path %>

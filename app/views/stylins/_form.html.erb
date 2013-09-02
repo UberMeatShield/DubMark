@@ -1,0 +1,17 @@
+<%= form_for(@stylin) do |f| %>
+  <% if @stylin.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@stylin.errors.count, "error") %> prohibited this stylin from being saved:</h2>
+
+      <ul>
+      <% @stylin.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
