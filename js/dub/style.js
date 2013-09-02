@@ -7,6 +7,47 @@
  *  Note: These get pretty complex pretty fast... might want to put them in a not so "Shared" location since
  * they are still going to require access to the control modules?
  */
+DubMark.Modules.Dub.directive('projstylin', function(){
+  return {
+    restrict: "E",
+    transclude: true,
+    scope: true,
+    controller: function($scope, $element){
+      //Load this into the project and prep to update
+      $scope.globalStyles = [{
+          t: 'Default', 
+          id: 1,
+        },{
+          t: 'Monkey',
+          id: 1
+        }
+      ];
+      $scope.isActive = function(el){
+        return 'NOOOOooopeE'; //TODO: tie this in to the selected sub
+      };
+      $scope.applyStyle = function(el){
+        console.log("Apply this style to el.", el);
+      }
+    },
+    template: 
+      '<div id="globalstyles" class="well container-fluid">' +
+        '<button class="btn pull-right" ng-click=openStyleManager()>' +
+          '{{gT("Open M")}}' +
+        '</button>' +
+        '<ul class="nav nav-list">' +
+        '<li class="nav-header"> {{gT("Apply Style")}} </li>' +
+        '<li class=isActive(s) ng-repeat="s in globalStyles"> ' +
+          '<a ng-click=applyStyle(s)>' +
+          '{{gT(s.t)}}' +
+          '</a>' +
+        '</li>' +
+        '</ul>' +
+      '</div>'
+  };
+});
+
+
+
 DubMark.Modules.Dub.directive("stylin", function() {
   return {
     restrict: "E",
