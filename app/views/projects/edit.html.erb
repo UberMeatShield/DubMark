@@ -51,18 +51,22 @@
                   <i class="icon-pause"></i>
                 </button>
                 <button ng-click="action.splitSub()" 
-                  title="Split the currently selected sub into two" class="btn" >
+                  title="{{gT('Split the currently selected sub')}}" class="btn" >
                   <i class="icon-resize-full"></i>
                 </button>
                 <button  ng-click="action.removeSub()"
-                  title="Remove the currently selected sub" class="btn">
+                  title="{{gT('Remove the currently selected sub')}}" class="btn">
                   <i class="icon-trash"></i>
                 </button>
+
+                <div class="pull-right">
+                  <stylin></stylin>
+                </div>
               </div>
 
               <!-- Editing a set of subtitles -->
               <div class="row-fluid">
-                <input id="source" type="text" class="span11" placeholder="Source" 
+                <input id="source" type="text" class="span13" placeholder="Source" 
                   ng-focus="keypress.sleep()"
                   ng-change="action.changeSub()" 
                   ng-model="project.subs.curr.source" 
@@ -70,7 +74,7 @@
                 /> 
               </div>
               <div class="row-fluid">
-                <input id="translation" type="text" class="span11" placeholder="Translation" 
+                <input id="translation" type="text" class="span13" placeholder="Translation" 
                   ng-focus="keypress.sleep()"
                   ng-change="action.changeSub()" 
                   ng-model="project.subs.curr.trans" 

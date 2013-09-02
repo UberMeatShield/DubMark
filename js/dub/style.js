@@ -13,10 +13,15 @@ DubMark.Modules.Dub.directive("stylin", function() {
     transclude: true,
     scope: true,
     controller: function($scope, $element) {
-      $scope.Default = JSON.parse(JSON.stringify(DubMark.Config.Style));
+      $scope.settings = JSON.parse(JSON.stringify(DubMark.Config.Style));
 
+      var dialog = null;
       $scope.save = function(){
         console.log("Save a new element scope.");
+      };
+      $scope.show = function(){
+        console.log("Show the dialog.");
+        dialog = $('#stylin_change').modal('show');
       };
       $scope.close = function(){
         console.log("close", this, dialog);
@@ -25,13 +30,19 @@ DubMark.Modules.Dub.directive("stylin", function() {
     },
     template:   //Copy Pasta
      '<div>' +
-      '<div id="status_change_{{proj.id}}" tabindex="-1" class="modal hide" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
+      '<div id="stylin_change" tabindex="-1" class="modal hide" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
         '<div class="modal-header">'+
           '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
-          '<h3>Change Status</h3>'+
+          '<h3>{{gT("Change Sub Style")}}</h3>'+
         '</div>'+
         '<div class="modal-body">'+
-          '<!-- Iterate over the available settings -->',
+          '<div class="row-fluid" ng-repeat="cfg in settings">' +
+            '<span class="span4"> {{gT(cfg.t)}} </span>' +
+            '<input class="span5" type="text"' +
+              ' ng-change=change()' + 
+              ' ng-model=cfg.d />' +
+          '</div>' + 
+          '<!-- Iterate over the available settings -->' +
         '</div>'+
         '<div class="modal-footer">'+
           '<a ng-click="save()" href="#" class="btn btn-primary">Save</a>'+
@@ -39,12 +50,8 @@ DubMark.Modules.Dub.directive("stylin", function() {
         '</div>'+
       '</div>'+
       '<div class="row-fluid">' +
-          '<div class="span2 text-center stateful " title="{{key}}"' + 
-           ' ng-class=isComplete(key)' +
-           ' ng-click=changeState(key)' +
-           ' ng-repeat=\'key in states\' >' +
-            '<i ng-class="getStateIcon(key)" {{proj.status[key]}}"/>' +
-          '</div>' +
+        '<button class="btn" ng-click=show()>' + 
+          '{{gT("Style")}}' +
       '</div>' +
     '</div>',
     replace: true

@@ -41,78 +41,78 @@ DubMark.Config = {
     Completed: 'icon-ok',
     Published: 'icon-share'
   },
-  Style: { //A default SSA style.
-    Name:{
+  Style: [{  //Default SSA style
+      t: 'Name',
       d: '',
       m: /\w+/
-    },
-    Fontname:{
+    },{
+      t: 'Fontname',
       d: 'Arial',
       m: /\w+/
-    },
-    Fontsize:{
+    },{
+      t: 'Fontsize',
       d: 20,
       m: /\d+/
-    },
-    PrimaryColour:{
+    },{
+      t: 'PrimaryColour',
       d: 65535,
       m: /\d+/
-    },
-    SecondaryColour:{
+    },{
+      t: 'SecondaryColour',
       d: 65535,
       m: /\d+/
-    },
-    TertiaryColour:{
+    },{
+      t: 'TertiaryColour',
       d: 65535,
       m: /\d+/
-    },
-    BackColour:{
+    },{
+      t: 'BackColour',
       d: -2147483640,
       m: /\d+/
-    },
-    Bold:{
+    },{
+      t: 'Bold',
       d: -1,
       m: /\d+/
-    },
-    Italic:{
+    },{
+      t: 'Italic',
       d: 0,
       m: /\d+/
-    },
-    BorderStyle:{
+    },{
+      t: 'BorderStyle',
       d: 1,
       m: /\d+/
-    },
-    Outline:{
+    },{
+      t: 'Outline',
       d: 3,
       m: /\d+/
-    },
-    Shadow:{
+    },{
+      t: 'Shadow',
       d: 0,
       m: /\d+/
-    },
-    Alignment:{
+    },{
+      t: 'Alignment',
       d: 2,
       m: /\d+/
-    },
-    MarginL:{
+    },{
+      t: 'MarginL',
       d: 30,
       m: /\d{2}/
-    },
-    MarginR:{
+    },{
+      t: 'MarginR',
       d: 30,
       m: /\d{2}/
-    },
-    MarginV: {
+    },{
+      t: 'MarginV',
       d: 30,
       m: /\d{2}/
-    },
-    AlphaLevel:{ 
+    },{
+      t: 'AlphaLevel',
       d: 0,
       m: /\d{1}/
-    },
-    Encoding: {
+    },{
+      t: 'Encoding',
       d: 0,
       m: /\w+/
     }
-  }
+  ]
 };

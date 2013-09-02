@@ -22,4 +22,5 @@
 //= require dub/keypress.js
 //= require dub/control.js
 //= require dub/widgets.js
+//= require dub/style.js
 //
