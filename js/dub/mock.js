@@ -28,7 +28,7 @@ $.extend(DubMark.MockResource.prototype, {
   },
   getStates: function(){
     var newStates = {};
-    for (key in DubMark.States){
+    for (key in DubMark.Config.States){
       if(typeof key == 'string'){
         newStates[key] = null;
       }

@@ -13,82 +13,10 @@ DubMark.Modules.Dub.directive("stylin", function() {
     transclude: true,
     scope: true,
     controller: function($scope, $element) {
-      var elements = [
-          Name:{
-            d: '',
-            m: /\w+/
-          },
-          Fontname:{
-            d: 'Arial',
-            m: /\w+/
-          },
-          Fontsize:{
-            d: 20,
-            m: /\d+/
-          },
-          PrimaryColour:{
-            d: 65535,
-            m: /\d+/
-          },
-          SecondaryColour:{
-            d: 65535,
-            m: /\d+/
-          },
-          TertiaryColour:{
-            d: 65535,
-            m: /\d+/
-          },
-          BackColour:{
-            d: -2147483640,
-            m: /\d+/
-          },
-          Bold:{
-            d: -1,
-            m: /\d+/
-          },
-          Italic:{
-            d: 0,
-            m: /\d+/
-          },
-          BorderStyle:{
-            d: 1,
-            m: /\d+/
-          },
-          Outline:{
-            d: 3,
-            m: /\d+/
-          },
-          Shadow:
-            d: 0,
-            m: /\d+/
-          },
-          Alignment:{
-            d: 2,
-            m: /\d+/
-          },
-          MarginL:{
-            d: 30,
-            m: /\d{2}/
-          },
-          MarginR:
-            d: 30,
-            m: /\d{2}/
-          },
-          MarginV: {
-            d: 30,
-            m: /\d{2}/
-          },
-          AlphaLevel:{ 
-            d: 0,
-            m: /\d{1}/
-          },
-          Encoding: {
-            d: 0,
-            m: /\w+/
-          }
-        ];
-        //Style: Default,Arial,20,65535,65535,65535,-2147483640,-1,0,1,3,0,2,30,30,30,0,0
+      $scope.Default = JSON.parse(JSON.stringify(DubMark.Config.Style));
+
       $scope.save = function(){
+        console.log("Save a new element scope.");
       };
       $scope.close = function(){
         console.log("close", this, dialog);

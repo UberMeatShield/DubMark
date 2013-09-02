@@ -5,20 +5,21 @@
  *
  *  Not entirely sure about the Angular class inheritence structure either...
  */
-DubMark = {
-  timeSec: function(s){ //Coudl include moment js, but seems a little overkill
-     if(typeof s != 'string'){
-       return 0;
-     }
-     var cmp = s.match(/(\d{2}):(\d{2}):(\d{2})\.(\d+)/);
-     console.log("What is in timeSec?", s, cmp);
-     if(!cmp){return 0;}
-     return (parseFloat(cmp[1])*3600) + 
-       (parseFloat(cmp[2])*60) + 
-        parseFloat(cmp[3]) + 
-        (parseFloat(cmp[4]) * 1.0 / 1000.0);
-  },
-  secTime: function(s){ //Seconds to a timestring that works in webVTT or SSA
+DubMark = window.DubMark || {};
+DubMark.timeSec = function(s){ //Coudl include moment js, but seems a little overkill
+   if(typeof s != 'string'){
+     return 0;
+   }
+   var cmp = s.match(/(\d{2}):(\d{2}):(\d{2})\.(\d+)/);
+   console.log("What is in timeSec?", s, cmp);
+   if(!cmp){return 0;}
+   return (parseFloat(cmp[1])*3600) + 
+     (parseFloat(cmp[2])*60) + 
+      parseFloat(cmp[3]) + 
+      (parseFloat(cmp[4]) * 1.0 / 1000.0);
+};
+
+DubMark.secTime = function(s){ //Seconds to a timestring that works in webVTT or SSA
     s = !isNaN(s) && s != null ? s : (this.vid ? this.vid.getTime() : 0);
     if(isNaN(s) || s == null){
       return '00:00:00.000';
@@ -33,63 +34,18 @@ DubMark = {
     if (seconds < 10) {seconds = "0"+seconds;}
     var time    = hours+':'+minutes+':'+seconds;
     return time;
-  }
 };
-DubMark.Store = { //Instances go here for ease of debugging and console dev
+
+//Instances go here for ease of debugging and console dev
+DubMark.Store = { 
   Project: {},
   ProjectList: {}
 }; 
-DubMark.Modules = {}; //This is used to provide references to the angular defined bits.
+
+//This is used to provide references to the angular defined bits.
+DubMark.Modules = {}; 
 
 //I want to make this scope properly avail from the directives, but they do not play nice?
-DubMark.States = DubMark.States || {
-  New: 'icon-plus',
-  VideoReady: 'icon-facetime-video',
-  Timed: 'icon-time',
-  Translated: 'icon-comment',
-  QA: 'icon-thumbs-up',
-  Completed: 'icon-ok',
-  Published: 'icon-share'
-};
-DubMark.StatesOrder = ["VideoReady", "Timed", "Translated", "QA", "Published"];
-
-
-//Tweak these config settings before creating an instance so that we know where
-//to make ajax calls.
-DubMark.Config = {
-  DEBUG: true, //For eventual console log debugging.
-  base: {
-    url: '' //Assume same server url
-  },
-  projects:{ //The listings of the projects
-    url: 'projects'
-  },
-  subs: { //Ja subtitles, jaaa
-    url: 'subs'
-  },
-  videos: { //Get video location & hopefully proper headers?
-    url: 'vid'
-  },
-  getUrl: function(name){
-    var C = DubMark.Config;
-    var url = C[name] ? C[name].url : name;
-    if(url){
-      if(url.match('http')){
-         console.log("URL", url);
-         return url;
-      }else if(C.base.url){ //Use reletive paths unless we are told otherwise
-        console.log("URL", C.base.url + url);
-        return C.base.url + url;
-      }else{
-        console.warn('No DubMark.Base.url set was set, guessing that (', name, ') is simply the correct path.');
-        return name; 
-      }
-    }
-    throw 'Cannot find config for ' + name;
-  }
-};
-
-
 DubMark.NoSpamming = function(){};
 DubMark.NoSpamming.prototype.deferOp = function(cb){
     this.lastTimeChanged = new Date();

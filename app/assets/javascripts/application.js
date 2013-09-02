@@ -15,6 +15,7 @@
 //= require angular
 //= require angular-resource
 
+//= require dub/config.js
 //= require dub/mark.js
 //= require dub/i18n.js
 //= require dub/list.js
