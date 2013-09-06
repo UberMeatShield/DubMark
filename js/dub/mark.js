@@ -552,3 +552,22 @@ $.extend(DubMark.Project.prototype, DubMark.NoSpamming.prototype, {
     console.log("Project Load Callback.", response);
   }
 });
+
+
+/**
+ *  Help with loading up styles, creating new ones etc.
+ */
+DubMark.StylinManager = function(args){this.init(args);};
+$.extend(DubMark.StylinManager.prototype, DubMark.NoSpamming.prototype, {
+  init: function(args){
+    args = args || {};
+    console.log("New Style manager.");
+    this.ResourceStylin = args.ResourceStylin;
+  },
+  getStylin: function(id){
+
+  },
+  newStylin: function(){
+
+  }
+});

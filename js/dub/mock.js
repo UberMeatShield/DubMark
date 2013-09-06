@@ -83,17 +83,17 @@ $.extend(DubMark.MockResource.prototype, {
 });
 
 
-
+//TODO: I am still a little confused by why there isn't a MockResource object (need to trigger apply stuff)
 DubMark.MockProjectResource = function(args){
   this.init(args);
 };
 $.extend(DubMark.MockProjectResource.prototype, DubMark.MockResource.prototype);
-
 dub.factory('Project', function(){
   var project = DubMark.MockProjectResource;
   return project;
 });
 
+//Mock the subtitle resource, this one could use some better default data
 DubMark.MockSubsResource = function(){
   this.init();
 };
@@ -103,6 +103,18 @@ dub.factory('Subtitles', function(){
   console.log("Subs?", rez, new rez());
   return rez;
 });
+
+//Mock the stylin creation (init with the DubMark.Config.Stylin default?"
+DubMark.MockStylinResource = function(args){
+  this.init(args);
+};
+$.extend(DubMark.MockStylinResource.prototype, DubMark.MockResource.prototype);
+dub.factory('Stylin', function(){ //Populate with more than just default?
+  var rez = DubMark.MockStylinResource;
+  console.log("Stylin?", rez, new rez());
+  return rez;
+});
+
 
 //For the index.html page
 dub.controller('ProjectListings', function($scope, $resource, Project){
@@ -133,7 +145,7 @@ dub.controller('ProjectListings', function($scope, $resource, Project){
 
 //This is used on the edit page
 //PageConfig comes from the serialization of the actual json data we already have in the page
-dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, Subtitles){
+dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, Subtitles, Stylin){
   var args = {
     id: 1,
     title: 'A Mock Project',
@@ -153,6 +165,7 @@ dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, 
   $scope.project  = new DubMark.Project(args);
   $scope.action   = new DubMark.Actions($scope.project);
   $scope.keypress = new DubMark.KeyPress($scope.action);
+  $scope.stylin   = new DubMark.StylinManager({ResourceStylin: Stylin});
 
 
   $scope.Lang     = DubMark.i18n.getInstance(); //TODO, needs to set stuff... Bleah

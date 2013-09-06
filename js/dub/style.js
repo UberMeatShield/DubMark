@@ -55,7 +55,8 @@ DubMark.Modules.Dub.directive('projstylin', function(){
     },
     template: 
       '<div id="globalstyles" class="well container-fluid">' +
-        '<div id="stylin_project" tabindex="-1" class="modal hide" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
+
+        '<div id="stylin_project" tabindex="-1" class="modal hide" role="dialog" aria-hidden="true">' +
           '<div class="modal-header">'+
             '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
             '<h3>{{gT("Add Styles to project")}}</h3>'+
@@ -68,10 +69,10 @@ DubMark.Modules.Dub.directive('projstylin', function(){
             '<a ng-click="close()" href="#" class="btn">Close</a>'+
           '</div>'+
         '</div>'+
-
         '<button class="btn pull-right" ng-click=openStyleManager()>' +
           '{{gT("Open M")}}' +
         '</button>' +
+
         '<ul class="nav nav-list">' +
         '<li class="nav-header"> {{gT("Apply Style")}} </li>' +
         '<li class={{isActive(s)}} ng-repeat="s in globalStyles"> ' +
@@ -116,8 +117,7 @@ DubMark.Modules.Dub.directive("stylin", function() {
         '</div>'+
         '<div class="modal-body">'+
           '<div class="row-fluid" ng-repeat="cfg in settings">' +
-            '<!-- Iterate over the available settings -->' +
-            '<span class="span4"> {{gT(cfg.t)}} </span>' +
+            '<span class="span4"> {{gT(cfg.t)}} </span>' + //Iterate over the available settings.
             '<input class="span5" type="text"' +
               ' ng-change=change()' + 
               ' ng-model=cfg.d />' +
