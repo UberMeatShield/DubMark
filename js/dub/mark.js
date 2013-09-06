@@ -526,6 +526,12 @@ $.extend(DubMark.Project.prototype, DubMark.NoSpamming.prototype, {
     //Instance reference for ease of firebug
     DubMark.Store.Project[this.id] = this;
   },
+  getActiveSub: function(){
+    if(this.subs){
+      return this.subs.curr;
+    }
+    return null;
+  },
   /**
    * Uses instance variables
    */

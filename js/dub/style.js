@@ -13,7 +13,9 @@ DubMark.Modules.Dub.directive('projstylin', function(){
     transclude: true,
     scope: true,
     controller: function($scope, $element){
+
       //Load this into the project and prep to update
+      var dialog = null;
       $scope.globalStyles = [{
           t: 'Default', 
           id: 1,
@@ -22,21 +24,57 @@ DubMark.Modules.Dub.directive('projstylin', function(){
           id: 1
         }
       ];
-      $scope.isActive = function(el){
-        return 'NOOOOooopeE'; //TODO: tie this in to the selected sub
+
+      $scope.isActive = function(cfg){
+        var sub = $scope.project.getActiveSub();
+        if(sub){
+          if(sub.styleName && sub.styleName == cfg.t){
+            return 'active';
+          }else if(!sub.styleName && (cfg.t == $scope.gT('Default'))){
+            return 'active';
+          }
+        }
       };
-      $scope.applyStyle = function(el){
+      $scope.openStyleManager = function(){
+        dialog = $('#stylin_project');
+        dialog.modal('show');
+      };
+
+      $scope.close = function(){
+        dialog ? dialog.modal('hide') : null;
+      };
+
+      $scope.applyStyle = function(el){ //Apply the style to the currently active sub.
         console.log("Apply this style to el.", el);
+        var sub = $scope.project.getActiveSub();
+        if(sub){
+          sub.styleName = el.t;
+          sub.$save();
+        }
       }
     },
     template: 
       '<div id="globalstyles" class="well container-fluid">' +
+        '<div id="stylin_project" tabindex="-1" class="modal hide" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
+          '<div class="modal-header">'+
+            '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
+            '<h3>{{gT("Add Styles to project")}}</h3>'+
+          '</div>'+
+          '<div class="modal-body">'+
+            'Add styles to project' +
+          '</div>'+
+          '<div class="modal-footer">'+
+            '<a ng-click="save()" href="#" class="btn btn-primary">Save</a>'+
+            '<a ng-click="close()" href="#" class="btn">Close</a>'+
+          '</div>'+
+        '</div>'+
+
         '<button class="btn pull-right" ng-click=openStyleManager()>' +
           '{{gT("Open M")}}' +
         '</button>' +
         '<ul class="nav nav-list">' +
         '<li class="nav-header"> {{gT("Apply Style")}} </li>' +
-        '<li class=isActive(s) ng-repeat="s in globalStyles"> ' +
+        '<li class={{isActive(s)}} ng-repeat="s in globalStyles"> ' +
           '<a ng-click=applyStyle(s)>' +
           '{{gT(s.t)}}' +
           '</a>' +
@@ -78,12 +116,12 @@ DubMark.Modules.Dub.directive("stylin", function() {
         '</div>'+
         '<div class="modal-body">'+
           '<div class="row-fluid" ng-repeat="cfg in settings">' +
+            '<!-- Iterate over the available settings -->' +
             '<span class="span4"> {{gT(cfg.t)}} </span>' +
             '<input class="span5" type="text"' +
               ' ng-change=change()' + 
               ' ng-model=cfg.d />' +
           '</div>' + 
-          '<!-- Iterate over the available settings -->' +
         '</div>'+
         '<div class="modal-footer">'+
           '<a ng-click="save()" href="#" class="btn btn-primary">Save</a>'+
