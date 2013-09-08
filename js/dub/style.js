@@ -13,7 +13,6 @@ DubMark.Modules.Dub.directive('projstylin', function(){
     transclude: true,
     scope: true,
     controller: function($scope, $element){
-
       //Load this into the project and prep to update
       var dialog = null;
       $scope.globalStyles = [{
@@ -24,9 +23,8 @@ DubMark.Modules.Dub.directive('projstylin', function(){
           id: 1
         }
       ];
-
       $scope.isActive = function(cfg){
-        var sub = $scope.project.getActiveSub();
+        var sub = this.project.getActiveSub();
         if(sub){
           if(sub.styleName && sub.styleName == cfg.t){
             return 'active';
@@ -40,8 +38,12 @@ DubMark.Modules.Dub.directive('projstylin', function(){
         dialog.modal('show');
       };
 
+      $scope.getResource = function(){
+          return this.stylin.getActiveStyle();
+      };
+
       $scope.close = function(){
-        dialog ? dialog.modal('hide') : null;
+        dialog && dialog.modal('hide');
       };
 
       $scope.applyStyle = function(el){ //Apply the style to the currently active sub.
@@ -55,7 +57,6 @@ DubMark.Modules.Dub.directive('projstylin', function(){
     },
     template: 
       '<div id="globalstyles" class="well container-fluid">' +
-
         '<div id="stylin_project" tabindex="-1" class="modal hide" role="dialog" aria-hidden="true">' +
           '<div class="modal-header">'+
             '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
@@ -63,20 +64,24 @@ DubMark.Modules.Dub.directive('projstylin', function(){
           '</div>'+
           '<div class="modal-body">'+
             'Add styles to project' +
+            'Build a custom UI to handle configuration and adds to proj' +
           '</div>'+
           '<div class="modal-footer">'+
             '<a ng-click="save()" href="#" class="btn btn-primary">Save</a>'+
             '<a ng-click="close()" href="#" class="btn">Close</a>'+
           '</div>'+
         '</div>'+
-        '<button class="btn pull-right" ng-click=openStyleManager()>' +
-          '{{gT("Open M")}}' +
-        '</button>' +
-
         '<ul class="nav nav-list">' +
-        '<li class="nav-header"> {{gT("Apply Style")}} </li>' +
+        '<li class="nav-header"> ' +
+          '<span>{{gT("Apply Style")}}</span>' +  
+          '<button class=" pull-right"' + 
+            ' ng-click=openStyleManager()' +
+            ' >' +
+            '<i class="icon-cog"></i>' +
+          '</button>' +
+        '</li>' +
         '<li class={{isActive(s)}} ng-repeat="s in globalStyles"> ' +
-          '<a ng-click=applyStyle(s)>' +
+          '<a  ng-click=applyStyle(s)>' +
           '{{gT(s.t)}}' +
           '</a>' +
         '</li>' +
@@ -86,31 +91,45 @@ DubMark.Modules.Dub.directive('projstylin', function(){
 });
 
 
-
-DubMark.Modules.Dub.directive("stylin", function() {
+//I am missing some key bit of the scoping / encapsulation when using this code
+//base.
+DubMark.Modules.Dub.directive("substylin", function() {
   return {
     restrict: "E",
     transclude: true,
     scope: true,
     controller: function($scope, $element) {
+      //The settings setill need to have an order to iterate through.
       $scope.settings = JSON.parse(JSON.stringify(DubMark.Config.Style));
 
       var dialog = null;
       $scope.save = function(){
-        console.log("Save a new element scope.");
+        var rez = this.getResource();
+        if(rez && rez.$save){
+          console.log("Found a valid resource to save.", rez, this.stylinType);
+          rez.$save();
+        }
       };
       $scope.show = function(){
-        console.log("Show the dialog.");
-        dialog = $('#stylin_change').modal('show');
+        console.log("Show the dialog.", this.getResource());
+        if(this.getResource()){
+          dialog = $('#sub_stylin_change').modal('show');
+        }
       };
       $scope.close = function(){
         console.log("close", this, dialog);
-        dialog.modal('hide');
-      }
+        dialog && dialog.modal('hide');
+      };
+      $scope.getResource = function(){
+          return this.project.getActiveSub();
+      };
+      $scope.getSettings = function(){
+        
+      };
     },
     template:   //Copy Pasta
      '<div>' +
-      '<div id="stylin_change" tabindex="-1" class="modal hide" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
+      '<div id="sub_stylin_change" tabindex="-1" class="modal hide" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
         '<div class="modal-header">'+
           '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
           '<h3>{{gT("Change Sub Style")}}</h3>'+

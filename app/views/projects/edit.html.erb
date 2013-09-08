@@ -59,8 +59,10 @@
                   <i class="icon-trash"></i>
                 </button>
 
-                <div class="pull-right">
-                  <stylin></stylin>
+                <div class="pull-right" 
+                  ng-init="stylinType='Sub';"
+                  ng-hide="!project.subs.curr">
+                  <substylin></substylin>
                 </div>
               </div>
 
@@ -125,7 +127,8 @@
               </div>
             </div>
 
-            <projstylin></projstylin>
+            <projstylin>
+            </projstylin>
 
             <!-- A listing of all the existing subtitles, can click to select them -->
             <div id="subtitle" class="well">

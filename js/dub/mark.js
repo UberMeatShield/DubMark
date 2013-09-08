@@ -1,7 +1,7 @@
 /**
  *  A lot of this came before I understood angular controls and encapsulation.   I could port it
  *  all into the angular app controller, but that actually does seem to make it a little awkward
- *  to do debugging / coding in firebug.
+ *  for debugging / coding in firebug.
  *
  *  Not entirely sure about the Angular class inheritence structure either...
  */
@@ -538,7 +538,6 @@ $.extend(DubMark.Project.prototype, DubMark.NoSpamming.prototype, {
   load: function(){
     if(this.ResourceProject){
       this.ResourceProject.$get({id: this.id}, this.loadCb.bind(this));
-
       this.subs.load();
     }
   },
@@ -548,8 +547,8 @@ $.extend(DubMark.Project.prototype, DubMark.NoSpamming.prototype, {
       this.ResourceProject.$save();
     }.bind(this));
   },
-  loadCb: function(response){
-    console.log("Project Load Callback.", response);
+  loadCb: function(response){ //Error handling?
+    console.log("Project Load Callback (not really needed)", response);
   }
 });
 
@@ -561,13 +560,30 @@ DubMark.StylinManager = function(args){this.init(args);};
 $.extend(DubMark.StylinManager.prototype, DubMark.NoSpamming.prototype, {
   init: function(args){
     args = args || {};
-    console.log("New Style manager.");
+    console.log("New Style manager., need to make the load smarter");
     this.ResourceStylin = args.ResourceStylin;
+  },
+  load: function(id){ //Bleah, this is going to suck
+    this.stylins = this.ResourceStylin.query({
+      id: id
+    });
+  },
+  setActiveStyle: function(style){
+    console.log("Set the active style.");
+  },
+  getActiveStyle: function(){
+    console.log("Get the active style that has been selected.");
   },
   getStylin: function(id){
 
   },
-  newStylin: function(){
+  newStylin: function(){ //Create a new one
+    var s = new (this.ResourceStylin);
+    this.populateDefaults(s);
+    s.$save();
+    return s;
+  },
+  populateDefaults: function(){ //Hmmmm
 
   }
 });
