@@ -1,66 +1,55 @@
-//Make this provide the ngResource as args to a controller, lets us define and create certain resource
+/**
+ *  A lot of this came before I understood angular controls and encapsulation.   I could port it
+ *  all into the angular app controller, but that actually does seem to make it a little awkward
+ *  for debugging / coding in firebug.
+ *
+ *  Not entirely sure about the Angular class inheritence structure either...
+ */
+DubMark = window.DubMark || {};
+DubMark.timeSec = function(s){ //Coudl include moment js, but seems a little overkill
+   if(typeof s != 'string'){
+     return 0;
+   }
+   var cmp = s.match(/(\d{2}):(\d{2}):(\d{2})\.(\d+)/);
+   console.log("What is in timeSec?", s, cmp);
+   if(!cmp){return 0;}
+   return (parseFloat(cmp[1])*3600) + 
+     (parseFloat(cmp[2])*60) + 
+      parseFloat(cmp[3]) + 
+      (parseFloat(cmp[4]) * 1.0 / 1000.0);
+};
 
-//Angular seriously handles some strange ass magic.
-DubMark = {};
-DubMark.Store = { //Instances go here for ease of debugging and console dev
+DubMark.secTime = function(s){ //Seconds to a timestring that works in webVTT or SSA
+    s = !isNaN(s) && s != null ? s : (this.vid ? this.vid.getTime() : 0);
+    if(isNaN(s) || s == null){
+      return '00:00:00.000';
+    }
+    var sec_num = s;
+    var hours   = Math.floor(sec_num / 3600);
+    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    var seconds = (sec_num - (hours * 3600) - (minutes * 60)).toFixed(3);
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    var time    = hours+':'+minutes+':'+seconds;
+    return time;
+};
+
+//Instances go here for ease of debugging and console dev
+DubMark.Store = { 
   Project: {},
   ProjectList: {}
 }; 
-DubMark.Modules = {};
+
+//This is used to provide references to the angular defined bits.
+DubMark.Modules = {}; 
 
 //I want to make this scope properly avail from the directives, but they do not play nice?
-DubMark.States = DubMark.States || {
-  New: 'icon-plus',
-  VideoReady: 'icon-facetime-video',
-  Timed: 'icon-time',
-  Translated: 'icon-comment',
-  QA: 'icon-thumbs-up',
-  Completed: 'icon-ok',
-  Published: 'icon-share'
-};
-DubMark.StatesOrder = ["VideoReady", "Timed", "Translated", "QA", "Published"];
-
-//Tweak these config settings before creating an instance so that we know where
-//to make ajax calls.
-DubMark.Config = {
-  DEBUG: true, //For eventual console log debugging.
-  base: {
-    url: '' //Assume same server url
-  },
-  projects:{ //The listings of the projects
-    url: 'projects'
-  },
-  subs: { //Ja subtitles, jaaa
-    url: 'subs'
-  },
-  videos: { //Get video location & hopefully proper headers?
-    url: 'vid'
-  },
-  getUrl: function(name){
-    var C = DubMark.Config;
-    var url = C[name] ? C[name].url : name;
-    if(url){
-      if(url.match('http')){
-         console.log("URL", url);
-         return url;
-      }else if(C.base.url){ //Use reletive paths unless we are told otherwise
-        console.log("URL", C.base.url + url);
-        return C.base.url + url;
-      }else{
-        console.warn('No DubMark.Base.url set was set, guessing that (', name, ') is simply the correct path.');
-        return name; 
-      }
-    }
-    throw 'Cannot find config for ' + name;
-  }
-};
-
-
 DubMark.NoSpamming = function(){};
 DubMark.NoSpamming.prototype.deferOp = function(cb){
     this.lastTimeChanged = new Date();
     if(this.callIt || typeof cb != 'function'){return;}
-
     this.callIt = function(cb){
       try{
         var d = new Date();
@@ -148,18 +137,15 @@ $.extend(DubMark.SubManager.prototype, DubMark.NoSpamming.prototype, {
     }
   },
   newSub: function(source, sTime, eTime, trans, index){
-    sTime = (!isNaN(sTime) && sTime != null ? parseFloat(sTime) : 0.0).toFixed(1);
-    eTime = (!isNaN(eTime) && eTime != null ? parseFloat(eTime) : 0.0).toFixed(1);
-    if(eTime == 0.0){
-      eTime = sTime;
-    }
+    sTime = DubMark.secTime(sTime); //provides defaults
+    eTime = DubMark.secTime(eTime); 
 
     this.setActive(
       this.ResourceSub.save({
         projectId: this.projectId,
         source: source,
         sTime: sTime,
-        eTime: eTime,
+        eTime: eTime, 
         trans: trans
       })
     );
@@ -170,7 +156,6 @@ $.extend(DubMark.SubManager.prototype, DubMark.NoSpamming.prototype, {
     }
   },
   setActive: function(sub, clickDom){
-    console.log("Click set active.", sub);
     if(typeof clickDom == 'boolean' && sub && sub.id){
       var el = angular.element('#sub_' + sub.id);
       console.log("Click this element.", el, sub, clickDom);
@@ -187,15 +172,13 @@ $.extend(DubMark.SubManager.prototype, DubMark.NoSpamming.prototype, {
   splitSub: function(sub){
     sub = sub || this.curr;
     if(sub && sub.id){
-      var sTime = sub.sTime;
-      var eTime = sub.eTime;
-      sTime = (!isNaN(sTime) && sTime != null ? parseFloat(sTime) : 0.0).toFixed(1);
-      eTime = (!isNaN(eTime) && eTime != null ? parseFloat(eTime) : 0.0).toFixed(1);
-      
+      var sTime = DubMark.timeSec(sub.sTime);
+      var eTime = DubMark.timeSec(sub.eTime);
+		
       //Freaking javascript string mods...
       var mid = ((parseFloat(eTime) + parseFloat(sTime))/2.0);
-          mid   = (!isNaN(mid) && mid != null ? parseFloat(mid) : 0.0).toFixed(1);
-      sub.eTime = mid;
+      sub.eTime = DubMark.secTime(mid);
+
       var index = this.getIndex(sub);
       this.newSub(sub.source, mid, eTime, sub.trans, index);
     }
@@ -210,10 +193,9 @@ $.extend(DubMark.SubManager.prototype, DubMark.NoSpamming.prototype, {
     }
   },
   endSub: function(sub, eTime){
-    console.log("END THE SUB", sub, eTime);
     sub = sub || this.curr;
     if(sub){
-      sub.eTime = (!isNaN(eTime) && eTime != null ? parseFloat(eTime) : 0.0).toFixed(1);
+      sub.eTime = DubMark.secTime(eTime);
    }
   },
   removeSub: function(id){
@@ -222,7 +204,7 @@ $.extend(DubMark.SubManager.prototype, DubMark.NoSpamming.prototype, {
       for(var i=0; i<this.arr.length; ++i){
         if(id == this.arr[i].id){
           var sub = this.arr.splice(i, 1);
-          this.curr = null;
+          this.curr = this.arr[i] || this.arr[i-1];
           return sub;
         }
       }
@@ -282,7 +264,11 @@ $.extend(DubMark.Controls.prototype, {
     this.subs.endSub(null, t); //Close open sub
   },
   removeSub: function(){
-    this.subs.removeSub();
+    var sub = this.subs.removeSub();
+    if(sub && sub.length == 1){
+      var s = sub[0];
+      s && s.$delete ? s.$delete({id: s.id}) : null;
+    }
   },
   jumpStart: function(){
     var sub = this.subs.curr;
@@ -293,23 +279,26 @@ $.extend(DubMark.Controls.prototype, {
   splitSub: function(){
     this.subs.splitSub();
   },
-  jumpEnd: function(){
+  jumpEnd: function(){ //jump to the end of a sub
     var sub = this.subs.curr;
     if(sub){
       this.vid.setTime(sub.eTime);
     }
   },
-  setStart: function(immediate){
+  parsedTime: function(){ //parse the time
+    return DubMark.secTime(this.vid.getTime());
+  },
+  setStart: function(){
     var sub = this.subs.curr;
     if(sub){//Hmm.. this doesn't trigger the on change event?
-      sub.sTime = this.vid.getTime().toFixed(1);
-      this.subs.changeSub(true);
+      sub.sTime = this.parsedTime();
+      this.subs.changeSub();
     }
   },
   setEnd: function(){
     var sub = this.subs.curr;
     if(sub){ //A set end doesn't change the set end but does update the UI correctly, odd
-      sub.eTime = this.vid.getTime().toFixed(1);
+      sub.eTime = this.parsedTime();
       this.subs.changeSub(true);
     }
   }
@@ -490,7 +479,6 @@ $.extend(DubMark.Actions.prototype, {
   keypressToggle: function(){
     var el = angular.element('#hotkeys');
         el.trigger('click');
-
     if(el.hasClass('active')){
       document.activeElement.blur();
     }
@@ -538,13 +526,18 @@ $.extend(DubMark.Project.prototype, DubMark.NoSpamming.prototype, {
     //Instance reference for ease of firebug
     DubMark.Store.Project[this.id] = this;
   },
+  getActiveSub: function(){
+    if(this.subs){
+      return this.subs.curr;
+    }
+    return null;
+  },
   /**
    * Uses instance variables
    */
   load: function(){
     if(this.ResourceProject){
       this.ResourceProject.$get({id: this.id}, this.loadCb.bind(this));
-
       this.subs.load();
     }
   },
@@ -554,7 +547,43 @@ $.extend(DubMark.Project.prototype, DubMark.NoSpamming.prototype, {
       this.ResourceProject.$save();
     }.bind(this));
   },
-  loadCb: function(response){
-    console.log("Project Load Callback.", response);
+  loadCb: function(response){ //Error handling?
+    console.log("Project Load Callback (not really needed)", response);
+  }
+});
+
+
+/**
+ *  Help with loading up styles, creating new ones etc.
+ */
+DubMark.StylinManager = function(args){this.init(args);};
+$.extend(DubMark.StylinManager.prototype, DubMark.NoSpamming.prototype, {
+  init: function(args){
+    args = args || {};
+    console.log("New Style manager., need to make the load smarter");
+    this.ResourceStylin = args.ResourceStylin;
+  },
+  load: function(id){ //Bleah, this is going to suck
+    this.stylins = this.ResourceStylin.query({
+      id: id
+    });
+  },
+  setActiveStyle: function(style){
+    console.log("Set the active style.");
+  },
+  getActiveStyle: function(){
+    console.log("Get the active style that has been selected.");
+  },
+  getStylin: function(id){
+
+  },
+  newStylin: function(){ //Create a new one
+    var s = new (this.ResourceStylin);
+    this.populateDefaults(s);
+    s.$save();
+    return s;
+  },
+  populateDefaults: function(){ //Hmmmm
+
   }
 });

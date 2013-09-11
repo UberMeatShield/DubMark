@@ -97,7 +97,7 @@ DubMark.Modules.Dub.directive("status", function() {
     controller: function($scope, $element) {
       //How do I get the scope of the item hacked in?
       var dialog = null;
-      $scope.states = DubMark.StatesOrder;
+      $scope.states = DubMark.Config.StatesOrder;
 
       $scope.isComplete = function(key){
         if($scope.proj.status[key]){
@@ -117,7 +117,7 @@ DubMark.Modules.Dub.directive("status", function() {
       };
       $scope.getStateIcon = function(key){
         key = key || this.statusKey;
-        return DubMark.States[key];
+        return DubMark.Config.States[key];
       };
       $scope.save = function(){
         console.log("status.save for: ", this, this.statusKey);

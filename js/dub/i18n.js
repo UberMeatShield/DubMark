@@ -36,10 +36,15 @@ DubMark.i18n.getInstance = function(lang){
 DubMark.i18n.getLabel = function(key){
   return DubMark.i18n.getInstance().getKey(key);
 };
-gT = function(key){
-  return DubMark.i18n.getLabel(key);
+DubMark.i18n.tags = {};
+DubMark.i18n.log  = function(key, trans){
+  DubMark.i18n.tags[key] = trans;
 };
-
+gT = function(key){
+  var trans = DubMark.i18n.getLabel(key);
+  DubMark.i18n.log(key, trans);
+  return trans;
+};
 
 /**
  * A language instances
