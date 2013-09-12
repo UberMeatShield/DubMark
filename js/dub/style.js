@@ -142,6 +142,7 @@ DubMark.Modules.Dub.directive("substylin", function() {
 
       console.log("What came into the scope?", $scope, DubMark);
 
+      //Hmm, doesn't seem like I can chain two directives.  
       this.resource = $scope.resource;
       $scope.gT     = DubMark.i18n.gT;
 
@@ -167,7 +168,6 @@ DubMark.Modules.Dub.directive("substylin", function() {
           return this.resource;
       };
       $scope.getSettings = function(){
-        
       };
     },
     template:   //Copy Pasta

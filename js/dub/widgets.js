@@ -5,10 +5,12 @@ DubMark.Modules.Dub.directive("keyhandler", function() {
   return {
     restrict: "E",
     transclude: true,
-    scope: true,
+    scope: { //Finally figured out how to fix the damn scoping issues, angular++;
+      keypress: '='
+    },
     controller: function($scope, $element) {
       //How do I get the scope of the item hacked in?
-      $scope.gT      = window.gT;
+      $scope.gT      = DubMark.i18n.gT;
       $scope.keys    = $scope.keypress.getKeyConfig();
       $scope.active  = false;
 
