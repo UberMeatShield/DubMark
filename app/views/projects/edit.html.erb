@@ -62,7 +62,7 @@
                 <div class="pull-right" 
                   ng-init="stylinType='Sub';"
                   ng-hide="!project.subs.curr">
-                  <substylin></substylin>
+                  <substylin gT=gT resource=project.subs.curr></substylin>
                 </div>
               </div>
 
@@ -127,8 +127,8 @@
               </div>
             </div>
 
-            <projstylin>
-            </projstylin>
+            <!-- Style elements in the project -->
+            <projstylin project=project stylin=stylin> </projstylin>
 
             <!-- A listing of all the existing subtitles, can click to select them -->
             <div id="subtitle" class="well">

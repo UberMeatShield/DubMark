@@ -40,11 +40,13 @@ DubMark.i18n.tags = {};
 DubMark.i18n.log  = function(key, trans){
   DubMark.i18n.tags[key] = trans;
 };
-gT = function(key){
+DubMark.i18n.gT = function(key){
   var trans = DubMark.i18n.getLabel(key);
   DubMark.i18n.log(key, trans);
   return trans;
 };
+
+gT = DubMark.i18n.gT;
 
 /**
  * A language instances
