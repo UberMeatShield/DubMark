@@ -59,10 +59,12 @@
                   <i class="icon-trash"></i>
                 </button>
 
+                <!-- Style editor for just a single subtitle (hidden unless a sub is active) --> 
                 <div class="pull-right" 
                   ng-init="stylinType='Sub';"
                   ng-hide="!project.subs.curr">
-                  <substylin gT=gT resource=project.subs.curr></substylin>
+
+                  <substylin resource=project.subs.curr></substylin>
                 </div>
               </div>
 
@@ -129,6 +131,7 @@
 
             <!-- Style elements in the project -->
             <projstylin project=project stylin=stylin> </projstylin>
+
 
             <!-- A listing of all the existing subtitles, can click to select them -->
             <div id="subtitle" class="well">

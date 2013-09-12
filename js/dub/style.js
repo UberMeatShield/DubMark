@@ -139,15 +139,13 @@ DubMark.Modules.Dub.directive("substylin", function() {
     controller: function($scope, $element) {
       //The settings setill need to have an order to iterate through.
       $scope.settings = JSON.parse(JSON.stringify(DubMark.Config.Style));
-
-      console.log("What came into the scope?", $scope, DubMark);
-
-      //Hmm, doesn't seem like I can chain two directives.  
-      this.resource = $scope.resource;
       $scope.gT     = DubMark.i18n.gT;
 
+      //Hmm, doesn't seem like I can chain two directives (missing something?)
+      this.resource = $scope.resource;
+
       var dialog = null;
-      $scope.save = function(){
+      $scope.save = function(){ //Need to merge in the settings => into the resource, THEN save.
         var rez = this.getResource();
         if(rez && rez.$save){
           console.log("Found a valid resource to save.", rez, this.stylinType);
@@ -168,6 +166,8 @@ DubMark.Modules.Dub.directive("substylin", function() {
           return this.resource;
       };
       $scope.getSettings = function(){
+        //Lookup the currently active style, merge that data into the current settings.
+        
       };
     },
     template:   //Copy Pasta
