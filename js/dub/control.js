@@ -37,7 +37,7 @@ dub.factory('Subtitles', function($resource){
 //Global assigned styles, 'Default' is used by SSA type subs.
 dub.factory('Stylin', function($resource){
   var rez = $resource(
-      DubMark.Config.getUrl('stylin') + '/:id', 
+      DubMark.Config.getUrl('stylins') + '/:id', 
       {format: 'json'}, 
       { 'get':    {method:'GET'},
         'save':   {method:'POST'},
@@ -99,6 +99,10 @@ dub.controller('ProjectEntry', DubMark.ProjectEntry = function($scope, Project, 
 
   $scope.proj     = args.ResourceProject;
   $scope.project.load();
+
+  setTimeout(function(){
+    angular.element('#OpenStylinConfig').trigger('click');
+  }, 1000);
 
 });
 

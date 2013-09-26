@@ -562,11 +562,16 @@ $.extend(DubMark.StylinManager.prototype, DubMark.NoSpamming.prototype, {
     args = args || {};
     console.log("New Style manager., need to make the load smarter");
     this.ResourceStylin = args.ResourceStylin;
+    this.all        = [];
+    this.projStylin = [];
   },
-  load: function(id){ //Bleah, this is going to suck
-    this.stylins = this.ResourceStylin.query({
+  load: function(id){ //Bleah, this is going to suck (get stylins for resource)
+    this.projStylin = this.ResourceStylin.query({
       id: id
     });
+  },
+  loadAll: function(){ //Do I even need to care about loading all
+    this.all = this.ResourceStylin.query();
   },
   setActiveStyle: function(style){
     console.log("Set the active style.");
@@ -579,8 +584,11 @@ $.extend(DubMark.StylinManager.prototype, DubMark.NoSpamming.prototype, {
   },
   newStylin: function(){ //Create a new one
     var s = new (this.ResourceStylin);
+    s.title = 'new item';
     this.populateDefaults(s);
     s.$save();
+
+    this.all.unshift(s);
     return s;
   },
   populateDefaults: function(){ //Hmmmm

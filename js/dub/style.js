@@ -16,6 +16,7 @@ DubMark.Modules.Dub.directive('projstylin', function(){
       stylin: '='
     },
     controller: function($scope, $element){
+                  
       //Load this into the project and prep to update
       var dialog = null;
       $scope.globalStyles = [{
@@ -26,12 +27,14 @@ DubMark.Modules.Dub.directive('projstylin', function(){
           id: 1
         }
       ];
+
+
       $scope.gT = DubMark.i18n.gT;
 
-      this.project = $scope.project;
-      this.stylin  = $scope.stylin;
-      this.gT      = $scope.gT;
 
+      this.project = $scope.project;
+      this.gT      = $scope.gT;
+      this.stylin  = $scope.stylin;
 
       //Build a valid list of the selectable styles (provide a new button).
       //
@@ -51,6 +54,7 @@ DubMark.Modules.Dub.directive('projstylin', function(){
       };
 
       $scope.openStyleManager = function(){
+        this.stylin.loadAll();
         dialog = $('#stylin_project');
         dialog.modal('show');
       };
@@ -69,7 +73,38 @@ DubMark.Modules.Dub.directive('projstylin', function(){
           sub.styleName = el.t;
           sub.$save();
         }
-      }
+      };
+
+      $scope.addStylin = function(){
+        console.log("Add Stylin.");
+      };
+
+      $scope.createStylin = function(){
+        //Get active style.
+        
+        //Fallback to default 
+        console.log("Create stylin.");
+        this.stylin.newStylin();
+        //Duplicate the active one.
+      };
+
+      $scope.notInProj = function(s){
+        return 'hidden';
+      };
+
+      $scope.inProj = function(s){
+        console.log("Check against the stylins in the project.");
+        return '';
+      };
+
+      $scope.removeStylinFromProj = function(){
+        //Updates the proj id array
+        console.log("Remove the stylin from this project");
+      };
+
+      $scope.removeStylinFromDb = function(){
+        console.log("Remove the stylin from the db");
+      };
     },
     template: 
       '<div id="globalstyles" class="well container-fluid">' +
@@ -81,46 +116,51 @@ DubMark.Modules.Dub.directive('projstylin', function(){
             '<h3>{{gT("Add Styles to project")}}</h3>'+
           '</div>'+
           '<div class="modal-body">'+
-            'List each style that can be selected for the project.' +
-            'Add styles to project' +
-            '{{gT("Get text test")}}' +
-            'Build a custom UI to handle configuration and adds to proj' +
-          '</div>'+
+
+          '<div class="container-fluid">' +
+            '<div class="span5">' +
+              '<button class="btn" ng-click=addStylin()>Add to Current Project</button>' +
+              '<button class="btn" ng-click=createStylin()>Create New</button>' +
+              '<button class="btn" ng-click=removeStylin()>Remove Stylin</button>' +
+            '<ul class="nav nav-list">' +
+              '<li class={{isActive(s)}} ng-repeat="s in stylin.all"> ' +
+                '<a  ng-click=editStyle(s)>' +
+                '{{gT(s.title)}}' +
+                '</a>' + //Do this with an input box.
+                '<span ng-click=removeStylinFromProj(s) class="pull-right" ng-class=inProj(s)>Yup</span>' +
+                '<span ng-click=addStylin(s) class="pull-right" ng-class=notInProj(s)>Nope</span>' +
+              '</li>' +
+            '</ul>' +
+            '</div>' +
+            '<div class="span6">' +
+              'this is on the right' +
+
+              //Add in editing related to the currently selected style in the stylin manager
+            '</div>' +
+          '</div>' + 
+
+          '</div>'+ //End of modal body
           '<div class="modal-footer">'+
             '<a ng-click="close()" href="#" class="btn">Close</a>'+
           '</div>'+
         '</div>'+
 
-        //Element for customizing style information (or just make it a side by side layout?")
-        '<div id="stylin_new" tabindex="-1" class="modal hide" role="dialog" aria-hidden="true">' +
-          '<div class="modal-header">'+
-            '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
-            '<h3>{{gT("Add Styles to project")}}</h3>'+
-          '</div>'+
-          '<div class="modal-body">'+
-            'Create a new style / edit it.' +
-          '</div>'+
-          '<div class="modal-footer">'+
-            '<a ng-click="save()" href="#" class="btn btn-primary">Save</a>'+
-            '<a ng-click="close()" href="#" class="btn">Close</a>'+
-          '</div>'+
-        '</div>'+
 
-        //Basic selection of styles.
+        //Basic selection of styles for the particular sub.
         '<ul class="nav nav-list">' +
-        '<li class="nav-header"> ' +
-          '<span>{{gT("Apply Style")}}</span>' +  
-          '<button class=" pull-right"' + 
-            ' ng-click=openStyleManager()' +
-            ' >' +
-            '<i class="icon-cog"></i>' +
-          '</button>' +
-        '</li>' +
-        '<li class={{isActive(s)}} ng-repeat="s in globalStyles"> ' +
-          '<a  ng-click=applyStyle(s)>' +
-          '{{gT(s.t)}}' +
-          '</a>' +
-        '</li>' +
+          '<li class="nav-header"> ' +
+            '<span>{{gT("Apply Style")}}</span>' +  
+            '<button id="OpenStylinConfig" class=" pull-right"' +  //This opens the modal dialog
+              ' ng-click=openStyleManager()' +
+              ' >' +
+              '<i class="icon-cog"></i>' +
+            '</button>' +
+          '</li>' +
+          '<li class={{isActive(s)}} ng-repeat="s in globalStyles"> ' +
+            '<a  ng-click=applyStyle(s)>' +
+            '{{gT(s.t)}}' +
+            '</a>' +
+          '</li>' +
         '</ul>' +
       '</div>'
   };
@@ -134,6 +174,7 @@ DubMark.Modules.Dub.directive("substylin", function() {
     restrict: "E",
     transclude: true,
     scope: {
+      stylin: '=',
       resource: '='
     },
     controller: function($scope, $element) {
@@ -143,6 +184,7 @@ DubMark.Modules.Dub.directive("substylin", function() {
 
       //Hmm, doesn't seem like I can chain two directives (missing something?)
       this.resource = $scope.resource;
+      this.stylin   = $scope.stylin;
 
       var dialog = null;
       $scope.save = function(){ //Need to merge in the settings => into the resource, THEN save.
@@ -152,6 +194,7 @@ DubMark.Modules.Dub.directive("substylin", function() {
           rez.$save();
         }
       };
+
       $scope.show = function(){
         console.log("Show the dialog.", this.getResource());
         if(this.getResource()){
@@ -168,6 +211,11 @@ DubMark.Modules.Dub.directive("substylin", function() {
       $scope.getSettings = function(){
         //Lookup the currently active style, merge that data into the current settings.
         
+        //Look at the resource we have, check the styleName
+        
+        //Use the stylin manager to lookup that style, populate the UI (not found = Config.Style)
+        
+        //Use apply to empty to 'set' the resource element values into the resource (only on save?)
       };
     },
     template:   //Copy Pasta

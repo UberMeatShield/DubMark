@@ -64,7 +64,7 @@
                   ng-init="stylinType='Sub';"
                   ng-hide="!project.subs.curr">
 
-                  <substylin resource=project.subs.curr></substylin>
+                  <substylin stylin=stylin resource=project.subs.curr></substylin>
                 </div>
               </div>
 
@@ -131,7 +131,6 @@
 
             <!-- Style elements in the project -->
             <projstylin project=project stylin=stylin> </projstylin>
-
 
             <!-- A listing of all the existing subtitles, can click to select them -->
             <div id="subtitle" class="well">
