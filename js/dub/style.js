@@ -99,6 +99,10 @@ DubMark.Modules.Dub.directive('projstylin', function(){
         console.log("Remove the stylin from this project");
       };
 
+      $scope.inProject = function(s){
+        return false;
+      };
+
       $scope.removeStylinFromDb = function(){
         console.log("Remove the stylin from the db");
       };
@@ -106,30 +110,39 @@ DubMark.Modules.Dub.directive('projstylin', function(){
     template: 
       '<div id="globalstyles" class="well container-fluid">' +
     
+      //Seriously, how do I make this wider?
         //Section for pulling up the list of all available styles
         '<div id="stylin_project" tabindex="-1" class="modal hide" role="dialog" aria-hidden="true">' +
           '<div class="modal-header">'+
+            '<h3>' +
+            '{{gT("Style Management")}}' +
+            '</h3>'+
+            '<button class="btn" ng-click=createStylin()>' +
+              '<i class="icon-plus"></i> ' +
+              '{{gT("New")}}' +
+            '</button>&nbsp;'+
+            '<button class="btn" ng-click=removeStylinFromDb()>' +
+              '<i class="icon-minus"></i> ' +
+              '{{gT("Remove")}}' +
+            '</button>&nbsp;'+
             '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
-            '<h3>{{gT("Add Styles to project")}}</h3>'+
           '</div>'+
           '<div class="modal-body container-fluid">'+
-
               '<div class="span5">' + //Left Column (selection and creation, addition to current project)
-                '<button class="btn" ng-click=addStylin()>Add to Current Project</button>' +
-                '<button class="btn" ng-click=createStylin()>Create New</button>' +
-                '<button class="btn" ng-click=removeStylin()>Remove Stylin</button>' +
               '<ul class="nav nav-list">' +
                 '<li class={{isActive(s)}} ng-repeat="s in stylin.all"> ' +
                   '<a  ng-click=editStyle(s)>' +
-                  '{{gT(s.title)}}' +
+                  '{{gT(s.title || "No Title" )}}' +
+                  '<input class="pull-right" type="checkbox" ' +
+                  '  title="{{gT(\'Add To Project\')}}" ' +
+                  '  ng-checked=inProject(s)' +
+                  '  ng-click=addStyle(s) />' +
                   '</a>' + //Do this with an input box.
-                  '<span ng-click=removeStylinFromProj(s) class="pull-right" ng-class=inProj(s)>Yup</span>' +
-                  '<span ng-click=addStylin(s) class="pull-right" ng-class=notInProj(s)>Nope</span>' +
                 '</li>' +
               '</ul>' +
               '</div>' +
 
-              '<div class="span7">' +    //Right Column (modification of the current selection obj)
+              '<div class="span7 well">' +    //Right Column (modification of the current selection obj)
                 '<div class="row-fluid" ng-repeat="cfg in settings">' +
                   '<span class="span5"> {{gT(cfg.t)}} </span>' + //Iterate over the available settings.
                   '<input class="span6" type="text"' +
