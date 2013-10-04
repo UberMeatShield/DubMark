@@ -1,11 +1,5 @@
 /**
  * Provides a state handler that can be used on a project item to update the status information.
- *
- * It requires a .proj to be available in the scope, so either ng-init="proj = $Resource" or something
- * similar
- * 
- *  Note: These get pretty complex pretty fast... might want to put them in a not so "Shared" location since
- * they are still going to require access to the control modules?
  */
 DubMark.Modules.Dub.directive('projstylin', function(){
   return {
@@ -31,10 +25,13 @@ DubMark.Modules.Dub.directive('projstylin', function(){
 
       $scope.gT = DubMark.i18n.gT;
 
-
       this.project = $scope.project;
       this.gT      = $scope.gT;
       this.stylin  = $scope.stylin;
+
+      this.current = null;
+
+      $scope.settings = JSON.parse(JSON.stringify(DubMark.Config.Style));
 
       //Build a valid list of the selectable styles (provide a new button).
       //
@@ -115,29 +112,31 @@ DubMark.Modules.Dub.directive('projstylin', function(){
             '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
             '<h3>{{gT("Add Styles to project")}}</h3>'+
           '</div>'+
-          '<div class="modal-body">'+
+          '<div class="modal-body container-fluid">'+
 
-          '<div class="container-fluid">' +
-            '<div class="span5">' +
-              '<button class="btn" ng-click=addStylin()>Add to Current Project</button>' +
-              '<button class="btn" ng-click=createStylin()>Create New</button>' +
-              '<button class="btn" ng-click=removeStylin()>Remove Stylin</button>' +
-            '<ul class="nav nav-list">' +
-              '<li class={{isActive(s)}} ng-repeat="s in stylin.all"> ' +
-                '<a  ng-click=editStyle(s)>' +
-                '{{gT(s.title)}}' +
-                '</a>' + //Do this with an input box.
-                '<span ng-click=removeStylinFromProj(s) class="pull-right" ng-class=inProj(s)>Yup</span>' +
-                '<span ng-click=addStylin(s) class="pull-right" ng-class=notInProj(s)>Nope</span>' +
-              '</li>' +
-            '</ul>' +
-            '</div>' +
-            '<div class="span6">' +
-              'this is on the right' +
+              '<div class="span5">' + //Left Column (selection and creation, addition to current project)
+                '<button class="btn" ng-click=addStylin()>Add to Current Project</button>' +
+                '<button class="btn" ng-click=createStylin()>Create New</button>' +
+                '<button class="btn" ng-click=removeStylin()>Remove Stylin</button>' +
+              '<ul class="nav nav-list">' +
+                '<li class={{isActive(s)}} ng-repeat="s in stylin.all"> ' +
+                  '<a  ng-click=editStyle(s)>' +
+                  '{{gT(s.title)}}' +
+                  '</a>' + //Do this with an input box.
+                  '<span ng-click=removeStylinFromProj(s) class="pull-right" ng-class=inProj(s)>Yup</span>' +
+                  '<span ng-click=addStylin(s) class="pull-right" ng-class=notInProj(s)>Nope</span>' +
+                '</li>' +
+              '</ul>' +
+              '</div>' +
 
-              //Add in editing related to the currently selected style in the stylin manager
-            '</div>' +
-          '</div>' + 
+              '<div class="span7">' +    //Right Column (modification of the current selection obj)
+                '<div class="row-fluid" ng-repeat="cfg in settings">' +
+                  '<span class="span5"> {{gT(cfg.t)}} </span>' + //Iterate over the available settings.
+                  '<input class="span6" type="text"' +
+                    ' ng-change=change()' + 
+                    ' ng-model=cfg.d />' +
+                '</div>' + 
+              '</div>' +
 
           '</div>'+ //End of modal body
           '<div class="modal-footer">'+
