@@ -25,12 +25,13 @@ DubMark.Modules.Dub.directive('projstylin', function(){
 
       $scope.gT = DubMark.i18n.gT;
 
-      this.project = $scope.project;
       this.gT      = $scope.gT;
       this.stylin  = $scope.stylin;
+      this.project = $scope.project;
+
+      //For actually updating the project resource directly
 
       this.current = null;
-
       $scope.settings = JSON.parse(JSON.stringify(DubMark.Config.Style));
 
       //Build a valid list of the selectable styles (provide a new button).
@@ -56,6 +57,10 @@ DubMark.Modules.Dub.directive('projstylin', function(){
         dialog.modal('show');
       };
 
+      $scope.getResourceProject = function(){
+        return this.project && this.project.ResourceProject ? this.project.ResourceProject : null;
+      };
+
       $scope.getResource = function(){
           return this.stylin.getActiveStyle();
       };
@@ -72,35 +77,81 @@ DubMark.Modules.Dub.directive('projstylin', function(){
         }
       };
 
-      $scope.addStylin = function(){
-        console.log("Add Stylin.");
-      };
 
+      //Get active style. Fallback to default 
       $scope.createStylin = function(){
-        //Get active style.
-        
-        //Fallback to default 
         console.log("Create stylin.");
         this.stylin.newStylin();
         //Duplicate the active one.
       };
-
-      $scope.notInProj = function(s){
-        return 'hidden';
-      };
-
-      $scope.inProj = function(s){
-        console.log("Check against the stylins in the project.");
-        return '';
-      };
-
       $scope.removeStylinFromProj = function(){
+        var pStylin = this.getProjStylin();
+
         //Updates the proj id array
         console.log("Remove the stylin from this project");
       };
 
       $scope.inProject = function(s){
+        if(s && s.id && this.project){
+          var stylinArr = this.getProjStylin(this.project);
+          if($.isArray(stylinArr) && stylinArr.indexOf(s.id) >= 0){
+            return true;
+          }
+        }
         return false;
+      };
+
+      $scope.setProjStylin = function(obj){
+        var val = null;
+        if(typeof obj == 'string'){
+          obj = JSON.parse(obj);
+          if(!$.isArray(obj)){
+            obj = [];
+            console.warn("Bad object passed to set proj stylin.", obj);
+          }
+        }
+        if(obj && $.isArray(obj)){
+          val = obj;
+        }
+        this.getResourceProject().stylinArr = val;
+      };
+      $scope.getProjStylin = function(p){
+          var rProj = this.getResourceProject();
+          var stylinArr = rProj ? rProj.stylinArr : null;
+          if(typeof stylinArr == 'string'){
+            stylinArr = JSON.parse(stylinArr);
+          }
+          return stylinArr;
+      };
+
+      $scope.editStyle = function(s){
+        this.stylin.setActiveStyle(s);
+      };
+
+      $scope.addStylin = function(s){
+        if(this.project && !this.inProject(s)){
+          var stylinArr = this.getProjStylin(this.project);
+          if(!$.isArray(stylinArr)){
+            stylinArr = []; 
+          }
+          stylinArr.push(s.id);
+          this.setProjStylin(stylinArr);
+
+
+          var rProj = this.getResourceProject();
+          if(rProj){
+            rProj.$save();
+          }else{
+            console.error("Should never have a project without a resource object", this.project);
+          }
+        }
+      };
+
+      $scope.isActive = function(s){
+        var active = this.stylin.getActiveStyle();
+        if(active && active.id == s.id){
+          return 'active';
+        }
       };
 
       $scope.removeStylinFromDb = function(){
@@ -128,7 +179,7 @@ DubMark.Modules.Dub.directive('projstylin', function(){
             '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'+
           '</div>'+
           '<div class="modal-body container-fluid">'+
-              '<div class="span5">' + //Left Column (selection and creation, addition to current project)
+            '<div class="span5">' + //Left Column (selection and creation, addition to current project)
               '<ul class="nav nav-list">' +
                 '<li class={{isActive(s)}} ng-repeat="s in stylin.all"> ' +
                   '<a  ng-click=editStyle(s)>' +
@@ -136,20 +187,20 @@ DubMark.Modules.Dub.directive('projstylin', function(){
                   '<input class="pull-right" type="checkbox" ' +
                   '  title="{{gT(\'Add To Project\')}}" ' +
                   '  ng-checked=inProject(s)' +
-                  '  ng-click=addStyle(s) />' +
+                  '  ng-click=addStylin(s) />' +
                   '</a>' + //Do this with an input box.
                 '</li>' +
               '</ul>' +
-              '</div>' +
+            '</div>' +
 
-              '<div class="span7 well">' +    //Right Column (modification of the current selection obj)
-                '<div class="row-fluid" ng-repeat="cfg in settings">' +
-                  '<span class="span5"> {{gT(cfg.t)}} </span>' + //Iterate over the available settings.
-                  '<input class="span6" type="text"' +
-                    ' ng-change=change()' + 
-                    ' ng-model=cfg.d />' +
-                '</div>' + 
-              '</div>' +
+            '<div class="span7 well">' +    //Right Column (modification of the current selection obj)
+              '<div class="row-fluid" ng-repeat="cfg in settings">' +
+                '<span class="span5"> {{gT(cfg.t)}} </span>' + //Iterate over the available settings.
+                '<input class="span6" type="text"' +
+                  ' ng-change=change()' + 
+                  ' ng-model=cfg.d />' +
+              '</div>' + 
+            '</div>' +
 
           '</div>'+ //End of modal body
           '<div class="modal-footer">'+

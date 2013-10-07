@@ -564,6 +564,7 @@ $.extend(DubMark.StylinManager.prototype, DubMark.NoSpamming.prototype, {
     this.ResourceStylin = args.ResourceStylin;
     this.all        = [];
     this.projStylin = [];
+    this.current    = null;
   },
   load: function(id){ //Bleah, this is going to suck (get stylins for resource)
     this.projStylin = this.ResourceStylin.query({
@@ -574,13 +575,22 @@ $.extend(DubMark.StylinManager.prototype, DubMark.NoSpamming.prototype, {
     this.all = this.ResourceStylin.query();
   },
   setActiveStyle: function(style){
+    this.current = style;
     console.log("Set the active style.");
   },
   getActiveStyle: function(){
-    console.log("Get the active style that has been selected.");
+    return this.current;
   },
-  getStylin: function(id){
-
+  getStylin: function(id){ //A resource object.
+    var search = this.all.length ? this.all : this.projStylin;
+    var entry = null;
+    for (var i=0; i<search.lenth; ++i){
+      entry = search[i];
+      if(entry && entry.id == id){
+        return entry;
+      }
+    }
+    return null;
   },
   newStylin: function(){ //Create a new one
     var s = new (this.ResourceStylin);
