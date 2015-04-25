@@ -1,7 +1,50 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
+class Wizard
+  attr_accessor @name, @pet
+  def intialize(name, pet)
+    @name = name
+    @pet  = pet
+  end
+  def hello
+    puts "Hi my name is #{@name} and this is #{@pet.name}\n"
+  end
+  def abuse_pet
+     if self.really() && !@pet.is_deadly
+       puts "SMACK #{@pet.noise}"
+     end
+  end
+  def really
+    if @name == "Harry"
+      return false
+    end
+    return true
+  end
+end
+
+class Pet
+  attr_accessor @name, @noise
+  @talons
+  def initialize(name, noise, talons=false)
+    @name = name
+    @noise = noise
+    @talons = talons
+  end
+  def is_deadly
+    return @talons
+  end
+end
+
+class EpicPet < Pet
+  def initialize(@name, @noise)
+  end
+  def is_deadly
+    return true
+  end
+end
+ep = EpicPet.new("Cobra", "Hiss")
+w = Wizard.new("Voldermort", ep)
+w.hello()
+
+p = Pet.new("Crookshanks", "Meow Bitch", true)
+w = Wizard.new("Hermione", p)
+w.hello()
+w.abuse_pet()
