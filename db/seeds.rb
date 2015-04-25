@@ -47,10 +47,15 @@ get '/' do
   'Hello world!'
 end
 
-get 'wizard/:name' do
-  p = Pet.new("Crookshanks", "Meow Bitch", true)
-  w = Wizard.new("Hermione", p)
-  w.hello()
+#http://localhost:4567/wizard/blythe/pet/scrabble
+
+get '/wizard/:name/pet/:petname' do
+  if params['name'].match(/justin/i)
+    return "Always ALONE"
+  end
+  p = Pet.new(params['petname'], "Meow Bitch", true)
+  w = Wizard.new(params['name'], p)
+  return w.hello()
 end
 
 
