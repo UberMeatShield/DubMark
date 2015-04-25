@@ -1,3 +1,5 @@
+require 'sintra'
+
 class Wizard
   attr_accessor @name, @pet
   def intialize(name, pet)
@@ -40,11 +42,16 @@ class EpicPet < Pet
     return true
   end
 end
-ep = EpicPet.new("Cobra", "Hiss")
-w = Wizard.new("Voldermort", ep)
-w.hello()
 
-p = Pet.new("Crookshanks", "Meow Bitch", true)
-w = Wizard.new("Hermione", p)
-w.hello()
-w.abuse_pet()
+get '/' do
+  'Hello world!'
+end
+
+get 'wizard/:name' do
+  p = Pet.new("Crookshanks", "Meow Bitch", true)
+  w = Wizard.new("Hermione", p)
+  w.hello()
+end
+
+
+
